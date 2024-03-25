@@ -22,11 +22,9 @@ import { AccessTokenModule } from './accesstoken/module';
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'client'),
     }),
-    MongooseModule.forRootAsync({
-      useFactory: () => ({
-        uri: process.env.CONNECTION_STRING,
-      }),
-    }),
+    MongooseModule.forRoot(
+      'mongodb://admin:123456@localhost:27017/psm?authSource=admin&readPreference=primary',
+    ),
     ConfigModule.forRoot({
       isGlobal: true,
     }),
