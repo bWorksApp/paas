@@ -17,6 +17,7 @@ import {
   trimUsername,
 } from '../flatworks/utils/common';
 import { Role } from '../flatworks/utils/roles';
+import { validateSignature } from '../flatworks/utils/validate.wallet';
 import { WalletService } from '../wallet/service';
 import { validateAddress } from '../flatworks/utils/cardano';
 import { ChangePasswordDto } from '../user/dto/change-password.dto';
@@ -45,6 +46,7 @@ validate only approved users
         'User is not approved yet. Please contact bWorks support for detail',
       );
     }
+
     const isMatch = await bcrypt.compare(pass, user.password);
 
     if (!isMatch) {
@@ -70,6 +72,36 @@ validate only approved users
   }
 
   async login(user: any) {
+    const tokens = await this.getTokens(user);
+    await this.updateRefreshToken(user._doc._id, tokens.refreshToken);
+    return {
+      ...tokens,
+      fullName: user._doc.fullName,
+      username: user._doc.username,
+    };
+  }
+
+  async loginWallet(loginWallet: any) {
+    if (!loginWallet.walletAddress || !loginWallet.signature)
+      throw new ForbiddenException('Access Denied');
+
+    const user = await this.userService.findByWallet({
+      walletAddress: loginWallet.walletAddress,
+    });
+    console.log(user);
+
+    if (!user) throw new ForbiddenException('Access Denied');
+
+    const isValidated = await validateSignature(
+      user._doc.nonce,
+      user._doc.walletAddress,
+      loginWallet.signature,
+    );
+
+    console.log(isValidated);
+
+    if (!isValidated) throw new ForbiddenException('Can not validate wallet');
+
     const tokens = await this.getTokens(user);
     await this.updateRefreshToken(user._doc._id, tokens.refreshToken);
     return {
@@ -141,6 +173,46 @@ validate only approved users
     return tokens;
   }
 
+  //register user with wallet
+  async registerWallet(registerUser: any): Promise<any> {
+    //{username: abc, email: abc@gmail.com, password: ***, fullName: abc, walletAddress: abc}
+    //trim username & fullName
+    registerUser.username = trimUsername(registerUser.username);
+    registerUser.fullName = trimFullName(registerUser.fullName);
+
+    console.log(registerUser);
+    const _usernames = await this.userService.findAllRaw({
+      username: registerUser.username,
+    });
+
+    const _wallet = await this.walletService.findAllRaw({
+      address: registerUser.walletAddress,
+    });
+
+    const _isCardanoAddress = await validateAddress(registerUser.walletAddress);
+
+    const errorMessage = !validateEmail(registerUser.email)
+      ? 'Not a valid email address'
+      : _usernames?.length > 0
+      ? 'Username is already existed'
+      : !_isCardanoAddress
+      ? 'Invalidate Cardano wallet address'
+      : _wallet.length > 0
+      ? 'Wallet is already in use'
+      : null;
+
+    if (errorMessage) {
+      throw new BadRequestException({
+        cause: new Error(),
+        description: 'Submit error',
+        message: errorMessage,
+      });
+    }
+
+    return this.userService.create(registerUser);
+  }
+
+  //register user with email
   async register(registerUser: any): Promise<any> {
     //{username: abc, email: abc@gmail.com, password: ***, fullName: abc, walletAddress: abc}
     //trim username & fullName

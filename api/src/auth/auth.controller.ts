@@ -23,11 +23,18 @@ import { HomePageAuthGuard } from './home-page-auth.guard';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
+  //email login
   @UseGuards(LocalAuthGuard)
   @Post('login')
   @Public()
   async login(@Request() req) {
     return this.authService.login(req.user);
+  }
+
+  @Post('loginwallet')
+  @Public()
+  async loginWallet(@Body() loginWallet: any) {
+    return this.authService.loginWallet(loginWallet);
   }
 
   //cms login
@@ -58,11 +65,18 @@ export class AuthController {
   logout(@Request() req) {
     this.authService.logout(req.user['userId']);
   }
-
+  //register user with email
   @Post('register')
   @Public()
   async register(@Body() registerUser: RegisterUserDto) {
     return await this.authService.register(registerUser);
+  }
+
+  //register user with wallet
+  @Post('registerwalelt')
+  @Public()
+  async registerWallet(@Body() registerUser: RegisterUserDto) {
+    return await this.authService.registerWallet(registerUser);
   }
 
   @UseGuards(RegisterAuthGuard)

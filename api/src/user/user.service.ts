@@ -77,6 +77,10 @@ export class UserService {
     return user;
   }
 
+  async findByWallet(filter = {}): Promise<any> {
+    return await this.model.findOne(filter).exec();
+  }
+
   async findByEmail(filter = {}): Promise<UserDocument> {
     return await this.model.findOne(filter).exec();
   }
