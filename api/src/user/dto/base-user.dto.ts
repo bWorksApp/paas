@@ -1,4 +1,5 @@
 import { authType } from './../../flatworks/types/types';
+//use reward address for validate wallet signature
 
 export class BaseUserDto {
   username: string;
@@ -11,12 +12,11 @@ export class BaseUserDto {
   fullName: string;
   refreshToken: string;
   role: any[];
-  skills: any[];
   isSmartContractDev: boolean;
   isdAppDev: boolean;
   authType: authType;
   isNotified: boolean;
-  walletAddress: string;
+  walletRewardAddress: string;
   nonce: string;
   password: string;
   isApproved: boolean;

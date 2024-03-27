@@ -13,6 +13,7 @@ import {
   trimFullName,
 } from '../flatworks/utils/common';
 import { ChangePasswordDto } from './dto/change-password.dto';
+import { UserWalletRegisterDto } from '../user/dto/wallet-user-register.dto';
 
 @Injectable()
 export class UserService {
@@ -96,6 +97,19 @@ export class UserService {
       ...createUserDto,
       username,
       password,
+      roles,
+      createdAt: new Date(),
+    }).save();
+  }
+
+  async createWalletUser(createUserDto: UserWalletRegisterDto): Promise<User> {
+    const username = createUserDto.username.toLowerCase();
+    //roles is always ['user'] as created time
+    const roles = ['user'];
+    console.log(createUserDto);
+    return await new this.model({
+      ...createUserDto,
+      username,
       roles,
       createdAt: new Date(),
     }).save();

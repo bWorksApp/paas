@@ -35,7 +35,10 @@ export class User {
   authType: authType;
 
   @Prop({ unique: true })
-  walletAddress: string;
+  walletRewardAddress: string;
+
+  @Prop()
+  nonce: string;
 
   @Prop()
   password: string;

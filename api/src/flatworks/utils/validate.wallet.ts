@@ -7,11 +7,14 @@ async function getNonce() {
 
 async function validateSignature(nonce, userAddress, signature) {
   let isValidated = false;
+  console.log(nonce, userAddress, signature);
   try {
     isValidated = await checkSignature(nonce, userAddress, signature);
   } catch (err) {
+    console.log(err);
     return false;
   }
+
   return isValidated;
 }
 
