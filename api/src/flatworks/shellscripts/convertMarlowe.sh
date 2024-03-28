@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/zsh
 
 # Đảm bảo đã download marlowe-cli và copy vào /usr/bin trong server Linux
 # convertMarlowe.sh git@github.com:jackchuong/test-smart-contract.git contract.marlowe
