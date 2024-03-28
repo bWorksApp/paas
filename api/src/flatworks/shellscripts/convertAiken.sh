@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/zsh
 
 # Đảm bảo đã download aiken và copy vào /usr/bin trong server Linux
 # convertAiken.sh git@github.com:jackchuong/test-smart-contract.git aiken-hello-world
