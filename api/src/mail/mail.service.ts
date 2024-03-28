@@ -25,7 +25,7 @@ mail notify send to user for cases:
     try {
       result = await this.mailerService.sendMail({
         to: user.email,
-        subject: '[bWorks] Welcome to bWorks! Please confirm your Email',
+        subject: '[PAAS] Welcome to PAAS! Please confirm your Email',
         template: './confirm',
         context: {
           name: user.username,

@@ -21,7 +21,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 export class ContractController {
   constructor(private readonly service: ContractService) {}
 
-  //  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Get()
   async index(@Response() res: any, @Query() query, @Request() req) {
     //   const userId = req.user.userId;

@@ -25,6 +25,27 @@ export class QueueController {
     });
   }
 
+  @Post('compilemarlowe')
+  async compileMarlowe(@Body() postBody: any) {
+    await this.QueueQueue.add('compileMarlowe', {
+      contractId: postBody.contractId,
+    });
+  }
+
+  @Post('compileplutus')
+  async compilePlutus(@Body() postBody: any) {
+    await this.QueueQueue.add('compilePlutus', {
+      contractId: postBody.contractId,
+    });
+  }
+
+  @Post('compileaiken')
+  async compileAiken(@Body() postBody: any) {
+    await this.QueueQueue.add('compileAiken', {
+      contractId: postBody.contractId,
+    });
+  }
+
   @Post('unlock')
   async unlock(@Body() postBody: any, @Request() req) {
     const userId = req.user.userId;

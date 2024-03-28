@@ -16,6 +16,9 @@ import { MailModule } from './mail/mail.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { AccessTokenModule } from './accesstoken/module';
+import { APP_GUARD } from '@nestjs/core';
+import { RolesGuard } from './flatworks/roles/roles.guard';
+import { JwtAuthGuard } from './auth/jwt-auth.guard';
 
 @Module({
   imports: [
@@ -40,6 +43,16 @@ import { AccessTokenModule } from './accesstoken/module';
     PublicModule,
     MailModule,
     AccessTokenModule,
+  ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
   ],
 })
 export class AppModule {}

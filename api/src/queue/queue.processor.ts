@@ -49,6 +49,46 @@ export class QueueProcessor {
       if (err) {
         console.error(err, job);
       } else {
+        console.log(`job: ${job}`);
+        console.log(`stdout: ${stdout}`);
+        console.log(`stderr: ${stderr}`);
+      }
+    });
+  }
+
+  @Process('compileMarlowe')
+  compileMarlowe(job: Job) {
+    const arg = `Compiling marlowe smart contractId ${job.data.contractId} ...`;
+    exec(`echo ${arg}`, (err, stdout, stderr) => {
+      if (err) {
+        console.error(err, job);
+      } else {
+        console.log(`job: ${job.data.contractId}`);
+        console.log(`stdout: ${stdout}`);
+      }
+    });
+  }
+
+  @Process('compileAiken')
+  compileAiken(job: Job) {
+    const arg = `Compiling Aiken smart contractId ${job.data.contractId} ...`;
+    exec(`echo ${arg}`, (err, stdout, stderr) => {
+      if (err) {
+        console.error(err, job);
+      } else {
+        console.log(`stdout: ${stdout}`);
+        console.log(`stderr: ${stderr}`);
+      }
+    });
+  }
+
+  @Process('compilePlutus')
+  compilePlutus(job: Job) {
+    const arg = `Compiling plutus smart contractId ${job.data.contractId} ...`;
+    exec(`echo ${arg}`, (err, stdout, stderr) => {
+      if (err) {
+        console.error(err, job);
+      } else {
         console.log(`stdout: ${stdout}`);
         console.log(`stderr: ${stderr}`);
       }

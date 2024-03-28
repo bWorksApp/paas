@@ -10,7 +10,7 @@ export class User {
   @Prop({ required: true, unique: true })
   username: string;
 
-  @Prop({ unique: true })
+  @Prop()
   email: string;
 
   @Prop()
@@ -34,7 +34,7 @@ export class User {
   @Prop({ default: 'wallet' })
   authType: authType;
 
-  @Prop({ unique: true })
+  @Prop()
   walletRewardAddress: string;
 
   @Prop()

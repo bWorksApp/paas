@@ -20,6 +20,9 @@ export class RegisterStrategy extends PassportStrategy(Strategy, 'register') {
       password: payload.password,
       fullName: payload.fullName,
       walletAddress: payload.walletAddress,
+      isSmartContractDev: payload.isSmartContractDev,
+      isdAppDev: payload.isdAppDev,
+      authType: payload.authType,
     };
   }
 }
