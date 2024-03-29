@@ -39,24 +39,3 @@ import { MailController } from './mail.controller';
   exports: [MailService],
 })
 export class MailModule {}
-
-/*
-
-
-MAIL_HOST=smtp.gmail.com
-MAIL_USER=wateroshelp@gmail.com
-MAIL_PASSWORD=vfgq qeaf gzrq kdcq
-MAIL_FROM=ateroshelp@gmail.com
-
-
-transport: {
-             host: 'smtp.gmail.com',
-             port: 465,
-             ignoreTLS: true,
-             secure: true,
-             auth: {
-                 user: process.env.EMAIL_ID,
-                 pass: process.env.EMAIL_PASS
-             },
-         }
-*/

@@ -98,6 +98,7 @@ with nonce: "7061617378376a64364f38645945653245365042756466646165797643387a4a697
     try {
       await this.authService.verify(req.user);
     } catch (error) {
+      console.log(error);
       res.redirect('/api/verifyFailed.html');
       return;
     }

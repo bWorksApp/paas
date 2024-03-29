@@ -19,7 +19,7 @@ export class RolesGuard implements CanActivate {
     // Api no need role, canActive = true
     if (!requiredRole) return true;
     const { user } = context.switchToHttp().getRequest();
-    console.log(user, requiredRole)
+    console.log(user, requiredRole);
 
     // User don't have role, canActive = false
     if (!user || !user.roles) return false;

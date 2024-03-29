@@ -26,6 +26,7 @@ import {
   getNonce,
   validateSignature,
 } from '../flatworks/utils/validate.wallet';
+import { authType } from '../flatworks/types/types';
 
 @Injectable()
 export class AuthService {
@@ -272,6 +273,9 @@ validate only approved users
       email: registerUser.email,
       password: registerUser.password,
       walletAddress: registerUser.walletAddress,
+      isSmartContractDev: registerUser.isSmartContractDev,
+      isdAppDev: registerUser.isdAppDev,
+      authType: registerUser.authType,
     };
 
     const emailToken = await this.createToken(payload);
@@ -321,11 +325,13 @@ validate only approved users
   }
 
   async verify(user: any): Promise<any> {
+    console.log(user);
     const insertedUser = (await this.userService.create({
       ...user,
       roles: [Role.User],
     })) as any;
     const { id: userId, username } = insertedUser;
+
     const { walletAddress } = user;
     const _wallet = await this.walletService.create(
       {
