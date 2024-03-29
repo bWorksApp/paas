@@ -25,12 +25,10 @@ import { JwtAuthGuard } from './auth/jwt-auth.guard';
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'client'),
     }),
-    MongooseModule.forRoot(
-      'mongodb://admin:123456@localhost:27017/psm?authSource=admin&readPreference=primary',
-    ),
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    MongooseModule.forRoot(process.env.CONNECTION_STRING),
     UserModule,
     AuthModule,
     CurrencyModule,
