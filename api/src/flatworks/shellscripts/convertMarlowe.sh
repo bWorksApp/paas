@@ -40,6 +40,10 @@ if [ $? -eq 0 ]; then
 	        echo "Conversion failed."
 fi
 
+# Show nội dung json
+echo -n "contract.json content:\n" && \
+cat $temp_dir/repo/contract.json && echo -e "\n"
+
 # Xóa thư mục tạm
-#rm -rf "$temp_dir"
+rm -rf "$temp_dir"
 

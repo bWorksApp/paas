@@ -40,6 +40,10 @@ if [ $? -eq 0 ]; then
 	        echo "Build failed."
 fi
 
+# Show nội dung json
+echo -n "plutus.json content:\n" && \
+cat $temp_dir/repo/$aiken_project_path/plutus.json && echo -e "\n"
+
 # Xóa thư mục tạm
-#rm -rf "$temp_dir"
+rm -rf "$temp_dir"
 
