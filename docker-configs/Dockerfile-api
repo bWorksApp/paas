@@ -1,4 +1,9 @@
 From node:16.15.1-slim
+# install git , aiken , marlowe-cli
+RUN apt-get update && apt-get install -y git
+COPY api/src/flatworks/shellscripts/aiken /usr/bin
+COPY api/src/flatworks/shellscripts/marlowe-cli /usr/bin
+# build
 ENV NODE_OPTIONS=--max_old_space_size=8192
 WORKDIR /app
 COPY ./ ./

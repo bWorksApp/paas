@@ -1,7 +1,7 @@
 #!/bin/zsh
 
 # Đảm bảo đã download marlowe-cli và copy vào /usr/bin trong server Linux
-# convertMarlowe.sh git@github.com:jackchuong/test-smart-contract.git contract.marlowe
+# convertMarlowe.sh https://github.com/jackchuong/test-smart-contract.git contract.marlowe
 # tìm kết quả trong /tmp/marlowe_temp.XXXXXX
 
 # Kiểm tra xem đã nhập đủ tham số chưa
