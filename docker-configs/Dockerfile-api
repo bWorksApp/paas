@@ -1,6 +1,6 @@
 From node:16.15.1-slim
 # install git , aiken , marlowe-cli
-RUN apt-get update && apt-get install -y git
+RUN apt-get update && apt-get install -y git zsh
 COPY api/src/flatworks/shellscripts/aiken /usr/bin
 COPY api/src/flatworks/shellscripts/marlowe-cli /usr/bin
 # build
