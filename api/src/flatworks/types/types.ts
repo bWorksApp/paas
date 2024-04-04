@@ -121,3 +121,38 @@ export const EventHeader = {
   'X-Accel-Buffering': 'no',
   'Access-Control-Allow-Origin': '*',
 };
+
+//plutus smart contract body
+export interface PlutusSmartContract {
+  address: string;
+  cborhex: string;
+  version: string;
+}
+
+export interface AikenValidator {
+  title: string;
+  datum: any;
+  redeemer: any;
+  compiledCode: string;
+  hash: string;
+}
+
+//aiken smart contract body
+export interface AikenSmartContract {
+  preamble: {
+    version: string;
+    plutusVersion: 'v1' | 'v2' | 'v3';
+    compiler: {
+      name: string;
+      version: string;
+    };
+    [key: string]: any;
+  };
+  validators: AikenValidator[];
+  definitions: any;
+}
+
+//marlowe smart contract body
+export interface MarloweSmartContract {
+  [key: string]: any;
+}
