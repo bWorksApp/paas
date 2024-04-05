@@ -1,6 +1,13 @@
+import {
+  MarloweSmartContract,
+  PlutusSmartContract,
+  AikenSmartContract,
+} from '../../flatworks/types/types';
+
 export class BaseContractDto {
   name: string;
   address: string;
+  contract: MarloweSmartContract | PlutusSmartContract | AikenSmartContract;
   cborhex: string;
   code: string;
   description: string;
