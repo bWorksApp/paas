@@ -6,14 +6,11 @@ import {
 
 export class BaseContractDto {
   name: string;
-  address: string;
   contract: MarloweSmartContract | PlutusSmartContract | AikenSmartContract;
-  cborhex: string;
-  code: string;
-  description: string;
-  isApproved: boolean;
   author: string;
-  language: string;
-  submittedUsers: number;
+  isSourceCodeVerified: boolean;
+  isFunctionVerified: boolean;
+  isApproved: boolean;
   version: string;
+  description: string;
 }

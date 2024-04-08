@@ -31,8 +31,10 @@ export class ContractService {
   async create(createContractDto: CreateContractDto): Promise<Contract> {
     return await new this.model({
       ...createContractDto,
+      isSourceCodeVerified: false,
+      isFunctionVerified: false,
+      isApproved: false,
       createdAt: new Date(),
-      code: createContractDto.cborhex,
     }).save();
   }
 
