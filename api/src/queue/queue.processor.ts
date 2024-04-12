@@ -58,7 +58,7 @@ export class QueueProcessor {
 
   @Process('compileMarlowe')
   compileMarlowe(job: Job) {
-    const arg = `Compiling marlowe smart contractId ${job.data.contractId} ...`;
+    const arg = `Compiling marlowe smart contractId ${job.data.name} ...`;
     exec(`echo ${arg}`, (err, stdout, stderr) => {
       if (err) {
         console.error(err, job);
@@ -71,7 +71,7 @@ export class QueueProcessor {
 
   @Process('compileAiken')
   compileAiken(job: Job) {
-    const arg = `Compiling Aiken smart contractId ${job.data.contractId} ...`;
+    const arg = `Compiling Aiken smart contractId ${job.data.name} ...`;
     exec(`echo ${arg}`, (err, stdout, stderr) => {
       if (err) {
         console.error(err, job);
@@ -84,7 +84,7 @@ export class QueueProcessor {
 
   @Process('compilePlutus')
   compilePlutus(job: Job) {
-    const arg = `Compiling plutus smart contractId ${job.data.contractId} ...`;
+    const arg = `Compiling plutus smart contractId ${job.data.name} ...`;
     exec(`echo ${arg}`, (err, stdout, stderr) => {
       if (err) {
         console.error(err, job);

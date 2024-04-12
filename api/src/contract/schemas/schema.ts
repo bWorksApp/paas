@@ -5,6 +5,7 @@ import {
   MarloweSmartContract,
   PlutusSmartContract,
   AikenSmartContract,
+  ContractType,
 } from '../../flatworks/types/types';
 import { Schema as MongooseSchema } from 'mongoose';
 export type ContractDocument = Contract & Document;
@@ -22,6 +23,12 @@ export class Contract {
 
   @Prop({ type: MongooseSchema.Types.Mixed })
   contract: MarloweSmartContract | PlutusSmartContract | AikenSmartContract;
+
+  @Prop()
+  contractType: ContractType;
+
+  @Prop()
+  gitRepo: string;
 
   @Prop({ default: false })
   isSourceCodeVerified: boolean;

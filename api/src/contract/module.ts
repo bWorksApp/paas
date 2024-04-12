@@ -3,6 +3,7 @@ import { ContractService } from './service';
 import { ContractController } from './controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Contract, ContractSchema } from './schemas/schema';
+import { QueueModule } from '../queue/queue.module';
 
 @Module({
   providers: [ContractService],
@@ -11,6 +12,7 @@ import { Contract, ContractSchema } from './schemas/schema';
     MongooseModule.forFeature([
       { name: Contract.name, schema: ContractSchema },
     ]),
+    QueueModule,
   ],
 })
 export class ContractModule {}

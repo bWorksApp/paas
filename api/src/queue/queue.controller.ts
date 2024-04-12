@@ -17,6 +17,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 export class QueueController {
   constructor(@InjectQueue('queue') private readonly QueueQueue: Queue) {}
 
+  /* 
   @Post('execshell')
   async execShell(@Body() postBody: any) {
     await this.QueueQueue.add('execShell', {
@@ -62,7 +63,7 @@ export class QueueController {
       userId: postBody.userId,
     });
   }
-
+ */
   @Get()
   async getJobs(@Response() res: any, @Query() query) {
     const transformQuery = queryTransform(query);
