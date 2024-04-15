@@ -121,3 +121,56 @@ export const EventHeader = {
   'X-Accel-Buffering': 'no',
   'Access-Control-Allow-Origin': '*',
 };
+
+/*
+post origin compiled plutus script. 
+the address field will be add by backend service.
+the cborHox field is code field in frontend dApp
+{
+    "type": "PlutusScriptV2",
+    "description": "",
+    "cborHex": "4746010000222601"
+}
+*/
+export interface PlutusSmartContract {
+  address?: string;
+  cborHex: string;
+  type: string;
+  description: string;
+}
+
+export interface AikenValidator {
+  title: string;
+  datum: any;
+  redeemer: any;
+  compiledCode: string;
+  hash: string;
+}
+
+//aiken smart contract body
+export interface AikenSmartContract {
+  address?: string;
+  preamble: {
+    version: string;
+    plutusVersion: 'v1' | 'v2' | 'v3';
+    compiler: {
+      name: string;
+      version: string;
+    };
+    [key: string]: any;
+  };
+  validators: AikenValidator[];
+  definitions: any;
+}
+
+//marlowe smart contract body
+export interface MarloweSmartContract {
+  [key: string]: any;
+}
+
+//contract types
+export enum ContractType {
+  Plutus = 'plutus',
+  Aiken = 'aiken',
+  Marlowe = 'marlowe',
+}

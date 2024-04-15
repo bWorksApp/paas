@@ -2,6 +2,7 @@
 
 # Đảm bảo đã download aiken và copy vào /usr/bin trong server Linux
 # convertAiken.sh https://github.com/jackchuong/test-smart-contract.git aiken-hello-world
+# zsh convertAiken.sh https://github.com/jackchuong/test-smart-contract aiken-hello-world
 # tìm kết quả trong /tmp/aiken_temp.XXXXXX
 
 # Kiểm tra xem đã nhập đủ tham số chưa

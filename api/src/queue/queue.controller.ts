@@ -13,11 +13,11 @@ import { Queue } from 'bull';
 import { queryTransform, formatRaList } from '../flatworks/utils/getlist';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
-@UseGuards(JwtAuthGuard)
 @Controller('queues')
 export class QueueController {
   constructor(@InjectQueue('queue') private readonly QueueQueue: Queue) {}
 
+  /* 
   @Post('execshell')
   async execShell(@Body() postBody: any) {
     await this.QueueQueue.add('execShell', {
@@ -63,7 +63,7 @@ export class QueueController {
       userId: postBody.userId,
     });
   }
-
+ */
   @Get()
   async getJobs(@Response() res: any, @Query() query) {
     const transformQuery = queryTransform(query);

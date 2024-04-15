@@ -1,7 +1,13 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import * as uniqueValidator from 'mongoose-unique-validator';
-
+import {
+  MarloweSmartContract,
+  PlutusSmartContract,
+  AikenSmartContract,
+  ContractType,
+} from '../../flatworks/types/types';
+import { Schema as MongooseSchema } from 'mongoose';
 export type ContractDocument = Contract & Document;
 
 @Schema()
@@ -9,28 +15,28 @@ export class Contract {
   @Prop({ required: true, unique: true })
   name: string;
 
-  @Prop({ required: true, unique: true })
-  address: string;
-
-  @Prop({ required: true, unique: true })
-  cborhex: string;
-
-  @Prop()
-  code: string;
-
-  @Prop()
-  language: string;
-
   @Prop()
   version: string;
 
   @Prop()
   author: string;
 
-  @Prop()
-  submittedUsers: number;
+  @Prop({ type: MongooseSchema.Types.Mixed })
+  contract: MarloweSmartContract | PlutusSmartContract | AikenSmartContract;
 
   @Prop()
+  contractType: ContractType;
+
+  @Prop()
+  gitRepo: string;
+
+  @Prop({ default: false })
+  isSourceCodeVerified: boolean;
+
+  @Prop({ default: false })
+  isFunctionVerified: boolean;
+
+  @Prop({ default: false })
   isApproved: boolean;
 
   @Prop()

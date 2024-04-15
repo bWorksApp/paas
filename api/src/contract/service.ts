@@ -5,11 +5,33 @@ import { CreateContractDto } from './dto/create.dto';
 import { UpdateContractDto } from './dto/update.dto';
 import { Contract, ContractDocument } from './schemas/schema';
 import { RaList, MongooseQuery } from '../flatworks/types/types';
+import { InjectQueue } from '@nestjs/bull';
+import { Queue } from 'bull';
+import { ContractType } from '../flatworks/types/types';
+
+/*
+- Publish flow
+  - user post compiled contract with github repo
+    - compile source code to verify the posted compiled contract
+    - audit described contract validators through UI
+    - once two of above are verified then mark contract as approved 
+
+- Edit and delete permissions
+  - approved contract will not allow to update contract body 
+  (the part that use for dApp to lock and unlock transaction) and delete. 
+  This to make sure it is always available for transactions
+
+- Distribution flow
+  - users are able to get contracts as pending audit source code, functions and approval
+  - It should uses only approved contracts
+
+  */
 
 @Injectable()
 export class ContractService {
   constructor(
     @InjectModel(Contract.name) private readonly model: Model<ContractDocument>,
+    @InjectQueue('queue') private readonly QueueQueue: Queue,
   ) {}
 
   async findAll(query: MongooseQuery): Promise<RaList> {
@@ -29,11 +51,35 @@ export class ContractService {
   }
 
   async create(createContractDto: CreateContractDto): Promise<Contract> {
-    return await new this.model({
+    const result = await new this.model({
       ...createContractDto,
+      isSourceCodeVerified: false,
+      isFunctionVerified: false,
+      isApproved: false,
       createdAt: new Date(),
-      code: createContractDto.cborhex,
     }).save();
+
+    createContractDto.ContractType === ContractType.Aiken
+      ? this.QueueQueue.add('compiledAiken', {
+          name: createContractDto.name,
+          contract: createContractDto.contract,
+          gitRepo: createContractDto.gitRepo,
+        })
+      : createContractDto.ContractType === ContractType.Plutus
+      ? this.QueueQueue.add('compiledPlutus', {
+          name: createContractDto.name,
+          contract: createContractDto.contract,
+          gitRepo: createContractDto.gitRepo,
+        })
+      : createContractDto.ContractType === ContractType.Marlowe
+      ? this.QueueQueue.add('compiledPlutus', {
+          name: createContractDto.name,
+          contract: createContractDto.contract,
+          gitRepo: createContractDto.gitRepo,
+        })
+      : null;
+
+    return result;
   }
 
   async update(
@@ -46,6 +92,43 @@ export class ContractService {
       throw new BadRequestException(
         'This is not your contract, the action is not allowed',
       );
+
+    //not to update approved contract body
+    if (contract.isApproved) {
+      return await this.model
+        .findByIdAndUpdate(id, {
+          ...updateContractDto,
+          contract: contract.contract,
+        })
+        .exec();
+    }
+
+    //if contract body change, require re-compile, validate source code & functions
+    if (contract.contract !== updateContractDto.contract) {
+      updateContractDto.ContractType === ContractType.Aiken
+        ? this.QueueQueue.add('compiledAiken', {
+            name: updateContractDto.name || contract.name,
+            contract: updateContractDto.contract,
+            gitRepo: updateContractDto.gitRepo || contract.gitRepo,
+          })
+        : updateContractDto.ContractType === ContractType.Plutus
+        ? this.QueueQueue.add('compiledPlutus', {
+            name: updateContractDto.name,
+            contract: updateContractDto.contract,
+            gitRepo: updateContractDto.gitRepo || contract.gitRepo,
+          })
+        : updateContractDto.ContractType === ContractType.Marlowe
+        ? this.QueueQueue.add('compiledPlutus', {
+            name: updateContractDto.name,
+            contract: updateContractDto.contract,
+            gitRepo: updateContractDto.gitRepo || contract.gitRepo,
+          })
+        : null;
+
+      updateContractDto.isFunctionVerified = false;
+      updateContractDto.isSourceCodeVerified = false;
+    }
+
     return await this.model.findByIdAndUpdate(id, updateContractDto).exec();
   }
 
@@ -54,6 +137,10 @@ export class ContractService {
     if (contract.author !== userId)
       throw new BadRequestException(
         'This is not your contract, the action is not allowed',
+      );
+    if (contract.isApproved)
+      throw new BadRequestException(
+        'This contract is already in use, the action is not allowed',
       );
     return await this.model.findByIdAndDelete(id).exec();
   }

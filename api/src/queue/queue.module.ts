@@ -19,5 +19,6 @@ import { PlutusTxModule } from '../plutustx/module';
   ],
   controllers: [QueueController],
   providers: [QueueProcessor],
+  exports: [BullModule],
 })
 export class QueueModule {}

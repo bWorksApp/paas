@@ -1,12 +1,19 @@
+import {
+  MarloweSmartContract,
+  PlutusSmartContract,
+  AikenSmartContract,
+  ContractType,
+} from '../../flatworks/types/types';
+
 export class BaseContractDto {
   name: string;
-  address: string;
-  cborhex: string;
-  code: string;
-  description: string;
-  isApproved: boolean;
+  contract: MarloweSmartContract | PlutusSmartContract | AikenSmartContract;
   author: string;
-  language: string;
-  submittedUsers: number;
+  gitRepo: string;
+  ContractType: ContractType;
+  isSourceCodeVerified: boolean;
+  isFunctionVerified: boolean;
+  isApproved: boolean;
   version: string;
+  description: string;
 }

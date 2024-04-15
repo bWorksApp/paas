@@ -31,6 +31,7 @@ export class ContractController {
       : null; */
     delete mongooseQuery.filter.queryType;
     const result = await this.service.findAll(mongooseQuery);
+
     return formatRaList(res, result);
   }
 
