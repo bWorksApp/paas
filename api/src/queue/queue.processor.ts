@@ -7,9 +7,8 @@ import {
 import { Logger } from '@nestjs/common';
 import { Job } from 'bull';
 import { exec } from 'child_process';
-import { AccountLanguagesForUser } from '../flatworks/utils/github';
-import { ScamFilter } from '../flatworks/utils/filter.scammer';
 import { PlutusTxService } from '../plutustx/service';
+import { v4 as uuidv4 } from 'uuid';
 
 @Processor('queue')
 export class QueueProcessor {
@@ -32,16 +31,6 @@ export class QueueProcessor {
     );
   }
 
-  @Process('scamFilter')
-  scamFilter(job: Job) {
-    ScamFilter(job.data.userId);
-  }
-
-  @Process('analyzeGit')
-  analyzeGit(job: Job) {
-    AccountLanguagesForUser(job.data.key, job.data.userId);
-  }
-
   @Process('execShell')
   execShell(job: Job) {
     const arg = '-1';
@@ -56,43 +45,60 @@ export class QueueProcessor {
     });
   }
 
-  @Process('compileMarlowe')
-  compileMarlowe(job: Job) {
-    const arg = `Compiling marlowe smart contractId ${job.data.name} ...`;
-    exec(`echo ${arg}`, (err, stdout, stderr) => {
-      if (err) {
-        console.error(err, job);
-      } else {
-        console.log(`job: ${job.data.contractId}`);
-        console.log(`stdout: ${stdout}`);
-      }
-    });
+  /*
+  sample contract plutus source code repo object: 
+  {name: "always success",
+   gitRepo: {
+      gitRepo: 'https://github.com/IntersectMBO/plutus-apps',
+     sourceCodeFolder: 'plutus-example',
+     buildCommand: 'cabal run plutus-example',
+     plutusOutputFile: 'generated-plutus-scripts/v1/always-succeeds-spending.plutus'
   }
+  ...
+}
+  */
 
-  @Process('compileAiken')
-  compileAiken(job: Job) {
-    const arg = `Compiling Aiken smart contractId ${job.data.name} ...`;
-    exec(`echo ${arg}`, (err, stdout, stderr) => {
-      if (err) {
-        console.error(err, job);
-      } else {
-        console.log(`stdout: ${stdout}`);
-        console.log(`stderr: ${stderr}`);
-      }
-    });
-  }
+  @Process('compileContract')
+  compileContract(job: Job) {
+    const folder = process.env.SHELL_SCRIPTS_PATH;
+    const buildFolder = uuidv4();
 
-  @Process('compilePlutus')
-  compilePlutus(job: Job) {
-    const arg = `Compiling plutus smart contractId ${job.data.name} ...`;
-    exec(`echo ${arg}`, (err, stdout, stderr) => {
-      if (err) {
-        console.error(err, job);
-      } else {
-        console.log(`stdout: ${stdout}`);
-        console.log(`stderr: ${stderr}`);
-      }
-    });
+    /*  const gitRepo = 'https://github.com/IntersectMBO/plutus-apps';
+    const sourceCodeFolder = 'plutus-example';
+    //pass string with space as single argument to shell script '"string with space"'
+    const buildCommand = '"cabal run plutus-example"';
+    const plutusOutputFile =
+      'generated-plutus-scripts/v1/always-succeeds-spending.plutus'; */
+
+    //just to test
+    job.data.gitRepo = {
+      gitRepo: 'https://github.com/IntersectMBO/plutus-apps',
+      sourceCodeFolder: 'plutus-example',
+      buildCommand: 'cabal run plutus-example',
+      plutusOutputFile:
+        'generated-plutus-scripts/v1/always-succeeds-spending.plutus',
+    };
+    const gitRepo = job.data.gitRepo.gitRepo;
+    const sourceCodeFolder = job.data.gitRepo.sourceCodeFolder;
+    //pass string with space as single argument to shell script '"string with space"'
+    const buildCommand = job.data.gitRepo.buildCommand;
+    const plutusOutputFile = job.data.gitRepo.plutusOutputFile;
+    exec(
+      `zsh ${folder}/compilePlutus.sh ${gitRepo} ${buildFolder} ${sourceCodeFolder} ${buildCommand} ${plutusOutputFile}`,
+      (err, stdout, stderr) => {
+        //if job fail
+        if (err) {
+          console.error('shell script error:', err, job);
+        }
+        //if shell script failed
+        if (stderr) {
+          console.log(`compile failed with stderr: ${stderr}`);
+        } else {
+          //compiled succeed
+          console.log(`compiled succeed with stdout: ${stdout}`);
+        }
+      },
+    );
   }
 
   @Process('unlock')

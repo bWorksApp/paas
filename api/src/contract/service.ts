@@ -51,7 +51,7 @@ export class ContractService {
   }
 
   async create(createContractDto: CreateContractDto): Promise<Contract> {
-    const result = await new this.model({
+    const contract = await new this.model({
       ...createContractDto,
       isSourceCodeVerified: false,
       isFunctionVerified: false,
@@ -59,27 +59,11 @@ export class ContractService {
       createdAt: new Date(),
     }).save();
 
-    createContractDto.ContractType === ContractType.Aiken
-      ? this.QueueQueue.add('compiledAiken', {
-          name: createContractDto.name,
-          contract: createContractDto.contract,
-          gitRepo: createContractDto.gitRepo,
-        })
-      : createContractDto.ContractType === ContractType.Plutus
-      ? this.QueueQueue.add('compiledPlutus', {
-          name: createContractDto.name,
-          contract: createContractDto.contract,
-          gitRepo: createContractDto.gitRepo,
-        })
-      : createContractDto.ContractType === ContractType.Marlowe
-      ? this.QueueQueue.add('compiledPlutus', {
-          name: createContractDto.name,
-          contract: createContractDto.contract,
-          gitRepo: createContractDto.gitRepo,
-        })
-      : null;
+    if (contract) {
+      this.QueueQueue.add('compileContract', contract);
+    }
 
-    return result;
+    return contract;
   }
 
   async update(
@@ -103,7 +87,7 @@ export class ContractService {
         .exec();
     }
 
-    //if contract body change, require re-compile, validate source code & functions
+    //if contract body is changed, require re-compile, validate source code & functions
     if (contract.contract !== updateContractDto.contract) {
       updateContractDto.ContractType === ContractType.Aiken
         ? this.QueueQueue.add('compiledAiken', {

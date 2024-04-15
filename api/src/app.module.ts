@@ -1,3 +1,4 @@
+import { TestModule } from './test/module';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserModule } from './user/user.module';
@@ -9,7 +10,6 @@ import { WalletModule } from './wallet/module';
 import { ContractModule } from './contract/module';
 import { PlutusTxModule } from './plutustx/module';
 import { QueueModule } from './queue/queue.module';
-import { BullModule } from '@nestjs/bull';
 import { AdminWalletModule } from './adminwallet/module';
 import { PublicModule } from './customapi/module';
 import { MailModule } from './mail/mail.module';
@@ -41,6 +41,7 @@ import { JwtAuthGuard } from './auth/jwt-auth.guard';
     PublicModule,
     MailModule,
     AccessTokenModule,
+    TestModule,
   ],
   providers: [
     {
