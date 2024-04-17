@@ -116,6 +116,10 @@ export class ContractService {
     return await this.model.findByIdAndUpdate(id, updateContractDto).exec();
   }
 
+  async findByIdAndUpdate(id, updateContractDto: UpdateContractDto) {
+    return await this.model.findByIdAndUpdate(id, updateContractDto).exec();
+  }
+
   async delete(id: string, userId: string): Promise<Contract> {
     const contract = await this.findOne(id);
     if (contract.author !== userId)

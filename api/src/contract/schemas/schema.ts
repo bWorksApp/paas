@@ -24,6 +24,12 @@ export class Contract {
   @Prop({ type: MongooseSchema.Types.Mixed })
   contract: MarloweSmartContract | PlutusSmartContract | AikenSmartContract;
 
+  @Prop({ type: MongooseSchema.Types.Mixed })
+  compiledContract:
+    | MarloweSmartContract
+    | PlutusSmartContract
+    | AikenSmartContract;
+
   @Prop()
   contractType: ContractType;
 

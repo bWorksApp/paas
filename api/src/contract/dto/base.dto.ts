@@ -8,6 +8,10 @@ import {
 export class BaseContractDto {
   name: string;
   contract: MarloweSmartContract | PlutusSmartContract | AikenSmartContract;
+  compiledContract:
+    | MarloweSmartContract
+    | PlutusSmartContract
+    | AikenSmartContract;
   author: string;
   gitRepo: string;
   ContractType: ContractType;

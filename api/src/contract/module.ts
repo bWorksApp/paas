@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { ContractService } from './service';
 import { ContractController } from './controller';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -12,7 +12,8 @@ import { QueueModule } from '../queue/queue.module';
     MongooseModule.forFeature([
       { name: Contract.name, schema: ContractSchema },
     ]),
-    QueueModule,
+    forwardRef(() => QueueModule),
   ],
+  exports: [ContractService],
 })
 export class ContractModule {}

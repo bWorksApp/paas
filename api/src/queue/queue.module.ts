@@ -1,8 +1,8 @@
 import { BullModule } from '@nestjs/bull';
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { QueueController } from './queue.controller';
 import { QueueProcessor } from './queue.processor';
-import { WalletModule } from '../wallet/module';
+import { ContractModule } from '../contract/module';
 import { PlutusTxModule } from '../plutustx/module';
 
 @Module({
@@ -14,7 +14,7 @@ import { PlutusTxModule } from '../plutustx/module';
         duration: 1000,
       },
     }),
-    WalletModule,
+    forwardRef(() => ContractModule),
     PlutusTxModule,
   ],
   controllers: [QueueController],

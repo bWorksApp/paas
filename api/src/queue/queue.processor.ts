@@ -9,11 +9,17 @@ import { Job } from 'bull';
 import { exec } from 'child_process';
 import { PlutusTxService } from '../plutustx/service';
 import { v4 as uuidv4 } from 'uuid';
+import { ContractService } from '../contract/service';
+import { fileToJson } from '../flatworks/utils/common';
+import { ContractType } from '../flatworks/types/types';
 
 @Processor('queue')
 export class QueueProcessor {
   private readonly logger = new Logger(QueueProcessor.name);
-  constructor(private readonly plutusTxService: PlutusTxService) {}
+  constructor(
+    private readonly plutusTxService: PlutusTxService,
+    private readonly contractService: ContractService,
+  ) {}
 
   @OnQueueActive()
   onActive(job: Job) {
@@ -63,42 +69,108 @@ export class QueueProcessor {
     const folder = process.env.SHELL_SCRIPTS_PATH;
     const buildFolder = uuidv4();
 
-    /*  const gitRepo = 'https://github.com/IntersectMBO/plutus-apps';
+    if (job.data.contractType === ContractType.Plutus) {
+      /*  const gitRepo = 'https://github.com/IntersectMBO/plutus-apps';
     const sourceCodeFolder = 'plutus-example';
     //pass string with space as single argument to shell script '"string with space"'
     const buildCommand = '"cabal run plutus-example"';
     const plutusOutputFile =
       'generated-plutus-scripts/v1/always-succeeds-spending.plutus'; */
 
-    //just to test
-    job.data.gitRepo = {
-      gitRepo: 'https://github.com/IntersectMBO/plutus-apps',
-      sourceCodeFolder: 'plutus-example',
-      buildCommand: 'cabal run plutus-example',
-      plutusOutputFile:
-        'generated-plutus-scripts/v1/always-succeeds-spending.plutus',
-    };
-    const gitRepo = job.data.gitRepo.gitRepo;
-    const sourceCodeFolder = job.data.gitRepo.sourceCodeFolder;
-    //pass string with space as single argument to shell script '"string with space"'
-    const buildCommand = job.data.gitRepo.buildCommand;
-    const plutusOutputFile = job.data.gitRepo.plutusOutputFile;
-    exec(
-      `zsh ${folder}/compilePlutus.sh ${gitRepo} ${buildFolder} ${sourceCodeFolder} ${buildCommand} ${plutusOutputFile}`,
-      (err, stdout, stderr) => {
-        //if job fail
-        if (err) {
-          console.error('shell script error:', err, job);
-        }
-        //if shell script failed
-        if (stderr) {
-          console.log(`compile failed with stderr: ${stderr}`);
-        } else {
-          //compiled succeed
-          console.log(`compiled succeed with stdout: ${stdout}`);
-        }
-      },
-    );
+      //just to test
+      job.data.gitRepo = {
+        gitRepo: 'https://github.com/IntersectMBO/plutus-apps',
+        sourceCodeFolder: 'plutus-example',
+        buildCommand: 'cabal run plutus-example',
+        plutusOutputFile:
+          'generated-plutus-scripts/v1/always-succeeds-spending.plutus',
+      };
+      const gitRepo = job.data.gitRepo.gitRepo;
+      const sourceCodeFolder = job.data.gitRepo.sourceCodeFolder;
+      //pass string with space as single argument to shell script '"string with space"'
+      const buildCommand = "'" + job.data.gitRepo.buildCommand + "'";
+      const plutusOutputFile = job.data.gitRepo.plutusOutputFile;
+      exec(
+        `zsh ${folder}/compilePlutus.sh ${gitRepo} ${buildFolder} ${sourceCodeFolder} ${buildCommand} ${plutusOutputFile}`,
+        (err, stdout, stderr) => {
+          //if job fail
+          if (err) {
+            console.error('shell script error:', err, job);
+          }
+          //if shell script failed
+          if (stderr) {
+            console.log(`compile failed with stderr: ${stderr}`);
+          } else {
+            //if compiled succeed insert compiled object to contract
+            console.log(`compiled succeed with stdout: ${stdout}`);
+            const compiledContract = fileToJson(
+              `/tmp/${buildFolder}/${plutusOutputFile}`,
+            );
+            if (compiledContract) {
+              this.contractService.findByIdAndUpdate(job.data._id, {
+                compiledContract: compiledContract,
+                completedAt: new Date(),
+              });
+            }
+          }
+        },
+      );
+    }
+
+    if (job.data.contractType === ContractType.Aiken) {
+      exec(
+        `zsh ${folder}/compileAiken.sh ${job.data.gitRepo} ${buildFolder}`,
+        (err, stdout, stderr) => {
+          //if job fail
+          if (err) {
+            console.error('shell script error:', err, job);
+          }
+          //if shell script failed
+          if (stderr) {
+            console.log(`compile failed with stderr: ${stderr}`);
+          } else {
+            //if compiled succeed insert compiled object to contract
+            console.log(`compiled succeed with stdout: ${stdout}`);
+            const compiledContract = fileToJson(
+              `/tmp/${buildFolder}/repo/plutus.json`,
+            );
+            if (compiledContract) {
+              this.contractService.findByIdAndUpdate(job.data._id, {
+                compiledContract: compiledContract,
+                completedAt: new Date(),
+              });
+            }
+          }
+        },
+      );
+    }
+    if (job.data.contractType === ContractType.Marlowe) {
+      exec(
+        `zsh ${folder}/compileMarlowe.sh ${job.data.gitRepo} ${buildFolder}`,
+        (err, stdout, stderr) => {
+          //if job fail
+          if (err) {
+            console.error('shell script error:', err, job);
+          }
+          //if shell script failed
+          if (stderr) {
+            console.log(`compile failed with stderr: ${stderr}`);
+          } else {
+            //if compiled succeed insert compiled object to contract
+            console.log(`compiled succeed with stdout: ${stdout}`);
+            const compiledContract = fileToJson(
+              `/tmp/${buildFolder}/repo/contract.json`,
+            );
+            if (compiledContract) {
+              this.contractService.findByIdAndUpdate(job.data._id, {
+                compiledContract: compiledContract,
+                completedAt: new Date(),
+              });
+            }
+          }
+        },
+      );
+    }
   }
 
   @Process('unlock')

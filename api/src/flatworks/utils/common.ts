@@ -1,3 +1,5 @@
+import fs from 'fs';
+
 const validateEmail = (email) => {
   const regExp = /\S+@\S+\.\S+/;
   return regExp.test(email);
@@ -38,6 +40,16 @@ const startEndWhiteSpace = (fullName) => {
   return regex.test(fullName);
 };
 
+const fileToJson = (file) => {
+  let result;
+  try {
+    result = JSON.parse(fs.readFileSync(file, 'utf8'));
+  } catch (e) {
+    console.log(`parse ${file} error`);
+  }
+  return result;
+};
+
 export {
   validateEmail,
   validatePassword,
@@ -46,4 +58,5 @@ export {
   trimFullName,
   anyWhiteSpace,
   startEndWhiteSpace,
+  fileToJson,
 };

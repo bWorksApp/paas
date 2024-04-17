@@ -1,4 +1,4 @@
-import { Module, Global, forwardRef } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LocalStrategy } from './local.strategy';
 import { UserModule } from '../user/user.module';
