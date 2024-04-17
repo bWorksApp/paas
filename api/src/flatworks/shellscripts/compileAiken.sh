@@ -1,8 +1,8 @@
 #!/bin/zsh
 
-# Đảm bảo đã download aiken và copy vào /usr/bin trong server Linux
-# zsh convertAiken.sh https://github.com/jackchuong/test-smart-contract aiken-hello-world
-# tìm kết quả trong /tmp/aiken_temp.XXXXXX
+# make sure aiken is available at /usr/bin
+# zsh convertAiken.sh https://github.com/jackchuong/test-smart-contract build_dir
+# result file: /tmp/build_dir/repo/plutus.json
 
 # Kiểm tra xem đã nhập đủ tham số chưa
 if [ "$#" -ne 2 ]; then
@@ -12,17 +12,16 @@ fi
 
 # Lấy tham số dòng lệnh
 repo_url=$1
-aiken_project_path=$2
 
 # Tạo thư mục tạm trong /tmp
-temp_dir=$(mktemp -d "/tmp/aiken_temp.XXXXXX")
-cd "$temp_dir" || exit
+temp_dir=/tmp/${build_dir}
+cd ${temp_dir} || exit
 
 # Clone repo từ GitHub
-git clone "$repo_url" repo || { echo "Failed to clone repository."; exit 1; }
+git clone ${repo_url} repo || { echo "Failed to clone repository."; exit 1; }
 
 # Di chuyển vào thư mục aiken project
-cd "repo/$aiken_project_path" || { echo "Failed to change directory to $aiken_project_path"; exit 1; }
+cd repo || { echo "Failed to clone aiken repo"; exit 1; }
 
 # Kiểm tra xem có lệnh aiken không
 if ! command -v aiken &> /dev/null; then

@@ -1,8 +1,8 @@
 #!/bin/zsh
 
 # Đảm bảo đã download marlowe-cli và copy vào /usr/bin trong server Linux
-# convertMarlowe.sh git@github.com:jackchuong/test-smart-contract.git contract.marlowe
-# tìm kết quả trong /tmp/marlowe_temp.XXXXXX
+# convertMarlowe.sh https://github.com:jackchuong/test-smart-contract.git contract.marlowe buidl_dir
+# tìm kết quả trong /tmp/build_dir/repo/contract.json
 
 # Kiểm tra xem đã nhập đủ tham số chưa
 if [ "$#" -ne 2 ]; then
@@ -13,25 +13,25 @@ fi
 # Lấy tham số dòng lệnh
 repo_url=$1
 marlowe_file_path=$2
+buidl_dir=$3
 
-# Tạo thư mục tạm để clone repo
-temp_dir=$(mktemp -d "/tmp/marlowe_temp.XXXXXX")
-cd "$temp_dir" || exit
+
+cd /tmp/${buidl_dir} || exit
 
 # Clone repo từ GitHub
-git clone "$repo_url" repo || { echo "Failed to clone repository."; exit 1; }
+git clone "${repo_url}" repo || { echo "Failed to clone repository."; exit 1; }
 
 # Di chuyển vào thư mục repo
 cd repo || exit
 
 # Kiểm tra xem contract.marlowe có tồn tại không
-if [ ! -f "$marlowe_file_path" ]; then
-	    echo "File $marlowe_file_path not found in repository."
+if [ ! -f "${marlowe_file_path}" ]; then
+	    echo "File ${marlowe_file_path} not found in repository."
 	        exit 1
 fi
 
 # Chạy lệnh marlowe-cli để chuyển đổi contract.marlowe thành contract.json
-marlowe-cli format --in-file "$marlowe_file_path" --out-file contract.json
+marlowe-cli format --in-file "${marlowe_file_path}" --out-file contract.json
 
 # Kiểm tra xem lệnh đã thực hiện thành công hay không
 if [ $? -eq 0 ]; then
