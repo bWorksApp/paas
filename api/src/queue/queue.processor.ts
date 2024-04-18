@@ -58,7 +58,7 @@ export class QueueProcessor {
       gitRepo: 'https://github.com/IntersectMBO/plutus-apps',
      sourceCodeFolder: 'plutus-example',
      buildCommand: 'cabal run plutus-example',
-     plutusOutputFile: 'generated-plutus-scripts/v1/always-succeeds-spending.plutus'
+     outputJsonFile: 'generated-plutus-scripts/v1/always-succeeds-spending.plutus'
   }
   ...
 }
@@ -69,12 +69,29 @@ export class QueueProcessor {
     const folder = process.env.SHELL_SCRIPTS_PATH;
     const buildFolder = uuidv4();
 
+    /*  if (!job.data.gitRepo || !job.data.gitRepo.gitRepo) {
+      console.log('Invalid source code repo');
+      return;
+
+     
+
+    } */
+    if (
+      job.data.contractType !== ContractType.Aiken &&
+      job.data.contractType !== ContractType.Marlowe &&
+      job.data.contractType !== ContractType.Plutus
+    ) {
+      console.log('Invalid contract type, must be aiken, plutus, marlowe');
+      console.log(job.data.contractType);
+      return;
+    }
+
     if (job.data.contractType === ContractType.Plutus) {
       /*  const gitRepo = 'https://github.com/IntersectMBO/plutus-apps';
     const sourceCodeFolder = 'plutus-example';
     //pass string with space as single argument to shell script '"string with space"'
     const buildCommand = '"cabal run plutus-example"';
-    const plutusOutputFile =
+    const outputJsonFile =
       'generated-plutus-scripts/v1/always-succeeds-spending.plutus'; */
 
       //just to test
@@ -82,16 +99,16 @@ export class QueueProcessor {
         gitRepo: 'https://github.com/IntersectMBO/plutus-apps',
         sourceCodeFolder: 'plutus-example',
         buildCommand: 'cabal run plutus-example',
-        plutusOutputFile:
+        outputJsonFile:
           'generated-plutus-scripts/v1/always-succeeds-spending.plutus',
       };
       const gitRepo = job.data.gitRepo.gitRepo;
       const sourceCodeFolder = job.data.gitRepo.sourceCodeFolder;
       //pass string with space as single argument to shell script '"string with space"'
       const buildCommand = "'" + job.data.gitRepo.buildCommand + "'";
-      const plutusOutputFile = job.data.gitRepo.plutusOutputFile;
+      const outputJsonFile = job.data.gitRepo.outputJsonFile;
       exec(
-        `zsh ${folder}/compilePlutus.sh ${gitRepo} ${buildFolder} ${sourceCodeFolder} ${buildCommand} ${plutusOutputFile}`,
+        `zsh ${folder}/compilePlutus.sh ${gitRepo} ${buildFolder} ${sourceCodeFolder} ${buildCommand} ${outputJsonFile}`,
         (err, stdout, stderr) => {
           //if job fail
           if (err) {
@@ -104,7 +121,7 @@ export class QueueProcessor {
             //if compiled succeed insert compiled object to contract
             console.log(`compiled succeed with stdout: ${stdout}`);
             const compiledContract = fileToJson(
-              `/tmp/${buildFolder}/${plutusOutputFile}`,
+              `/tmp/${buildFolder}/repo/${sourceCodeFolder}/${outputJsonFile}`,
             );
             if (compiledContract) {
               this.contractService.findByIdAndUpdate(job.data._id, {
@@ -118,8 +135,22 @@ export class QueueProcessor {
     }
 
     if (job.data.contractType === ContractType.Aiken) {
+      //just to test
+      job.data.gitRepo = {
+        gitRepo: 'https://github.com/aiken-lang/aiken',
+        sourceCodeFolder: 'examples/hello_world',
+        buildCommand: 'aiken build',
+        outputJsonFile: 'plutus.json',
+      };
+      const gitRepo = job.data.gitRepo.gitRepo;
+      const sourceCodeFolder = job.data.gitRepo.sourceCodeFolder;
+      //pass string with space as single argument to shell script '"string with space"'
+      const buildCommand =
+        "'" + job.data.gitRepo.buildCommand + "'" || '"aiken build"';
+      const outputJsonFile = job.data.gitRepo.outputJsonFile || 'plutus.json';
+
       exec(
-        `zsh ${folder}/compileAiken.sh ${job.data.gitRepo} ${buildFolder}`,
+        `zsh ${folder}/compileAiken.sh ${gitRepo} ${sourceCodeFolder} ${buildFolder} ${buildCommand}`,
         (err, stdout, stderr) => {
           //if job fail
           if (err) {
@@ -132,7 +163,7 @@ export class QueueProcessor {
             //if compiled succeed insert compiled object to contract
             console.log(`compiled succeed with stdout: ${stdout}`);
             const compiledContract = fileToJson(
-              `/tmp/${buildFolder}/repo/plutus.json`,
+              `/tmp/${buildFolder}/repo/${sourceCodeFolder}/${outputJsonFile}`,
             );
             if (compiledContract) {
               this.contractService.findByIdAndUpdate(job.data._id, {
@@ -145,8 +176,18 @@ export class QueueProcessor {
       );
     }
     if (job.data.contractType === ContractType.Marlowe) {
+      //just to test
+      job.data.gitRepo = {
+        gitRepo: 'https://github.com/jackchuong/test-smart-contract',
+        sourceCodeFolder: 'contract.marlowe',
+        buildCommand: '',
+        outputJsonFile: '',
+      };
+      const gitRepo = job.data.gitRepo.gitRepo;
+      const sourceCodeFolder = job.data.gitRepo.sourceCodeFolder || '.';
+
       exec(
-        `zsh ${folder}/compileMarlowe.sh ${job.data.gitRepo} ${buildFolder}`,
+        `zsh ${folder}/compileMarlowe.sh ${gitRepo} ${sourceCodeFolder} ${buildFolder}`,
         (err, stdout, stderr) => {
           //if job fail
           if (err) {

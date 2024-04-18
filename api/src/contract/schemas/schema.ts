@@ -6,6 +6,7 @@ import {
   PlutusSmartContract,
   AikenSmartContract,
   ContractType,
+  ContractRepo,
 } from '../../flatworks/types/types';
 import { Schema as MongooseSchema } from 'mongoose';
 export type ContractDocument = Contract & Document;
@@ -33,8 +34,8 @@ export class Contract {
   @Prop()
   contractType: ContractType;
 
-  @Prop()
-  gitRepo: string;
+  @Prop({ type: MongooseSchema.Types.Mixed })
+  gitRepo: ContractRepo;
 
   @Prop({ default: false })
   isSourceCodeVerified: boolean;

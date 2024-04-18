@@ -13,6 +13,9 @@ export class Test {
   description: string;
 
   @Prop()
+  contractType: string;
+
+  @Prop()
   completedAt?: Date;
 
   @Prop()

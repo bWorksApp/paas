@@ -174,3 +174,10 @@ export enum ContractType {
   Aiken = 'aiken',
   Marlowe = 'marlowe',
 }
+
+export interface ContractRepo {
+  gitRepo: string;
+  sourceCodeFolder: string;
+  buildCommand: string;
+  outputJsonFile: string;
+}

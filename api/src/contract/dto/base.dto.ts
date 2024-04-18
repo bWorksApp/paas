@@ -3,6 +3,7 @@ import {
   PlutusSmartContract,
   AikenSmartContract,
   ContractType,
+  ContractRepo,
 } from '../../flatworks/types/types';
 
 export class BaseContractDto {
@@ -13,7 +14,7 @@ export class BaseContractDto {
     | PlutusSmartContract
     | AikenSmartContract;
   author: string;
-  gitRepo: string;
+  gitRepo: ContractRepo;
   ContractType: ContractType;
   isSourceCodeVerified: boolean;
   isFunctionVerified: boolean;

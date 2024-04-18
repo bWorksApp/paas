@@ -1,4 +1,4 @@
-import fs from 'fs';
+import * as fs from 'fs';
 
 const validateEmail = (email) => {
   const regExp = /\S+@\S+\.\S+/;
@@ -45,7 +45,7 @@ const fileToJson = (file) => {
   try {
     result = JSON.parse(fs.readFileSync(file, 'utf8'));
   } catch (e) {
-    console.log(`parse ${file} error`);
+    console.log(`parse ${file} error`, e);
   }
   return result;
 };
