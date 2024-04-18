@@ -40,7 +40,7 @@ ENV NODE_OPTIONS=--max_old_space_size=8192
 WORKDIR /app
 COPY ./ ./
 
-RUN yarn workspace api add cardano-addresses
+#RUN yarn workspace api add cardano-addresses
 RUN yarn
 RUN yarn build-api
 
