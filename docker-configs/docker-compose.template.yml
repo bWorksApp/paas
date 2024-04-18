@@ -16,7 +16,8 @@ services:
       - paasnet
 
   nginx:
-    image: FRONTEND_MAINNET_TAG
+    #image: FRONTEND_MAINNET_TAG
+    image: nginx
     container_name: nginx
     ports:
       - 80:80
