@@ -9,7 +9,7 @@ services:
       - backend
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: 123456
+      MONGO_INITDB_ROOT_PASSWORD: xxxxxx
     volumes:
       - ./mongo:/data/db
 
