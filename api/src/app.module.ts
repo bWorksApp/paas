@@ -19,6 +19,7 @@ import { AccessTokenModule } from './accesstoken/module';
 import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './flatworks/roles/roles.guard';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
+import { BullModule } from '@nestjs/bull';
 
 @Module({
   imports: [
@@ -27,6 +28,12 @@ import { JwtAuthGuard } from './auth/jwt-auth.guard';
     }),
     ConfigModule.forRoot({
       isGlobal: true,
+    }),
+    BullModule.forRoot({
+      redis: {
+        host: process.env.REDIS_HOST,
+        port: 6379,
+      },
     }),
     MongooseModule.forRoot(process.env.CONNECTION_STRING),
     UserModule,
