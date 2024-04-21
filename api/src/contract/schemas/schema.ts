@@ -59,4 +59,20 @@ export class Contract {
 const ContractSchema = SchemaFactory.createForClass(Contract);
 ContractSchema.plugin(uniqueValidator);
 
+ContractSchema.index(
+  {
+    name: 'text',
+    description: 'text',
+    contractType: 'text',
+  },
+  {
+    weights: {
+      name: 1,
+      description: 1,
+      contractType: 1,
+    },
+    name: 'textIndex',
+  },
+);
+
 export { ContractSchema };

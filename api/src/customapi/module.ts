@@ -13,6 +13,8 @@ import {
 import { Campaign, CampaignSchema } from './schemas/campaign.schema';
 import { UserModule } from '../user/user.module';
 import { CustomController } from './custom.controller';
+import { ContractModule } from '../contract/module';
+
 //apis for homepage & other public requests
 @Module({
   providers: [PublicService, SearchService],
@@ -25,6 +27,7 @@ import { CustomController } from './custom.controller';
     SkillModule,
     PlutusTxModule,
     UserModule,
+    ContractModule,
   ],
   exports: [PublicService, SearchService],
 })

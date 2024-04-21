@@ -67,4 +67,22 @@ export class PlutusTx {
 const PlutusTxSchema = SchemaFactory.createForClass(PlutusTx);
 PlutusTxSchema.plugin(uniqueValidator);
 
+PlutusTxSchema.index(
+  {
+    name: 'text',
+    lockedTxHash: 'text',
+    scriptAddress: 'text',
+    unlockedTxHash: 'text',
+  },
+  {
+    weights: {
+      name: 1,
+      lockedTxHash: 1,
+      scriptAddress: 1,
+      unlockedTxHash: 1,
+    },
+    name: 'textIndex',
+  },
+);
+
 export { PlutusTxSchema };
