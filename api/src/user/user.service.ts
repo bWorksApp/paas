@@ -14,6 +14,7 @@ import {
 } from '../flatworks/utils/common';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { UserWalletRegisterDto } from '../user/dto/wallet-user-register.dto';
+import { sumUsers } from '../flatworks/dbcripts/aggregate.scripts';
 
 @Injectable()
 export class UserService {
@@ -207,5 +208,14 @@ cms services
       .exec();
 
     return { count: count, data: data };
+  }
+
+  async sumUsers(): Promise<any> {
+    const result = await this.model.aggregate(sumUsers);
+    if (result && result.length) {
+      return result[0];
+    }
+
+    return {};
   }
 }
