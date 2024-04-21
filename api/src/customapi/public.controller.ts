@@ -17,7 +17,9 @@ import { CreateCampaignDto } from './dto/create.campaign.dto';
 import { UpdateCampaignDto } from './dto/update.campaign.dto';
 import { PlutusTxService } from '../plutustx/service';
 import * as moment from 'moment';
+import { Public } from '../flatworks/roles/public.api.decorator';
 
+@Public()
 @Controller('public')
 export class PublicController {
   constructor(
@@ -38,7 +40,7 @@ export class PublicController {
     const result = await this.plutusTxService.getPlutusDashboard();
     return res.json(result);
   }
-  
+
   //homepage queries
   @Get('tokenreceivers')
   async indexTokenReceiver(@Response() res: any, @Query() query) {

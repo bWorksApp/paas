@@ -67,107 +67,6 @@ const plutusDashboardScript = (fromDate: Date, toDate: Date) => {
   return script;
 };
 
-const jobDashboardScript = (fromDate: Date, toDate: Date) => {
-  const script = [
-    {
-      $match: {
-        $and: [
-          { createdAt: { $gte: fromDate } },
-          { createdAt: { $lte: toDate } },
-        ],
-      },
-    },
-    {
-      $project: {
-        idAsString: { $toString: '$_id' },
-        _id: 1,
-        createdAt: 1,
-      },
-    },
-    {
-      $lookup: {
-        from: 'jobbids',
-        localField: 'idAsString',
-        foreignField: 'jobId',
-        as: 'jobBids',
-      },
-    },
-    {
-      $unwind: { path: '$jobBids', preserveNullAndEmptyArrays: true },
-    },
-    {
-      $group: {
-        _id: '$_id',
-        createdAt: { $first: '$createdAt' },
-
-        numberOfBids: {
-          $sum: {
-            $cond: [{ $eq: [{ $type: '$jobBids' }, 'missing'] }, 0, 1],
-          },
-        },
-        numberOfSelectedBids: {
-          $sum: {
-            $cond: {
-              if: '$jobBids.isSelected',
-              then: 1,
-              else: 0,
-            },
-          },
-        },
-        totalBidsAmount: {
-          $sum: '$jobBids.bidValue',
-        },
-        selectedBidsAmount: {
-          $sum: {
-            $cond: {
-              if: '$jobBids.isSelected',
-              then: '$jobBids.bidValue',
-              else: 0,
-            },
-          },
-        },
-        numberOfCompletedJobs: {
-          $sum: {
-            $cond: {
-              if: '$jobBids.isCompleted',
-              then: 1,
-              else: 0,
-            },
-          },
-        },
-        numberOfPaidJobs: {
-          $sum: {
-            $cond: {
-              if: '$jobBids.isPaid',
-              then: 1,
-              else: 0,
-            },
-          },
-        },
-      },
-    },
-    {
-      $group: {
-        _id: {
-          $concat: [
-            { $toString: { $month: '$createdAt' } },
-            '-',
-            { $toString: { $year: '$createdAt' } },
-          ],
-        },
-        date: { $first: '$createdAt' },
-        numberOfPostedJobs: { $sum: 1 },
-        numberOfBids: { $sum: '$numberOfBids' },
-        sumBidsAmounts: { $sum: '$totalBidsAmount' },
-        numberOfPaidJobs: { $sum: '$numberOfPaidJobs' },
-        numberOfCompletedJobs: { $sum: '$numberOfPaidJobs' },
-        numberOfSelectedBids: { $sum: '$numberOfSelectedBids' },
-      },
-    },
-  ];
-  return script;
-};
-
 const plutusScript = (queryType, userId) => {
   const match =
     queryType === 'emp'
@@ -241,265 +140,6 @@ const plutusScript = (queryType, userId) => {
         numberOfLockTxs: { $sum: '$numberOfLockTxs' },
         sumUnlockedAmounts: { $sum: '$sumUnlockedAmounts' },
         numberOfUnlockedTxs: { $sum: '$numberOfUnlockedTxs' },
-      },
-    },
-  ];
-  return script;
-};
-
-const jobScript = (queryType, userId) => {
-  const filter =
-    queryType === 'emp'
-      ? { $eq: ['$$jobBid.employerId', userId] }
-      : queryType === 'jsk'
-      ? { $eq: ['$$jobBid.jobSeekerId', userId] }
-      : {};
-
-  const preserveNullAndEmptyArrays =
-    queryType === 'emp' ? false : queryType === 'jsk' ? false : true;
-  const script = [
-    {
-      $project: {
-        idAsString: { $toString: '$_id' },
-        _id: 1,
-        createdAt: 1,
-      },
-    },
-    {
-      $lookup: {
-        from: 'jobbids',
-        localField: 'idAsString',
-        foreignField: 'jobId',
-        as: 'jobBids',
-      },
-    },
-    {
-      $project: {
-        idAsString: 1,
-        _id: 1,
-        createdAt: 1,
-        jobBids: {
-          $filter: {
-            input: '$jobBids',
-            as: 'jobBid',
-            cond: filter,
-          },
-        },
-      },
-    },
-    {
-      $unwind: {
-        path: '$jobBids',
-        preserveNullAndEmptyArrays: preserveNullAndEmptyArrays,
-      },
-    },
-    {
-      $group: {
-        _id: '$_id',
-        createdAt: { $first: '$createdAt' },
-
-        numberOfBids: {
-          $sum: {
-            $cond: [{ $eq: [{ $type: '$jobBids' }, 'missing'] }, 0, 1],
-          },
-        },
-        numberOfSelectedBids: {
-          $sum: {
-            $cond: {
-              if: '$jobBids.isSelected',
-              then: 1,
-              else: 0,
-            },
-          },
-        },
-        totalBidsAmount: {
-          $sum: '$jobBids.bidValue',
-        },
-        selectedBidsAmount: {
-          $sum: {
-            $cond: {
-              if: '$jobBids.isSelected',
-              then: '$jobBids.bidValue',
-              else: 0,
-            },
-          },
-        },
-        numberOfCompletedJobs: {
-          $sum: {
-            $cond: {
-              if: '$jobBids.isCompleted',
-              then: 1,
-              else: 0,
-            },
-          },
-        },
-        numberOfPaidJobs: {
-          $sum: {
-            $cond: {
-              if: '$jobBids.isPaid',
-              then: 1,
-              else: 0,
-            },
-          },
-        },
-      },
-    },
-    {
-      $group: {
-        _id: {
-          $concat: [
-            { $toString: { $month: '$createdAt' } },
-            '-',
-            { $toString: { $year: '$createdAt' } },
-          ],
-        },
-        date: { $first: '$createdAt' },
-        numberOfPostedJobs: { $sum: 1 },
-        numberOfBids: { $sum: '$numberOfBids' },
-        sumBidsAmounts: { $sum: '$totalBidsAmount' },
-        numberOfPaidJobs: { $sum: '$numberOfPaidJobs' },
-        numberOfCompletedJobs: { $sum: '$numberOfPaidJobs' },
-        numberOfSelectedBids: { $sum: '$numberOfSelectedBids' },
-      },
-    },
-    //sum all records to return single document
-    {
-      $group: {
-        _id: 'jobReport',
-        numberOfPostedJobs: { $sum: '$numberOfPostedJobs' },
-        numberOfBids: { $sum: '$numberOfBids' },
-        sumBidsAmounts: { $sum: '$sumBidsAmounts' },
-        numberOfPaidJobs: { $sum: '$numberOfPaidJobs' },
-        numberOfCompletedJobs: { $sum: '$numberOfPaidJobs' },
-        numberOfSelectedBids: { $sum: '$numberOfSelectedBids' },
-      },
-    },
-  ];
-  return script;
-};
-
-//get last year posted jobs
-const jobMonthlyScript = (queryType, userId, fromDate, toDate) => {
-  const filter =
-    queryType === 'emp'
-      ? { $eq: ['$$jobBid.employerId', userId] }
-      : queryType === 'jsk'
-      ? { $eq: ['$$jobBid.jobSeekerId', userId] }
-      : {};
-
-  const preserveNullAndEmptyArrays =
-    queryType === 'emp' ? false : queryType === 'jsk' ? false : true;
-  const script = [
-    {
-      $match: {
-        $and: [
-          { createdAt: { $gte: fromDate } },
-          { createdAt: { $lte: toDate } },
-        ],
-      },
-    },
-    {
-      $project: {
-        idAsString: { $toString: '$_id' },
-        _id: 1,
-        createdAt: 1,
-      },
-    },
-    {
-      $lookup: {
-        from: 'jobbids',
-        localField: 'idAsString',
-        foreignField: 'jobId',
-        as: 'jobBids',
-      },
-    },
-    {
-      $project: {
-        idAsString: 1,
-        _id: 1,
-        createdAt: 1,
-        jobBids: {
-          $filter: {
-            input: '$jobBids',
-            as: 'jobBid',
-            cond: filter,
-          },
-        },
-      },
-    },
-    {
-      $unwind: {
-        path: '$jobBids',
-        preserveNullAndEmptyArrays: preserveNullAndEmptyArrays,
-      },
-    },
-    {
-      $group: {
-        _id: '$_id',
-        createdAt: { $first: '$createdAt' },
-
-        numberOfBids: {
-          $sum: {
-            $cond: [{ $eq: [{ $type: '$jobBids' }, 'missing'] }, 0, 1],
-          },
-        },
-        numberOfSelectedBids: {
-          $sum: {
-            $cond: {
-              if: '$jobBids.isSelected',
-              then: 1,
-              else: 0,
-            },
-          },
-        },
-        totalBidsAmount: {
-          $sum: '$jobBids.bidValue',
-        },
-        selectedBidsAmount: {
-          $sum: {
-            $cond: {
-              if: '$jobBids.isSelected',
-              then: '$jobBids.bidValue',
-              else: 0,
-            },
-          },
-        },
-        numberOfCompletedJobs: {
-          $sum: {
-            $cond: {
-              if: '$jobBids.isCompleted',
-              then: 1,
-              else: 0,
-            },
-          },
-        },
-        numberOfPaidJobs: {
-          $sum: {
-            $cond: {
-              if: '$jobBids.isPaid',
-              then: 1,
-              else: 0,
-            },
-          },
-        },
-      },
-    },
-    {
-      $group: {
-        _id: {
-          $concat: [
-            { $toString: { $month: '$createdAt' } },
-            '-',
-            { $toString: { $year: '$createdAt' } },
-          ],
-        },
-        date: { $first: '$createdAt' },
-        numberOfPostedJobs: { $sum: 1 },
-        numberOfBids: { $sum: '$numberOfBids' },
-        sumBidsAmounts: { $sum: '$totalBidsAmount' },
-        numberOfPaidJobs: { $sum: '$numberOfPaidJobs' },
-        numberOfCompletedJobs: { $sum: '$numberOfPaidJobs' },
-        numberOfSelectedBids: { $sum: '$numberOfSelectedBids' },
       },
     },
   ];
@@ -594,11 +234,35 @@ const plutusMonthlyScript = (queryType, userId, fromDate, toDate) => {
   return script;
 };
 
-export {
-  plutusDashboardScript,
-  jobDashboardScript,
-  jobScript,
-  plutusScript,
-  jobMonthlyScript,
-  plutusMonthlyScript,
-};
+/*
+sum users statistics
+{
+  "_id": "sumUsers",
+  "walletUsers": 3,
+  "emailUsers": 2,
+  "sContractDevs": 3,
+  "dAppDevs": 3
+}
+*/
+const sumUsers = [
+  {
+    $group: {
+      _id: '',
+      walletUsers: {
+        $sum: { $cond: [{ $eq: ['$authType', 'wallet'] }, 1, 0] },
+      },
+
+      emailUsers: {
+        $sum: { $cond: [{ $eq: ['$authType', 'email'] }, 1, 0] },
+      },
+      sContractDevs: {
+        $sum: { $cond: [{ $eq: ['$isSmartContractDev', true] }, 1, 0] },
+      },
+      dAppDevs: {
+        $sum: { $cond: [{ $eq: ['$isdAppDev', true] }, 1, 0] },
+      },
+    },
+  },
+];
+
+export { plutusDashboardScript, plutusScript, plutusMonthlyScript, sumUsers };
