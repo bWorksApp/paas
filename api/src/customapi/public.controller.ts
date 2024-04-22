@@ -10,14 +10,9 @@ import {
   Response,
   Query,
 } from '@nestjs/common';
-import { CreateTokenReceiverDto } from './dto/create.token-receiver.dto';
-import { UpdateTokenReceiverDto } from './dto/update.token-receiver.dto';
 import { PublicService } from './public.service';
-import { queryTransform, formatRaList } from '../flatworks/utils/getlist';
-import { CreateCampaignDto } from './dto/create.campaign.dto';
-import { UpdateCampaignDto } from './dto/update.campaign.dto';
 import { PlutusTxService } from '../plutustx/service';
-import * as moment from 'moment';
+import { ContractService } from '../contract/service';
 import { Public } from '../flatworks/roles/public.api.decorator';
 
 @Public()
@@ -27,12 +22,20 @@ export class PublicController {
     private readonly service: PublicService,
     private readonly plutusTxService: PlutusTxService,
     private readonly userService: UserService,
+    private readonly contractService: ContractService,
   ) {}
 
-  //dashboard user statistic
-  @Get('sumUsers')
+  //sum users
+  @Get('sumusers')
   async getSumUsers(@Response() res: any) {
     const result = await this.userService.sumUsers();
+    return res.json(result);
+  }
+
+  //sum contracts
+  @Get('sumcontracts')
+  async getSumContracts(@Response() res: any) {
+    const result = await this.contractService.sumContracts();
     return res.json(result);
   }
 

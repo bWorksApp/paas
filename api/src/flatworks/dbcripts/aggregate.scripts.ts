@@ -235,7 +235,7 @@ const plutusMonthlyScript = (queryType, userId, fromDate, toDate) => {
 };
 
 /*
-script output:
+db.users.aggregate(sumUsers) output:
 {
     "_id": "sumUsers",
     "walletUsers": 3,
@@ -324,4 +324,93 @@ const sumUsers = [
   },
 ];
 
-export { plutusDashboardScript, plutusScript, plutusMonthlyScript, sumUsers };
+/*
+db.contracts.aggregate(sumContracts) output:
+{
+  "_id": "sumContracts",
+  "plutusContracts": 2,
+  "aikenContracts": 4,
+  "marloweContracts": 2,
+  "isSourceCodeVerified": 12,
+  "isFunctionVerified": 12,
+  "isApproved": 12,
+  "hasSubmittedDappUsers": 1
+}
+*/
+const sumContracts = [
+  {
+    $project: {
+      idAsString: { $toString: '$_id' },
+      _id: 1,
+      contractType: 1,
+      isSourceCodeVerified: 1,
+      isFunctionVerified: 1,
+      isApproved: 1,
+    },
+  },
+  {
+    $lookup: {
+      from: 'plutustxes',
+      localField: 'idAsString',
+      foreignField: 'smartContractId',
+      as: 'dAppTxs',
+    },
+  },
+  {
+    $unwind: { path: '$dAppTxs', preserveNullAndEmptyArrays: true },
+  },
+  {
+    $group: {
+      _id: '$_id',
+
+      contractType: { $first: '$contractType' },
+      isApproved: { $first: '$isApproved' },
+
+      isSourceCodeVerified: { $first: '$isSourceCodeVerified' },
+      isFunctionVerified: { $first: '$isFunctionVerified' },
+
+      dAppTxs: {
+        $sum: {
+          $cond: [{ $eq: [{ $type: '$dAppTxs' }, 'missing'] }, 0, 1],
+        },
+      },
+    },
+  },
+
+  {
+    $group: {
+      _id: 'sumContracts',
+      plutusContracts: {
+        $sum: { $cond: [{ $eq: ['$contractType', 'plutus'] }, 1, 0] },
+      },
+      aikenContracts: {
+        $sum: { $cond: [{ $eq: ['$contractType', 'aiken'] }, 1, 0] },
+      },
+
+      marloweContracts: {
+        $sum: { $cond: [{ $eq: ['$contractType', 'marlowe'] }, 1, 0] },
+      },
+
+      isSourceCodeVerified: {
+        $sum: { $cond: [{ $eq: ['$isSourceCodeVerified', true] }, 1, 0] },
+      },
+      isFunctionVerified: {
+        $sum: { $cond: [{ $eq: ['$isFunctionVerified', true] }, 1, 0] },
+      },
+      isApproved: {
+        $sum: { $cond: [{ $eq: ['$isApproved', true] }, 1, 0] },
+      },
+      hasSubmittedDappUsers: {
+        $sum: { $cond: [{ $gt: ['$dAppTxs', 0] }, 1, 0] },
+      },
+    },
+  },
+];
+
+export {
+  plutusDashboardScript,
+  plutusScript,
+  plutusMonthlyScript,
+  sumUsers,
+  sumContracts,
+};

@@ -8,6 +8,7 @@ import { RaList, MongooseQuery } from '../flatworks/types/types';
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
 import { ContractType } from '../flatworks/types/types';
+import { sumContracts } from '../flatworks/dbcripts/aggregate.scripts';
 
 /*
 - Publish flow
@@ -89,19 +90,19 @@ export class ContractService {
 
     //if contract body is changed, require re-compile, validate source code & functions
     if (contract.contract !== updateContractDto.contract) {
-      updateContractDto.ContractType === ContractType.Aiken
+      updateContractDto.contractType === ContractType.Aiken
         ? this.QueueQueue.add('compiledAiken', {
             name: updateContractDto.name || contract.name,
             contract: updateContractDto.contract,
             gitRepo: updateContractDto.gitRepo || contract.gitRepo,
           })
-        : updateContractDto.ContractType === ContractType.Plutus
+        : updateContractDto.contractType === ContractType.Plutus
         ? this.QueueQueue.add('compiledPlutus', {
             name: updateContractDto.name,
             contract: updateContractDto.contract,
             gitRepo: updateContractDto.gitRepo || contract.gitRepo,
           })
-        : updateContractDto.ContractType === ContractType.Marlowe
+        : updateContractDto.contractType === ContractType.Marlowe
         ? this.QueueQueue.add('compiledPlutus', {
             name: updateContractDto.name,
             contract: updateContractDto.contract,
@@ -136,5 +137,14 @@ export class ContractService {
   //count for global app search
   async count(filter): Promise<any> {
     return await this.model.find(filter).count().exec();
+  }
+
+  async sumContracts(): Promise<any> {
+    const result = await this.model.aggregate(sumContracts);
+    if (result && result.length) {
+      return result[0];
+    }
+
+    return {};
   }
 }
