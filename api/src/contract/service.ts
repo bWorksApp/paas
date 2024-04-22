@@ -93,26 +93,7 @@ export class ContractService {
 
     //if contract body is changed, require re-compile, validate source code & functions
     if (contract.contract !== updateContractDto.contract) {
-      updateContractDto.contractType === ContractType.Aiken
-        ? this.QueueQueue.add('compiledAiken', {
-            name: updateContractDto.name || contract.name,
-            contract: updateContractDto.contract,
-            gitRepo: updateContractDto.gitRepo || contract.gitRepo,
-          })
-        : updateContractDto.contractType === ContractType.Plutus
-        ? this.QueueQueue.add('compiledPlutus', {
-            name: updateContractDto.name,
-            contract: updateContractDto.contract,
-            gitRepo: updateContractDto.gitRepo || contract.gitRepo,
-          })
-        : updateContractDto.contractType === ContractType.Marlowe
-        ? this.QueueQueue.add('compiledPlutus', {
-            name: updateContractDto.name,
-            contract: updateContractDto.contract,
-            gitRepo: updateContractDto.gitRepo || contract.gitRepo,
-          })
-        : null;
-
+      this.QueueQueue.add('compileContract', contract);
       updateContractDto.isFunctionVerified = false;
       updateContractDto.isSourceCodeVerified = false;
     }

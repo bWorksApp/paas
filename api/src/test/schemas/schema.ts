@@ -10,6 +10,9 @@ export class Test {
   name: string;
 
   @Prop()
+  gitRepo: any;
+
+  @Prop()
   description: string;
 
   @Prop()
