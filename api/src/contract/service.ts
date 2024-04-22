@@ -8,7 +8,10 @@ import { RaList, MongooseQuery } from '../flatworks/types/types';
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
 import { ContractType } from '../flatworks/types/types';
-import { sumContracts } from '../flatworks/dbcripts/aggregate.scripts';
+import {
+  sumContracts,
+  sumContractAndTxsByUser,
+} from '../flatworks/dbcripts/aggregate.scripts';
 
 /*
 - Publish flow
@@ -141,6 +144,16 @@ export class ContractService {
 
   async sumContracts(): Promise<any> {
     const result = await this.model.aggregate(sumContracts);
+    if (result && result.length) {
+      return result[0];
+    }
+
+    return {};
+  }
+
+  async sumContractAndTxByUser(userId: string): Promise<any> {
+    const script = sumContractAndTxsByUser(userId);
+    const result = await this.model.aggregate(script);
     if (result && result.length) {
       return result[0];
     }

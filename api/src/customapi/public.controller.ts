@@ -39,10 +39,25 @@ export class PublicController {
     return res.json(result);
   }
 
-  //dashboard apis
-  @Get('dashboardcards')
-  async getDashboardData(@Response() res: any) {
-    const result = await this.service.getDashboardData();
+  //sum dAppTxs by month
+  @Get('sumtxsbymonth')
+  async getSumTxs(@Response() res: any) {
+    const result = await this.plutusTxService.sumTxsByMonth();
+    return res.json(result);
+  }
+
+  //sum published contract and contract TXs by a user
+  @Get('sumcontractandtxbyuser')
+  async sumContractAndTxByUser(@Response() res: any) {
+    const userId = '6603d0afe9aceb37b1bb6ced';
+    const result = await this.contractService.sumContractAndTxByUser(userId);
+    return res.json(result);
+  }
+
+  @Get('sumdAppTxsByUser')
+  async sumdAppTxsByUser(@Response() res: any) {
+    const userId = '6603d0afe9aceb37b1bb6ced';
+    const result = await this.plutusTxService.sumdAppTxsByUser(userId);
     return res.json(result);
   }
 }
