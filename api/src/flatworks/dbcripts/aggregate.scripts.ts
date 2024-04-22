@@ -235,19 +235,71 @@ const plutusMonthlyScript = (queryType, userId, fromDate, toDate) => {
 };
 
 /*
-sum users statistics
+script output:
 {
-  "_id": "sumUsers",
-  "walletUsers": 3,
-  "emailUsers": 2,
-  "sContractDevs": 3,
-  "dAppDevs": 3
+    "_id": "sumUsers",
+    "walletUsers": 3,
+    "emailUsers": 2,
+    "sContractDevUsers": 3,
+    "dAppDevUsers": 3,
+    "hasPublishedContractUsers": 1,
+    "hasSubmittedDappUsers": 1
 }
 */
 const sumUsers = [
   {
+    $project: {
+      idAsString: { $toString: '$_id' },
+      _id: 1,
+      authType: 1,
+      isdAppDev: 1,
+      isSmartContractDev: 1,
+    },
+  },
+  {
+    $lookup: {
+      from: 'contracts',
+      localField: 'idAsString',
+      foreignField: 'author',
+      as: 'publishedContracts',
+    },
+  },
+  {
+    $unwind: { path: '$publishedContracts', preserveNullAndEmptyArrays: true },
+  },
+  {
+    $lookup: {
+      from: 'plutustxes',
+      localField: 'idAsString',
+      foreignField: 'lockUserId',
+      as: 'dAppTxs',
+    },
+  },
+  {
+    $unwind: { path: '$dAppTxs', preserveNullAndEmptyArrays: true },
+  },
+  {
     $group: {
-      _id: '',
+      _id: '$_id',
+      authType: { $first: '$authType' },
+      isdAppDev: { $first: '$isdAppDev' },
+      isSmartContractDev: { $first: '$isSmartContractDev' },
+      publishedContracts: {
+        $sum: {
+          $cond: [{ $eq: [{ $type: '$publishedContracts' }, 'missing'] }, 0, 1],
+        },
+      },
+      dAppTxs: {
+        $sum: {
+          $cond: [{ $eq: [{ $type: '$dAppTxs' }, 'missing'] }, 0, 1],
+        },
+      },
+    },
+  },
+
+  {
+    $group: {
+      _id: 'sumUsers',
       walletUsers: {
         $sum: { $cond: [{ $eq: ['$authType', 'wallet'] }, 1, 0] },
       },
@@ -255,11 +307,18 @@ const sumUsers = [
       emailUsers: {
         $sum: { $cond: [{ $eq: ['$authType', 'email'] }, 1, 0] },
       },
-      sContractDevs: {
+      sContractDevUsers: {
         $sum: { $cond: [{ $eq: ['$isSmartContractDev', true] }, 1, 0] },
       },
-      dAppDevs: {
+      dAppDevUsers: {
         $sum: { $cond: [{ $eq: ['$isdAppDev', true] }, 1, 0] },
+      },
+
+      hasPublishedContractUsers: {
+        $sum: { $cond: [{ $gt: ['$publishedContracts', 0] }, 1, 0] },
+      },
+      hasSubmittedDappUsers: {
+        $sum: { $cond: [{ $gt: ['$dAppTxs', 0] }, 1, 0] },
       },
     },
   },
