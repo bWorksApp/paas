@@ -4,7 +4,6 @@ import { SearchService } from './search.service';
 import { SearchController } from './search.controller';
 import { PublicController } from './public.controller';
 import { MongooseModule } from '@nestjs/mongoose';
-import { SkillModule } from '../skill/module';
 import { PlutusTxModule } from '../plutustx/module';
 import {
   TokenReceiver,
@@ -24,7 +23,6 @@ import { ContractModule } from '../contract/module';
       { name: TokenReceiver.name, schema: TokenReceiverSchema },
       { name: Campaign.name, schema: CampaignSchema },
     ]),
-    SkillModule,
     PlutusTxModule,
     UserModule,
     ContractModule,
