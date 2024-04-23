@@ -5,7 +5,6 @@ import { CreateTestDto } from './dto/create.dto';
 import { UpdateTestDto } from './dto/update.dto';
 import { Test, TestDocument } from './schemas/schema';
 import { RaList, MongooseQuery } from '../flatworks/types/types';
-import * as moment from 'moment';
 
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
@@ -39,9 +38,6 @@ export class TestService {
       createdAt: new Date(),
     }).save();
 
-    if (result) {
-      this.QueueQueue.add('compileContract', result);
-    }
     return result;
   }
 

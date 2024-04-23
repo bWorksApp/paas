@@ -15,13 +15,11 @@ import { CreateContractDto } from './dto/create.dto';
 import { UpdateContractDto } from './dto/update.dto';
 import { ContractService } from './service';
 import { queryTransform, formatRaList } from '../flatworks/utils/getlist';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @Controller('contracts')
 export class ContractController {
   constructor(private readonly service: ContractService) {}
 
-  @UseGuards(JwtAuthGuard)
   @Get()
   async index(@Response() res: any, @Query() query, @Request() req) {
     //   const userId = req.user.userId;
@@ -48,14 +46,12 @@ export class ContractController {
     return await this.service.findOne(id);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Post()
   async create(@Body() createContractDto: CreateContractDto, @Request() req) {
     const userId = req.user.userId;
     return await this.service.create({ ...createContractDto, author: userId });
   }
 
-  @UseGuards(JwtAuthGuard)
   @Put(':id')
   async update(
     @Param('id') id: string,
@@ -66,7 +62,6 @@ export class ContractController {
     return await this.service.update(id, updateContractDto, userId);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async delete(@Param('id') id: string, @Request() req) {
     const userId = req.user['userId'];

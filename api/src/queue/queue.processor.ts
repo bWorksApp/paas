@@ -17,8 +17,6 @@ import {
   marloweSourceCodeValidate,
 } from '../flatworks/utils/common';
 import { ContractType } from '../flatworks/types/types';
-import * as lodash from 'lodash';
-import { TestService } from '../test/service';
 
 @Processor('queue')
 export class QueueProcessor {
@@ -26,7 +24,6 @@ export class QueueProcessor {
   constructor(
     private readonly plutusTxService: PlutusTxService,
     private readonly contractService: ContractService,
-    private readonly testService: TestService,
   ) {}
 
   @OnQueueActive()
@@ -121,6 +118,7 @@ export class QueueProcessor {
       }; */
       const gitRepo = job.data.gitRepo.gitRepo;
       const sourceCodeFolder = job.data.gitRepo.sourceCodeFolder;
+      console.log(job.data.gitRepo);
       //pass string with space as single argument to shell script '"string with space"'
       const buildCommand = "'" + job.data.gitRepo.buildCommand + "'";
       const outputJsonFile = job.data.gitRepo.outputJsonFile;
