@@ -203,7 +203,10 @@ sample post data:
     delete updateContractDto.isFunctionVerified;
 
     //if contract body is changed, require re-compile, validate source code & functions
-    if (contract.contract !== updateContractDto.contract) {
+    if (
+      updateContractDto.contract &&
+      contract.contract !== updateContractDto.contract
+    ) {
       this.QueueQueue.add('compileContract', contract);
       updateContractDto.isFunctionVerified = false;
       updateContractDto.isSourceCodeVerified = false;
