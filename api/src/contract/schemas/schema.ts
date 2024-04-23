@@ -46,6 +46,9 @@ export class Contract {
   @Prop({ default: false })
   isApproved: boolean;
 
+  @Prop({ default: false })
+  isCompiled: boolean;
+
   @Prop()
   description: string;
 

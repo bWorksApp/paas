@@ -1,4 +1,5 @@
 import * as fs from 'fs';
+import * as lodash from 'lodash';
 
 const validateEmail = (email) => {
   const regExp = /\S+@\S+\.\S+/;
@@ -50,6 +51,32 @@ const fileToJson = (file) => {
   return result;
 };
 
+const aikenSourceCodeValidate = (contract, compiledContract) => {
+  return lodash.isEqual(
+    {
+      plutusVersion: contract.preamble.plutusVersion,
+      validators: contract.validators.map((i) => ({
+        compiledCode: i.compiledCode,
+        hash: i.hash,
+      })),
+    },
+    {
+      plutusVersion: compiledContract.preamble.plutusVersion,
+      validators: compiledContract.validators.map((i) => ({
+        compiledCode: i.compiledCode,
+        hash: i.hash,
+      })),
+    },
+  );
+};
+
+const plutusSourceCodeValidate = (contract, compiledContract) => {
+  return lodash.isEqual(contract, compiledContract);
+};
+
+const marloweSourceCodeValidate = (contract, compiledContract) => {
+  return lodash.isEqual(contract, compiledContract);
+};
 export {
   validateEmail,
   validatePassword,
@@ -59,4 +86,7 @@ export {
   anyWhiteSpace,
   startEndWhiteSpace,
   fileToJson,
+  aikenSourceCodeValidate,
+  plutusSourceCodeValidate,
+  marloweSourceCodeValidate,
 };

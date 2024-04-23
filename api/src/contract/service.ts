@@ -60,6 +60,7 @@ export class ContractService {
       isSourceCodeVerified: false,
       isFunctionVerified: false,
       isApproved: false,
+      isCompiled: false,
       createdAt: new Date(),
     }).save();
 
@@ -96,6 +97,8 @@ export class ContractService {
       this.QueueQueue.add('compileContract', contract);
       updateContractDto.isFunctionVerified = false;
       updateContractDto.isSourceCodeVerified = false;
+      updateContractDto.isCompiled = false;
+      updateContractDto.isApproved = false;
     }
 
     return await this.model.findByIdAndUpdate(id, updateContractDto).exec();

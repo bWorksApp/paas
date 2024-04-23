@@ -16,6 +16,7 @@ export class BaseContractDto {
   author: string;
   gitRepo: ContractRepo;
   contractType: ContractType;
+  isCompiled: boolean;
   isSourceCodeVerified: boolean;
   isFunctionVerified: boolean;
   isApproved: boolean;

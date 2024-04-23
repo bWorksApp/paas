@@ -4,6 +4,7 @@ import { QueueController } from './queue.controller';
 import { QueueProcessor } from './queue.processor';
 import { ContractModule } from '../contract/module';
 import { PlutusTxModule } from '../plutustx/module';
+import { TestModule } from '../test/module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { PlutusTxModule } from '../plutustx/module';
       },
     }),
     forwardRef(() => ContractModule),
+    forwardRef(() => TestModule),
     PlutusTxModule,
   ],
   controllers: [QueueController],

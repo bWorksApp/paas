@@ -49,6 +49,13 @@ export class TestService {
     return await this.model.findByIdAndUpdate(id, updateTestDto).exec();
   }
 
+  async findByIdAndUpdate(
+    id: string,
+    updateTestDto: UpdateTestDto,
+  ): Promise<Test> {
+    return await this.model.findByIdAndUpdate(id, updateTestDto).exec();
+  }
+
   async delete(id: string): Promise<Test> {
     return await this.model.findByIdAndDelete(id).exec();
   }

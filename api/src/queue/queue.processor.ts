@@ -10,9 +10,15 @@ import { exec } from 'child_process';
 import { PlutusTxService } from '../plutustx/service';
 import { v4 as uuidv4 } from 'uuid';
 import { ContractService } from '../contract/service';
-import { fileToJson } from '../flatworks/utils/common';
+import {
+  fileToJson,
+  aikenSourceCodeValidate,
+  plutusSourceCodeValidate,
+  marloweSourceCodeValidate,
+} from '../flatworks/utils/common';
 import { ContractType } from '../flatworks/types/types';
 import * as lodash from 'lodash';
+import { TestService } from '../test/service';
 
 @Processor('queue')
 export class QueueProcessor {
@@ -20,6 +26,7 @@ export class QueueProcessor {
   constructor(
     private readonly plutusTxService: PlutusTxService,
     private readonly contractService: ContractService,
+    private readonly testService: TestService,
   ) {}
 
   @OnQueueActive()
@@ -53,8 +60,9 @@ export class QueueProcessor {
   }
 
   /*
-  sample contract source code repo object: 
-  {name: "always success",
+  sample contract source code gitRepo object: 
+  {name: "plutus",
+  contractType: "plutus",
    gitRepo: {
       gitRepo: 'https://github.com/IntersectMBO/plutus-apps',
      sourceCodeFolder: 'plutus-example',
@@ -62,7 +70,8 @@ export class QueueProcessor {
      outputJsonFile: 'generated-plutus-scripts/v1/always-succeeds-spending.plutus'
   }
 
-  {name: "always success",
+  {name: "aiken",
+  contractType: "aiken",
    gitRepo: {
         gitRepo: 'https://github.com/aiken-lang/aiken',
         sourceCodeFolder: 'examples/hello_world',
@@ -70,7 +79,8 @@ export class QueueProcessor {
         outputJsonFile: 'plutus.json',
       };
 
-  {name: "always success",
+  {name: "marlowe",
+  contractType: "marlowe",
    gitRepo: {
         gitRepo: 'https://github.com/jackchuong/test-smart-contract',
         sourceCodeFolder: 'contract.marlowe',
@@ -102,18 +112,19 @@ export class QueueProcessor {
 
     if (job.data.contractType === ContractType.Plutus) {
       //just to test
-      job.data.gitRepo = {
+      /*   job.data.gitRepo = {
         gitRepo: 'https://github.com/IntersectMBO/plutus-apps',
         sourceCodeFolder: 'plutus-example',
         buildCommand: 'cabal run plutus-example',
         outputJsonFile:
           'generated-plutus-scripts/v1/always-succeeds-spending.plutus',
-      };
+      }; */
       const gitRepo = job.data.gitRepo.gitRepo;
       const sourceCodeFolder = job.data.gitRepo.sourceCodeFolder;
       //pass string with space as single argument to shell script '"string with space"'
       const buildCommand = "'" + job.data.gitRepo.buildCommand + "'";
       const outputJsonFile = job.data.gitRepo.outputJsonFile;
+
       exec(
         `zsh ${folder}/compilePlutus.sh ${gitRepo} ${buildFolder} ${sourceCodeFolder} ${buildCommand} ${outputJsonFile}`,
         (err, stdout, stderr) => {
@@ -131,11 +142,13 @@ export class QueueProcessor {
               `/tmp/${buildFolder}/repo/${sourceCodeFolder}/${outputJsonFile}`,
             );
             if (compiledContract) {
-              const isSourceCodeVerified = lodash.isEqual(
+              const isSourceCodeVerified = plutusSourceCodeValidate(
                 compiledContract,
                 job.data.contract,
               );
+
               this.contractService.findByIdAndUpdate(job.data._id, {
+                isCompiled: true,
                 compiledContract: compiledContract,
                 isSourceCodeVerified,
                 completedAt: new Date(),
@@ -148,12 +161,13 @@ export class QueueProcessor {
 
     if (job.data.contractType === ContractType.Aiken) {
       //just to test
-      job.data.gitRepo = {
+      /*  job.data.gitRepo = {
         gitRepo: 'https://github.com/aiken-lang/aiken',
         sourceCodeFolder: 'examples/hello_world',
         buildCommand: 'aiken build',
         outputJsonFile: 'plutus.json',
-      };
+      }; */
+
       const gitRepo = job.data.gitRepo.gitRepo;
       const sourceCodeFolder = job.data.gitRepo.sourceCodeFolder;
       //pass string with space as single argument to shell script '"string with space"'
@@ -178,11 +192,12 @@ export class QueueProcessor {
               `/tmp/${buildFolder}/repo/${sourceCodeFolder}/${outputJsonFile}`,
             );
             if (compiledContract) {
-              const isSourceCodeVerified = lodash.isEqual(
-                compiledContract,
+              const isSourceCodeVerified = aikenSourceCodeValidate(
                 job.data.contract,
+                compiledContract,
               );
               this.contractService.findByIdAndUpdate(job.data._id, {
+                isCompiled: true,
                 compiledContract: compiledContract,
                 isSourceCodeVerified,
                 completedAt: new Date(),
@@ -194,12 +209,12 @@ export class QueueProcessor {
     }
     if (job.data.contractType === ContractType.Marlowe) {
       //just to test
-      job.data.gitRepo = {
+      /*    job.data.gitRepo = {
         gitRepo: 'https://github.com/jackchuong/test-smart-contract',
         sourceCodeFolder: 'contract.marlowe',
         buildCommand: '',
         outputJsonFile: '',
-      };
+      }; */
       const gitRepo = job.data.gitRepo.gitRepo;
       const sourceCodeFolder = job.data.gitRepo.sourceCodeFolder || '.';
 
@@ -220,11 +235,12 @@ export class QueueProcessor {
               `/tmp/${buildFolder}/repo/contract.json`,
             );
             if (compiledContract) {
-              const isSourceCodeVerified = lodash.isEqual(
+              const isSourceCodeVerified = marloweSourceCodeValidate(
                 compiledContract,
                 job.data.contract,
               );
               this.contractService.findByIdAndUpdate(job.data._id, {
+                isCompiled: true,
                 compiledContract: compiledContract,
                 isSourceCodeVerified,
                 completedAt: new Date(),
