@@ -28,11 +28,6 @@ export class PublicService {
     private readonly userService: UserService,
   ) {}
 
-  async getDashboardData(): Promise<any> {
-    const data = [];
-    return data;
-  }
-
   async findAllTokenReceiver(query: MongooseQuery): Promise<RaList> {
     const count = await this.token.find(query.filter).count().exec();
     const data = await this.token

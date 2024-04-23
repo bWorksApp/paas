@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { TestService } from './service';
 import { TestController } from './controller';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -11,7 +11,7 @@ import { QueueModule } from '../queue/queue.module';
   exports: [TestService],
   imports: [
     MongooseModule.forFeature([{ name: Test.name, schema: TestSchema }]),
-    QueueModule,
+    forwardRef(() => QueueModule),
   ],
 })
 export class TestModule {}

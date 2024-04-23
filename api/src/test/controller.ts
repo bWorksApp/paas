@@ -16,8 +16,6 @@ import { CreateTestDto } from './dto/create.dto';
 import { UpdateTestDto } from './dto/update.dto';
 import { TestService } from './service';
 import { queryTransform, formatRaList } from '../flatworks/utils/getlist';
-import * as lodash from 'lodash';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Public } from '../flatworks/roles/public.api.decorator';
 
 @Public()
@@ -43,7 +41,6 @@ export class TestController {
       ...createTestDto,
     });
 
-  
     return result;
   }
 

@@ -46,6 +46,9 @@ export class Contract {
   @Prop({ default: false })
   isApproved: boolean;
 
+  @Prop({ default: false })
+  isCompiled: boolean;
+
   @Prop()
   description: string;
 
@@ -58,5 +61,21 @@ export class Contract {
 
 const ContractSchema = SchemaFactory.createForClass(Contract);
 ContractSchema.plugin(uniqueValidator);
+
+ContractSchema.index(
+  {
+    name: 'text',
+    description: 'text',
+    contractType: 'text',
+  },
+  {
+    weights: {
+      name: 1,
+      description: 1,
+      contractType: 1,
+    },
+    name: 'textIndex',
+  },
+);
 
 export { ContractSchema };

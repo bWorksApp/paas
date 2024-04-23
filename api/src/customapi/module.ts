@@ -4,7 +4,6 @@ import { SearchService } from './search.service';
 import { SearchController } from './search.controller';
 import { PublicController } from './public.controller';
 import { MongooseModule } from '@nestjs/mongoose';
-import { SkillModule } from '../skill/module';
 import { PlutusTxModule } from '../plutustx/module';
 import {
   TokenReceiver,
@@ -13,6 +12,8 @@ import {
 import { Campaign, CampaignSchema } from './schemas/campaign.schema';
 import { UserModule } from '../user/user.module';
 import { CustomController } from './custom.controller';
+import { ContractModule } from '../contract/module';
+
 //apis for homepage & other public requests
 @Module({
   providers: [PublicService, SearchService],
@@ -22,9 +23,9 @@ import { CustomController } from './custom.controller';
       { name: TokenReceiver.name, schema: TokenReceiverSchema },
       { name: Campaign.name, schema: CampaignSchema },
     ]),
-    SkillModule,
     PlutusTxModule,
     UserModule,
+    ContractModule,
   ],
   exports: [PublicService, SearchService],
 })

@@ -15,7 +15,8 @@ export class BaseContractDto {
     | AikenSmartContract;
   author: string;
   gitRepo: ContractRepo;
-  ContractType: ContractType;
+  contractType: ContractType;
+  isCompiled: boolean;
   isSourceCodeVerified: boolean;
   isFunctionVerified: boolean;
   isApproved: boolean;

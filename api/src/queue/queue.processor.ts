@@ -10,7 +10,12 @@ import { exec } from 'child_process';
 import { PlutusTxService } from '../plutustx/service';
 import { v4 as uuidv4 } from 'uuid';
 import { ContractService } from '../contract/service';
-import { fileToJson } from '../flatworks/utils/common';
+import {
+  fileToJson,
+  aikenSourceCodeValidate,
+  plutusSourceCodeValidate,
+  marloweSourceCodeValidate,
+} from '../flatworks/utils/common';
 import { ContractType } from '../flatworks/types/types';
 
 @Processor('queue')
@@ -52,15 +57,33 @@ export class QueueProcessor {
   }
 
   /*
-  sample contract plutus source code repo object: 
-  {name: "always success",
+  sample contract source code gitRepo object: 
+  {name: "plutus",
+  contractType: "plutus",
    gitRepo: {
       gitRepo: 'https://github.com/IntersectMBO/plutus-apps',
      sourceCodeFolder: 'plutus-example',
      buildCommand: 'cabal run plutus-example',
      outputJsonFile: 'generated-plutus-scripts/v1/always-succeeds-spending.plutus'
   }
-  ...
+
+  {name: "aiken",
+  contractType: "aiken",
+   gitRepo: {
+        gitRepo: 'https://github.com/aiken-lang/aiken',
+        sourceCodeFolder: 'examples/hello_world',
+        buildCommand: 'aiken build',
+        outputJsonFile: 'plutus.json',
+      };
+
+  {name: "marlowe",
+  contractType: "marlowe",
+   gitRepo: {
+        gitRepo: 'https://github.com/jackchuong/test-smart-contract',
+        sourceCodeFolder: 'contract.marlowe',
+        buildCommand: '',
+        outputJsonFile: '',
+      };
 }
   */
 
@@ -69,13 +92,11 @@ export class QueueProcessor {
     const folder = process.env.SHELL_SCRIPTS_PATH;
     const buildFolder = uuidv4();
 
-    /*  if (!job.data.gitRepo || !job.data.gitRepo.gitRepo) {
+    if (!job.data.gitRepo || !job.data.gitRepo.gitRepo) {
       console.log('Invalid source code repo');
       return;
+    }
 
-     
-
-    } */
     if (
       job.data.contractType !== ContractType.Aiken &&
       job.data.contractType !== ContractType.Marlowe &&
@@ -87,26 +108,21 @@ export class QueueProcessor {
     }
 
     if (job.data.contractType === ContractType.Plutus) {
-      /*  const gitRepo = 'https://github.com/IntersectMBO/plutus-apps';
-    const sourceCodeFolder = 'plutus-example';
-    //pass string with space as single argument to shell script '"string with space"'
-    const buildCommand = '"cabal run plutus-example"';
-    const outputJsonFile =
-      'generated-plutus-scripts/v1/always-succeeds-spending.plutus'; */
-
       //just to test
-      job.data.gitRepo = {
+      /*   job.data.gitRepo = {
         gitRepo: 'https://github.com/IntersectMBO/plutus-apps',
         sourceCodeFolder: 'plutus-example',
         buildCommand: 'cabal run plutus-example',
         outputJsonFile:
           'generated-plutus-scripts/v1/always-succeeds-spending.plutus',
-      };
+      }; */
       const gitRepo = job.data.gitRepo.gitRepo;
       const sourceCodeFolder = job.data.gitRepo.sourceCodeFolder;
+      console.log(job.data.gitRepo);
       //pass string with space as single argument to shell script '"string with space"'
       const buildCommand = "'" + job.data.gitRepo.buildCommand + "'";
       const outputJsonFile = job.data.gitRepo.outputJsonFile;
+
       exec(
         `zsh ${folder}/compilePlutus.sh ${gitRepo} ${buildFolder} ${sourceCodeFolder} ${buildCommand} ${outputJsonFile}`,
         (err, stdout, stderr) => {
@@ -124,8 +140,15 @@ export class QueueProcessor {
               `/tmp/${buildFolder}/repo/${sourceCodeFolder}/${outputJsonFile}`,
             );
             if (compiledContract) {
+              const isSourceCodeVerified = plutusSourceCodeValidate(
+                compiledContract,
+                job.data.contract,
+              );
+
               this.contractService.findByIdAndUpdate(job.data._id, {
+                isCompiled: true,
                 compiledContract: compiledContract,
+                isSourceCodeVerified,
                 completedAt: new Date(),
               });
             }
@@ -136,12 +159,13 @@ export class QueueProcessor {
 
     if (job.data.contractType === ContractType.Aiken) {
       //just to test
-      job.data.gitRepo = {
+      /*  job.data.gitRepo = {
         gitRepo: 'https://github.com/aiken-lang/aiken',
         sourceCodeFolder: 'examples/hello_world',
         buildCommand: 'aiken build',
         outputJsonFile: 'plutus.json',
-      };
+      }; */
+
       const gitRepo = job.data.gitRepo.gitRepo;
       const sourceCodeFolder = job.data.gitRepo.sourceCodeFolder;
       //pass string with space as single argument to shell script '"string with space"'
@@ -166,8 +190,14 @@ export class QueueProcessor {
               `/tmp/${buildFolder}/repo/${sourceCodeFolder}/${outputJsonFile}`,
             );
             if (compiledContract) {
+              const isSourceCodeVerified = aikenSourceCodeValidate(
+                job.data.contract,
+                compiledContract,
+              );
               this.contractService.findByIdAndUpdate(job.data._id, {
+                isCompiled: true,
                 compiledContract: compiledContract,
+                isSourceCodeVerified,
                 completedAt: new Date(),
               });
             }
@@ -177,12 +207,12 @@ export class QueueProcessor {
     }
     if (job.data.contractType === ContractType.Marlowe) {
       //just to test
-      job.data.gitRepo = {
+      /*    job.data.gitRepo = {
         gitRepo: 'https://github.com/jackchuong/test-smart-contract',
         sourceCodeFolder: 'contract.marlowe',
         buildCommand: '',
         outputJsonFile: '',
-      };
+      }; */
       const gitRepo = job.data.gitRepo.gitRepo;
       const sourceCodeFolder = job.data.gitRepo.sourceCodeFolder || '.';
 
@@ -203,8 +233,14 @@ export class QueueProcessor {
               `/tmp/${buildFolder}/repo/contract.json`,
             );
             if (compiledContract) {
+              const isSourceCodeVerified = marloweSourceCodeValidate(
+                compiledContract,
+                job.data.contract,
+              );
               this.contractService.findByIdAndUpdate(job.data._id, {
+                isCompiled: true,
                 compiledContract: compiledContract,
+                isSourceCodeVerified,
                 completedAt: new Date(),
               });
             }
@@ -212,58 +248,5 @@ export class QueueProcessor {
         },
       );
     }
-  }
-
-  @Process('unlock')
-  async unlock(job: Job) {
-    const scriptName = 'bworksV2';
-    const redeemerJsonFile = 'secret.json';
-    const payCollatelWalletName = 'wallet01';
-    //if job is complete pay to job seeker else return to employer
-    const unlockType = job.data.unlockType; // 'paid' : 'return';
-    const receiveWalletAddress = job.data.receiverAddress;
-    const userId = job.data.userId;
-    const scriptTxHash = job.data.scriptTxHash;
-    const unlockScript = process.env.UNLOCK_SHELL_SCRIPT;
-    exec(
-      `zsh ./src/flatworks/shellscripts/${unlockScript} ${scriptName} ${redeemerJsonFile} ${payCollatelWalletName} ${receiveWalletAddress} ${scriptTxHash} `,
-      (err, stdout, stderr) => {
-        //if shell script exec fail
-        if (err) {
-          this.plutusTxService.findByScriptTxHashAndUpdate(scriptTxHash, {
-            unlockMessage: 'unlock plutus job failed',
-            completedAt: new Date(),
-          });
-          console.error('error:', err, job);
-        }
-        //if transaction sign failed
-        if (stderr) {
-          this.plutusTxService.findByScriptTxHashAndUpdate(scriptTxHash, {
-            unlockMessage: 'unlock plutus transaction sign failed',
-            completedAt: new Date(),
-          });
-          console.log(`stderr: ${stderr}`);
-        } else {
-          //remove null line then get transaction hash at last line of stdout
-          const matches = stdout.split(/[\n\r]/g);
-          const unlockedTxHash = matches
-            .filter((item) => item !== '')
-            .slice(-1)[0];
-
-          this.plutusTxService.findByScriptTxHashAndUpdate(scriptTxHash, {
-            receiverAddress: receiveWalletAddress,
-            unlockUserId: userId,
-            unlockedTxHash: unlockedTxHash,
-            unlockType: unlockType,
-            isUnlocked: true,
-            unlockMessage: 'unlock plutus transaction is submitted',
-            unlockDate: new Date(),
-            completedAt: new Date(),
-          });
-
-          console.log(`stdout: ${stdout}`);
-        }
-      },
-    );
   }
 }
