@@ -7,7 +7,7 @@ import { Contract, ContractDocument } from './schemas/schema';
 import { RaList, MongooseQuery } from '../flatworks/types/types';
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
-import { ContractType } from '../flatworks/types/types';
+import * as lodash from 'lodash';
 import {
   sumContracts,
   sumContractAndTxsByUser,
@@ -186,7 +186,7 @@ sample post data:
         'This is not your contract, the action is not allowed',
       );
 
-    //not to update approved contract body
+    //not to update approved contract body because it is in-use already
     if (contract.isApproved) {
       return await this.model
         .findByIdAndUpdate(id, {
@@ -195,6 +195,12 @@ sample post data:
         })
         .exec();
     }
+
+    //user is not allowed to update some fields
+    delete updateContractDto.isApproved;
+    delete updateContractDto.isSourceCodeVerified;
+    delete updateContractDto.isCompiled;
+    delete updateContractDto.isFunctionVerified;
 
     //if contract body is changed, require re-compile, validate source code & functions
     if (contract.contract !== updateContractDto.contract) {
@@ -205,7 +211,18 @@ sample post data:
       updateContractDto.isApproved = false;
     }
 
-    return await this.model.findByIdAndUpdate(id, updateContractDto).exec();
+    return await this.model
+      .findByIdAndUpdate(id, updateContractDto, { new: true })
+      .exec();
+  }
+
+  async approve(
+    id: string,
+    updateContractDto: UpdateContractDto,
+  ): Promise<Contract> {
+    return await this.model
+      .findByIdAndUpdate(id, updateContractDto, { new: true })
+      .exec();
   }
 
   async findByIdAndUpdate(id, updateContractDto: UpdateContractDto) {

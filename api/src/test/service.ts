@@ -42,7 +42,9 @@ export class TestService {
   }
 
   async update(id: string, updateTestDto: UpdateTestDto): Promise<Test> {
-    return await this.model.findByIdAndUpdate(id, updateTestDto).exec();
+    return await this.model
+      .findByIdAndUpdate(id, updateTestDto, { new: true })
+      .exec();
   }
 
   async findByIdAndUpdate(
