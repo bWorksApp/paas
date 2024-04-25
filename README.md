@@ -19,6 +19,8 @@ add .env file for backend API:
 #Mongo
 CONNECTION_STRING=mongodb://user:password@localhost:27017/psm?authSource=admin&readPreference=primary
 GITHUB_TOKEN=****
+SHELL_SCRIPTS_PATH="src/flatworks/shellscripts"
+REDIS_HOST="localhost"
 
 cd paas
 yarn
