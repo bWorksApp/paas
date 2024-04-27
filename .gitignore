@@ -5,6 +5,7 @@ node_modules
 .env
 **/.env
 packages/*
+api/src/plutustx
 #**/flatworks
 web
 cms

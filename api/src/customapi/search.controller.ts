@@ -1,6 +1,7 @@
 import { Controller, Get, Response, Query } from '@nestjs/common';
 import { SearchService } from './search.service';
 import { queryTransform } from '../flatworks/utils/getlist';
+
 @Controller('customapis')
 export class SearchController {
   constructor(private readonly service: SearchService) {}
