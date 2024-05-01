@@ -28,7 +28,6 @@ import {
 - Distribution flow
   - users are able to get contracts as pending audit source code, functions and approval
   - It should uses only approved contracts
-
   */
 
 @Injectable()
