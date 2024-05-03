@@ -17,6 +17,8 @@ cms/src/*
 !cms/src/plutustx
 !cms/src/users
 !cms/src/queues
+!cms/src/contractreports
+
 
 **/flatworks/shellscripts/wallets
 
