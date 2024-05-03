@@ -17,6 +17,20 @@ export class CustomController {
     private readonly contractService: ContractService,
   ) {}
 
+  //dashboard apis
+  @Get('dashboardcards')
+  async getDashboardData(@Response() res: any) {
+    const result = await this.service.getDashboardData();
+    return res.json(result);
+  }
+
+  //Sum published contract by month
+  @Get('sumpublishedcontractbymonth')
+  async getDashboardContract(@Response() res: any) {
+    const result = await this.contractService.sumPublishedContractByMonth();
+    return res.json(result);
+  }
+
   //get userId from access token
   @Get('userid')
   async getUserId(@Response() res: any, @Req() request) {
@@ -35,6 +49,13 @@ export class CustomController {
   @Get('sumcontracts')
   async getSumContracts(@Response() res: any) {
     const result = await this.contractService.sumContracts();
+    return res.json(result);
+  }
+
+  //sum dApp Txs
+  @Get('sumdapptxs')
+  async getSumDAppTxs(@Response() res: any) {
+    const result = await this.plutusTxService.sumdAppTxs();
     return res.json(result);
   }
 

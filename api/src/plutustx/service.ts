@@ -8,6 +8,7 @@ import { RaList, MongooseQuery } from '../flatworks/types/types';
 import {
   sumTxsByMonth,
   sumdAppTxsByUser,
+  sumdAppTxs as sumdAppTxsScript,
 } from '../flatworks/dbcripts/aggregate.scripts';
 import * as moment from 'moment';
 
@@ -23,6 +24,23 @@ export class PlutusTxService {
 
     const emptyRecord = {
       _id: 'plutusTxsByUser',
+      sumLockedAmounts: 0,
+      numberOfLockTxs: 0,
+      sumUnlockedAmounts: 0,
+      numberOfUnlockedTxs: 0,
+    };
+
+    if (result && result.length) {
+      return result[0];
+    }
+
+    return emptyRecord;
+  }
+
+  async sumdAppTxs(): Promise<any> {
+    const result = await this.model.aggregate(sumdAppTxsScript);
+    const emptyRecord = {
+      _id: 'sumdAppTxs',
       sumLockedAmounts: 0,
       numberOfLockTxs: 0,
       sumUnlockedAmounts: 0,

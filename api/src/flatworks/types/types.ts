@@ -32,13 +32,14 @@ export interface DashboardCardData {
     numberOfJobs: number;
     totalAmount: number;
   };
+
   activeUsers: {
-    jobSeekers: number;
-    employers: number;
+    contractDevs: number;
+    dAppDevs: number;
   };
-  postedJobs: {
-    postedJobs: number;
-    bids: number;
+  publishedContracts: {
+    publishedContracts: number;
+    approvedContracts: number;
   };
   plutusTxs: {
     lockTxs: number;

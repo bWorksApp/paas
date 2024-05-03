@@ -379,10 +379,143 @@ const sumdAppTxsByUser = (userId) => {
     },
   ];
 };
+
+const sumPublishedContractByMonth = (fromDate, toDate) => {
+  return [
+    {
+      $match: {
+        $and: [
+          { createdAt: { $gte: fromDate } },
+          { createdAt: { $lte: toDate } },
+        ],
+      },
+    },
+
+    {
+      $group: {
+        _id: {
+          $concat: [
+            { $toString: { $month: '$createdAt' } },
+            '-',
+            { $toString: { $year: '$createdAt' } },
+          ],
+        },
+        date: { $first: '$createdAt' },
+        numberOfPublishedContracts: { $sum: 1 },
+        numberOfCompiledContracts: {
+          $sum: {
+            $cond: {
+              if: '$isCompiled',
+              then: 1,
+              else: 0,
+            },
+          },
+        },
+        numberOfSourceCodeVerifiedContracts: {
+          $sum: {
+            $cond: {
+              if: '$isSourceCodeVerified',
+              then: 1,
+              else: 0,
+            },
+          },
+        },
+        numberOfFunctionVerifiedContracts: {
+          $sum: {
+            $cond: {
+              if: '$isFunctionVerified',
+              then: 1,
+              else: 0,
+            },
+          },
+        },
+        numberOfApprovedContracts: {
+          $sum: {
+            $cond: {
+              if: '$isApproved',
+              then: 1,
+              else: 0,
+            },
+          },
+        },
+      },
+    },
+  ];
+};
+
+const sumdAppTxs = [
+  {
+    $project: {
+      _id: 1,
+      lockDate: 1,
+      unlockDate: 1,
+      amount: 1,
+      isUnlocked: {
+        $cond: {
+          if: {
+            $and: [
+              '$unlockedTxHash',
+              { $ne: ['$unlockedTxHash', ''] },
+              { $ne: ['$unlockedTxHash', null] },
+              { $ne: ['$unlockedTxHash', undefined] },
+            ],
+          },
+          then: true,
+          else: false,
+        },
+      },
+    },
+  },
+
+  {
+    $group: {
+      _id: {
+        $concat: [
+          { $toString: { $month: '$lockDate' } },
+          '-',
+          { $toString: { $year: '$lockDate' } },
+        ],
+      },
+      date: { $first: '$lockDate' },
+      sumLockedAmounts: { $sum: '$amount' },
+      numberOfLockTxs: { $sum: 1 },
+      sumUnlockedAmounts: {
+        $sum: {
+          $cond: {
+            if: '$isUnlocked',
+            then: '$amount',
+            else: 0,
+          },
+        },
+      },
+      numberOfUnlockedTxs: {
+        $sum: {
+          $cond: {
+            if: '$isUnlocked',
+            then: 1,
+            else: 0,
+          },
+        },
+      },
+    },
+  },
+  {
+    $group: {
+      _id: 'plutusReports',
+      sumLockedAmounts: { $sum: '$sumLockedAmounts' },
+      numberOfLockTxs: { $sum: '$numberOfLockTxs' },
+      sumUnlockedAmounts: { $sum: '$sumUnlockedAmounts' },
+      numberOfUnlockedTxs: { $sum: '$numberOfUnlockedTxs' },
+    },
+  },
+];
+
 export {
   sumTxsByMonth,
   sumUsers,
   sumContracts,
   sumContractAndTxsByUser,
   sumdAppTxsByUser,
+  sumPublishedContractByMonth,
+  sumdAppTxs,
 };

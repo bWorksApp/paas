@@ -16,6 +16,7 @@ import { validateEmail } from '../flatworks/utils/common';
 import { DashboardCardData } from '../flatworks/types/types';
 import { PlutusTxService } from '../plutustx/service';
 import { UserService } from '../user/user.service';
+import { ContractService } from '../contract/service';
 
 @Injectable()
 export class PublicService {
@@ -25,8 +26,82 @@ export class PublicService {
     @InjectModel(Campaign.name)
     private readonly campaign: Model<CampaignDocument>,
     private readonly plutusTxService: PlutusTxService,
+    private readonly contractService: ContractService,
     private readonly userService: UserService,
   ) {}
+
+  async getDashboardData(): Promise<DashboardCardData> {
+    /*
+    {
+      paidByPlutus: {
+        numberOfJobs: 10,
+        totalAmount: 100
+      },
+      activeUsers: {
+        contractDevs: 10,
+        dAppDevs: 10,
+      },
+      postedJobs: 
+     { postedJobs: 100,
+      bids: 1000}
+    },
+    plutusTxs: {
+      lockTxs: 100,
+      unlockTxs: 10
+    }
+  }
+    */
+    //limit 0, to get all records
+    const query = { filter: {}, sort: {}, skip: 0, limit: 0 };
+
+    const plutusTxs = await this.plutusTxService.findAll(query);
+    const paidAmount = plutusTxs?.data.reduce(
+      (acc, item) => acc + item.amount || 0,
+      0,
+    );
+
+    const hasUnlockTxs = plutusTxs.data.filter((item) => !!item.unlockedTxHash);
+    const contractDevQuery = {
+      filter: { isSmartContractDev: true },
+      sort: {},
+      skip: 0,
+      limit: 0,
+    };
+    const dAppDevQuery = {
+      filter: { isdAppDev: true },
+      sort: {},
+      skip: 0,
+      limit: 0,
+    };
+
+    const contractDevs = await this.userService.findAllList(contractDevQuery);
+    const dAppDevs = await this.userService.findAllList(dAppDevQuery);
+
+    const postedJobs = await this.contractService.findAll(query);
+    const jobBids = await this.contractService.findAll(query);
+
+    const data = {
+      paidByPlutus: {
+        numberOfJobs: plutusTxs.data.length || 0,
+        totalAmount: paidAmount,
+      },
+      activeUsers: {
+        contractDevs: contractDevs.count,
+        dAppDevs: dAppDevs.count,
+      },
+
+      publishedContracts: {
+        publishedContracts: postedJobs.count,
+        approvedContracts: jobBids.count,
+      },
+
+      plutusTxs: {
+        lockTxs: plutusTxs.count,
+        unlockTxs: hasUnlockTxs.length,
+      },
+    };
+    return data;
+  }
 
   async findAllTokenReceiver(query: MongooseQuery): Promise<RaList> {
     const count = await this.token.find(query.filter).count().exec();

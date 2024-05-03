@@ -11,7 +11,9 @@ import * as lodash from 'lodash';
 import {
   sumContracts,
   sumContractAndTxsByUser,
+  sumPublishedContractByMonth,
 } from '../flatworks/dbcripts/aggregate.scripts';
+import * as moment from 'moment';
 
 /*
 - Publish flow
@@ -52,6 +54,7 @@ export class ContractService {
   async findOne(id: string): Promise<Contract> {
     return await this.model.findById(id).exec();
   }
+
   /*
 sample post data: 
  {
@@ -436,5 +439,44 @@ sample post data:
     }
 
     return {};
+  }
+
+  async sumPublishedContractByMonth(): Promise<any> {
+    const toDate = moment().toDate();
+    const fromDate = moment().subtract(1, 'year').toDate();
+
+    const months = [];
+    for (let i = 0; i < 12; i++) {
+      const month = moment().subtract(i, 'month').format('M-YYYY').toString();
+      const shortYear = moment()
+        .subtract(i, 'month')
+        .format('MM-YY')
+        .toString();
+      const date = moment().subtract(i, 'month').toDate();
+      months.push({ _id: month, shortYear, date });
+    }
+    const script = sumPublishedContractByMonth(fromDate, toDate);
+    const _result = await this.model.aggregate(script);
+
+    const emptyRecord = {
+      _id: '',
+      date: '',
+      numberOfPublishedContracts: 0,
+      numberOfCompiledContracts: 0,
+      numberOfSourceCodeVerifiedContracts: 0,
+      numberOfFunctionVerifiedContracts: 0,
+      numberOfApprovedContracts: 0,
+    };
+
+    const result = months.map((item) => {
+      const jobItem = _result.find((jobItem) => jobItem._id == item._id);
+      if (jobItem) {
+        return { ...jobItem, shortYear: item.shortYear };
+      }
+
+      return { ...emptyRecord, ...item };
+    });
+
+    return result.reverse();
   }
 }
