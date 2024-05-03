@@ -19,6 +19,7 @@ cms/src/*
 !cms/src/queues
 !cms/src/contractreports
 !cms/src/dapptxreports
+!cms/src/tools
 
 **/flatworks/shellscripts/wallets
 
