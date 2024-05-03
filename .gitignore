@@ -10,8 +10,8 @@ web
 
 #CMS ignore
 
-cms/*/*/*
-!/cms/src/layout
+cms/src/*
+!cms/src/layout
 
 **/flatworks/shellscripts/wallets
 
