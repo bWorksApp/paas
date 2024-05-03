@@ -10,16 +10,7 @@ web
 
 #CMS ignore
 
-cms/src/*
-!cms/src/layout
-!cms/src/dashboard
-!cms/src/contracts
-!cms/src/plutustx
-!cms/src/users
-!cms/src/queues
-!cms/src/contractreports
-!cms/src/dapptxreports
-!cms/src/tools
+cms/src/smartcontracts
 
 **/flatworks/shellscripts/wallets
 
