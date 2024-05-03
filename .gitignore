@@ -14,6 +14,7 @@ cms/src/*
 !cms/src/layout
 !cms/src/dashboard
 !cms/src/contracts
+!cms/src/plutustx
 
 **/flatworks/shellscripts/wallets
 
