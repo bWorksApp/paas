@@ -12,6 +12,7 @@ web
 
 cms/src/*
 !cms/src/layout
+!cms/src/dashboard
 
 **/flatworks/shellscripts/wallets
 
