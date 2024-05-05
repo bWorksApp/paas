@@ -18,9 +18,10 @@ import { MeshProvider } from "@meshsdk/react";
 import ParseAddress from "./tools/parseAddress";
 import ChangePassword from "./components/changePassword";
 import plutustscripts from "./contracts";
-import SmartContracts from "./smartcontracts/functionAudit";
+import AuditContract from "./auditcontract/functionAudit";
 import Typography from "@mui/material/Typography";
 import users from "./users";
+import audittxs from "./audittx";
 
 import { ContractReports } from "./contractreports";
 import { ApiCallReports } from "./dapptxreports";
@@ -59,16 +60,16 @@ const App = () => {
           <Route path="/configuration" element={<Configuration />} />
           <Route path="/fetchCardano" element={<FetchCardano />} />
           <Route path="/fetchGithub" element={<FetchGithub />} />
-
           <Route path="/parseaddress" element={<ParseAddress />} />
           <Route path="/changepassword" element={<ChangePassword />} />
-          <Route path="/verifySmartContract" element={<SmartContracts />} />
+          <Route path="/auditContract" element={<AuditContract />} />
           <Route path="/scontractreports" element={<ContractReports />} />
           <Route path="/apicallreports" element={<ApiCallReports />} />
         </CustomRoutes>
         <Resource name="contracts" {...plutustscripts} />
         <Resource name="users" {...users} />
         <Resource name="plutustxs" {...plutustxs} />
+        <Resource name="audittxs" {...audittxs} />
         <Resource name="queues" {...queues} />
         <Resource name="adminWallets" {...adminWallets} />
       </Admin>

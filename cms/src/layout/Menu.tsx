@@ -144,6 +144,15 @@ const Menu = ({ dense = false }: MenuProps) => {
           leftIcon={<FormatIndentIncreaseIcon />}
           dense={dense}
         />
+        <MenuItemLink
+          to="/audittxs"
+          state={{ _scrollToTop: true }}
+          primaryText={translate(`resources.auditTxs.name`, {
+            smart_count: 2,
+          })}
+          leftIcon={<FormatIndentIncreaseIcon />}
+          dense={dense}
+        />
       </SubMenu>
       <SubMenu
         handleToggle={() => handleToggle("tools")}
@@ -153,7 +162,7 @@ const Menu = ({ dense = false }: MenuProps) => {
         dense={dense}
       >
         <MenuItemLink
-          to="/verifySmartContract"
+          to="/auditcontract"
           state={{ _scrollToTop: true }}
           primaryText={translate(`resources.verifySmartContract.name`, {
             smart_count: 2,

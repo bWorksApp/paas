@@ -45,6 +45,10 @@ const customEnglishMessages: TranslationMessages = {
     jobQueues: {
       name: "Job Queue",
     },
+    auditTxs: {
+      name: "Audit TXs",
+    },
+
     plutustxs: {
       name: "dApp TXs",
     },
@@ -52,7 +56,7 @@ const customEnglishMessages: TranslationMessages = {
       name: "Change password",
     },
     verifySmartContract: {
-      name: "Verify a script",
+      name: "Audit contract",
     },
 
     paymentReport: {

@@ -1,5 +1,5 @@
 import React from "react";
-import SmartContractJob from "../components/contractLockUnlock";
+import SmartContractAudit from "../components/contractLockUnlock";
 import { SelectChangeEvent } from "@mui/material/Select";
 import { useGetList } from "react-admin";
 import Box from "@mui/material/Box";
@@ -7,10 +7,42 @@ import { CardanoWallet, useWallet } from "@meshsdk/react";
 import moment from "moment";
 import { Transaction, Data, KoiosProvider } from "@meshsdk/core";
 import { parseContractAddress, formatContract } from "./utils";
+import { useCreate, useDataProvider, useUpdate } from "react-admin";
 
 const SmartContracts = () => {
   const isMainnet = process.env.REACT_APP_IS_MAINNET;
   const cardanoNetwork = isMainnet ? "api" : "preprod";
+
+  const [create, { isLoading, error }] = useCreate();
+  const [update, { isLoading: _isLoading, error: _error }] = useUpdate();
+
+  const [datum, setDatum] = React.useState([]);
+  const handleChangeDatum = (data) => {
+    setDatum(
+      data.items.map((item) =>
+        item.dataType === "date" ? moment(item.value).unix() : item.value
+      )
+    );
+  };
+
+  const [redeemer, setRedeemer] = React.useState("");
+  const handleChangeRedeemer = (data) => {
+    setRedeemer(
+      data.items.map((item) =>
+        item.dataType === "date" ? moment(item.value).unix() : item.value
+      )
+    );
+  };
+
+  const [lockedTxHash, setLockedTxHash] = React.useState("");
+  const handleChangeLockedTxHash = (event) => {
+    setLockedTxHash(event.target.value);
+  };
+
+  const [auditName, setAuditName] = React.useState("");
+  const handleChangeAuditName = (event) => {
+    setAuditName(event.target.value);
+  };
 
   const { wallet, connected, connecting } = useWallet();
 
@@ -106,8 +138,6 @@ const SmartContracts = () => {
     };
     const amountToLockLoveLace = (amountToLock * 1000000).toString();
 
-    console.log("lock value", d, scriptAddress, amountToLock);
-
     if (wallet && connected && amountToLock) {
       const tx = new Transaction({ initiator: wallet });
       tx.sendLovelace(
@@ -132,6 +162,17 @@ const SmartContracts = () => {
           ...notification,
           message: "Transaction is failed",
         });
+        create("audittxs", {
+          data: {
+            name: auditName,
+            amount: amountToLock,
+            contractId: contract.selected,
+            scriptAddress: scriptAddress,
+            assetName: "Ada",
+            isLockSuccess: false,
+            datum: datum,
+          },
+        });
         return;
       }
 
@@ -139,7 +180,18 @@ const SmartContracts = () => {
         ...notification,
         message: txHash ? `Transaction is submmited: ${txHash}` : null,
       });
-
+      create("audittxs", {
+        data: {
+          name: auditName,
+          amount: amountToLock,
+          contractId: contract.selected,
+          scriptAddress: scriptAddress,
+          assetName: "Ada",
+          isLockSuccess: true,
+          lockedTxHash: txHash,
+          datum: datum,
+        },
+      });
       console.log("txHash", txHash, new Date());
     }
   };
@@ -163,8 +215,6 @@ const SmartContracts = () => {
 
     const collateralUtxos = await wallet.getCollateral();
 
-    console.log(utxo, address, collateralUtxos);
-
     if (!utxo || !receiveAddress || !address) {
       setNotification({
         ...notification,
@@ -178,16 +228,6 @@ const SmartContracts = () => {
       });
       return;
     }
-
-    console.log(
-      "unlock values",
-      cardanoNetwork,
-      plutusScript,
-      scriptAddress,
-      receiveAddress,
-      address,
-      utxo
-    );
 
     // create the unlock asset transaction
     let txHash;
@@ -209,7 +249,10 @@ const SmartContracts = () => {
     } catch (err) {
       console.log(err);
       setNotification({ ...notification, message: "Submit error" });
-
+      update("audittxs/unlock", {
+        id: lockedTxHash,
+        data: { isUnlockSuccess: false, redeemer: redeemer },
+      });
       return;
     }
 
@@ -217,37 +260,23 @@ const SmartContracts = () => {
       ...notification,
       message: `Transaction is submitted, TxHash: ${txHash}`,
     });
-
+    update("audittxs/unlock", {
+      id: lockedTxHash,
+      data: {
+        isUnlockSuccess: true,
+        unlockedTxHash: txHash,
+        redeemer: redeemer,
+      },
+    });
     console.log("unlockTxHash", txHash);
-  };
-
-  const [datum, setDatum] = React.useState([]);
-  const handleChangeDatum = (data) => {
-    setDatum(
-      data.items.map((item) =>
-        item.dataType === "date" ? moment(item.value).unix() : item.value
-      )
-    );
-  };
-
-  const [redeemer, setRedeemer] = React.useState("");
-  const handleChangeRedeemer = (data) => {
-    setRedeemer(
-      data.items.map((item) =>
-        item.dataType === "date" ? moment(item.value).unix() : item.value
-      )
-    );
-  };
-
-  const [lockedTxHash, setCockedTxHash] = React.useState("");
-  const handleChangeLockedTxHash = (event) => {
-    setCockedTxHash(event.target.value);
   };
 
   return (
     <Box sx={{ mt: 0, display: "flex", flex: 1, flexDirection: "column" }}>
       <Box sx={{ mt: 0, display: "flex", flex: 1, flexDirection: "row" }}>
-        <SmartContractJob
+        <SmartContractAudit
+          auditName={auditName}
+          handleChangeAuditName={handleChangeAuditName}
           scriptAddress={scriptAddress}
           datum={datum}
           redeemer={redeemer}
@@ -264,7 +293,7 @@ const SmartContracts = () => {
           amountToLock={amountToLock}
           receiveAddress={receiveAddress}
           notification={notification}
-        ></SmartContractJob>
+        ></SmartContractAudit>
         <CardanoWallet />
       </Box>
     </Box>

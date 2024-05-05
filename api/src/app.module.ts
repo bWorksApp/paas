@@ -20,6 +20,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './flatworks/roles/roles.guard';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { BullModule } from '@nestjs/bull';
+import { AuditTxModule } from './audittx/module';
 
 @Module({
   imports: [
@@ -48,6 +49,7 @@ import { BullModule } from '@nestjs/bull';
     PublicModule,
     MailModule,
     AccessTokenModule,
+    AuditTxModule,
     TestModule,
   ],
   providers: [

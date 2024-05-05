@@ -44,6 +44,8 @@ export default function SmartContract(props) {
   const handleChangeRedeemer = props.handleChangeRedeemer || null;
   const lockedTxHash = props.lockedTxHash || "";
   const handleChangeLockedTxHash = props.handleChangeLockedTxHash || null;
+  const auditName = props.auditName || "";
+  const handleChangeAuditName = props.handleChangeAuditName || null;
 
   if (!contracts || contracts.length === 0) {
     return (
@@ -81,6 +83,14 @@ export default function SmartContract(props) {
               justifyContent: "space-between",
             }}
           >
+            <TextField
+              sx={{ width: 240 }}
+              id="standard-basic"
+              label="Audit name"
+              variant="standard"
+              value={auditName}
+              onChange={handleChangeAuditName}
+            />
             <Box
               sx={{
                 paddingTop: 0,
