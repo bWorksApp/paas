@@ -10,8 +10,6 @@ web
 
 #CMS ignore
 
-cms/src/components/contractLockUnlock.tsx
-
 **/flatworks/shellscripts/wallets
 
 #ignore database & certificates
