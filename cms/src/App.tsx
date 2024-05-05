@@ -18,7 +18,7 @@ import { MeshProvider } from "@meshsdk/react";
 import ParseAddress from "./tools/parseAddress";
 import ChangePassword from "./components/changePassword";
 import plutustscripts from "./contracts";
-import SmartContracts from "./smartcontracts/meshJs";
+import SmartContracts from "./smartcontracts/functionAudit";
 import Typography from "@mui/material/Typography";
 import users from "./users";
 

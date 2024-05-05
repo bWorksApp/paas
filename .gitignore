@@ -10,7 +10,7 @@ web
 
 #CMS ignore
 
-cms/src/smartcontracts
+cms/src/components/contractLockUnlock.tsx
 
 **/flatworks/shellscripts/wallets
 
