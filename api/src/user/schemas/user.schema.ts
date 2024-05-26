@@ -19,6 +19,9 @@ export class User {
   @Prop()
   gitLink: string;
 
+  @Prop()
+  walletAddress: string;
+
   @Prop({ default: false })
   isShowContact: boolean;
 

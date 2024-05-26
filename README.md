@@ -17,12 +17,10 @@ REACT_APP_API_URL=http://localhost:3000
 
 add .env file for backend API:
 #Mongo
-DATABASE_HOST=localhost
-DATABASE_PORT=27017
-DATABASE_ACCOUNT=admin
-DATABASE_PASSWORD=****
-#GitHub
+CONNECTION_STRING=mongodb://user:password@localhost:27017/psm?authSource=admin&readPreference=primary
 GITHUB_TOKEN=****
+SHELL_SCRIPTS_PATH="src/flatworks/shellscripts"
+REDIS_HOST="localhost"
 
 cd paas
 yarn

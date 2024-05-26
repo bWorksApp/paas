@@ -17,6 +17,7 @@ export class BaseUserDto {
   authType: authType;
   isNotified: boolean;
   walletRewardAddress: string;
+  walletAddress: string;
   nonce: string;
   password: string;
   isApproved: boolean;

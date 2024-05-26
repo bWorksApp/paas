@@ -6,7 +6,6 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { CurrencyModule } from './currency/module';
 import { ToolModule } from './tool/module';
-import { WalletModule } from './wallet/module';
 import { ContractModule } from './contract/module';
 import { PlutusTxModule } from './plutustx/module';
 import { QueueModule } from './queue/queue.module';
@@ -20,7 +19,9 @@ import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './flatworks/roles/roles.guard';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { BullModule } from '@nestjs/bull';
-
+import { AuditTxModule } from './audittx/module';
+import { NewsModule } from './news/module';
+import { WalletModule } from './wallet/module';
 @Module({
   imports: [
     ServeStaticModule.forRoot({
@@ -40,7 +41,6 @@ import { BullModule } from '@nestjs/bull';
     AuthModule,
     CurrencyModule,
     ToolModule,
-    WalletModule,
     QueueModule,
     ContractModule,
     PlutusTxModule,
@@ -48,7 +48,10 @@ import { BullModule } from '@nestjs/bull';
     PublicModule,
     MailModule,
     AccessTokenModule,
+    AuditTxModule,
     TestModule,
+    NewsModule,
+    WalletModule,
   ],
   providers: [
     {

@@ -11,7 +11,9 @@ import * as lodash from 'lodash';
 import {
   sumContracts,
   sumContractAndTxsByUser,
+  sumPublishedContractByMonth,
 } from '../flatworks/dbcripts/aggregate.scripts';
+import * as moment from 'moment';
 
 /*
 - Publish flow
@@ -28,7 +30,6 @@ import {
 - Distribution flow
   - users are able to get contracts as pending audit source code, functions and approval
   - It should uses only approved contracts
-
   */
 
 @Injectable()
@@ -53,6 +54,11 @@ export class ContractService {
   async findOne(id: string): Promise<Contract> {
     return await this.model.findById(id).exec();
   }
+
+  async findByName(name: string): Promise<Contract> {
+    return await this.model.findOne({ name: name }).exec();
+  }
+
   /*
 sample post data: 
  {
@@ -150,6 +156,175 @@ sample post data:
 {
     "name": "marlowe",
     "contractType": "marlowe",
+    "contract": {
+    "timeout": 1710414441000,
+    "timeout_continuation": "close",
+    "when": [
+      {
+        "case": {
+          "deposits": 75000000,
+          "into_account": {
+            "role_token": "Seller"
+          },
+          "of_token": {
+            "currency_symbol": "",
+            "token_name": ""
+          },
+          "party": {
+            "role_token": "Buyer"
+          }
+        },
+        "then": {
+          "timeout": 1710418041000,
+          "timeout_continuation": "close",
+          "when": [
+            {
+              "case": {
+                "choose_between": [
+                  {
+                    "from": 0,
+                    "to": 0
+                  }
+                ],
+                "for_choice": {
+                  "choice_name": "Everything is alright",
+                  "choice_owner": {
+                    "role_token": "Buyer"
+                  }
+                }
+              },
+              "then": "close"
+            },
+            {
+              "case": {
+                "choose_between": [
+                  {
+                    "from": 1,
+                    "to": 1
+                  }
+                ],
+                "for_choice": {
+                  "choice_name": "Report problem",
+                  "choice_owner": {
+                    "role_token": "Buyer"
+                  }
+                }
+              },
+              "then": {
+                "from_account": {
+                  "role_token": "Seller"
+                },
+                "pay": 75000000,
+                "then": {
+                  "timeout": 1710421641000,
+                  "timeout_continuation": "close",
+                  "when": [
+                    {
+                      "case": {
+                        "choose_between": [
+                          {
+                            "from": 1,
+                            "to": 1
+                          }
+                        ],
+                        "for_choice": {
+                          "choice_name": "Confirm problem",
+                          "choice_owner": {
+                            "role_token": "Seller"
+                          }
+                        }
+                      },
+                      "then": "close"
+                    },
+                    {
+                      "case": {
+                        "choose_between": [
+                          {
+                            "from": 0,
+                            "to": 0
+                          }
+                        ],
+                        "for_choice": {
+                          "choice_name": "Dispute problem",
+                          "choice_owner": {
+                            "role_token": "Seller"
+                          }
+                        }
+                      },
+                      "then": {
+                        "timeout": 1710425241000,
+                        "timeout_continuation": "close",
+                        "when": [
+                          {
+                            "case": {
+                              "choose_between": [
+                                {
+                                  "from": 0,
+                                  "to": 0
+                                }
+                              ],
+                              "for_choice": {
+                                "choice_name": "Dismiss claim",
+                                "choice_owner": {
+                                  "role_token": "Mediator"
+                                }
+                              }
+                            },
+                            "then": {
+                              "from_account": {
+                                "role_token": "Buyer"
+                              },
+                              "pay": 75000000,
+                              "then": "close",
+                              "to": {
+                                "account": {
+                                  "role_token": "Seller"
+                                }
+                              },
+                              "token": {
+                                "currency_symbol": "",
+                                "token_name": ""
+                              }
+                            }
+                          },
+                          {
+                            "case": {
+                              "choose_between": [
+                                {
+                                  "from": 1,
+                                  "to": 1
+                                }
+                              ],
+                              "for_choice": {
+                                "choice_name": "Confirm claim",
+                                "choice_owner": {
+                                  "role_token": "Mediator"
+                                }
+                              }
+                            },
+                            "then": "close"
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                },
+                "to": {
+                  "account": {
+                    "role_token": "Buyer"
+                  }
+                },
+                "token": {
+                  "currency_symbol": "",
+                  "token_name": ""
+                }
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
     "gitRepo": {
         "gitRepo": "https://github.com/jackchuong/test-smart-contract",
         "sourceCodeFolder": "contract.marlowe",
@@ -158,6 +333,7 @@ sample post data:
     }
 }
 */
+
   async create(createContractDto: CreateContractDto): Promise<Contract> {
     const contract = await new this.model({
       ...createContractDto,
@@ -245,6 +421,7 @@ sample post data:
     return await this.model.findByIdAndDelete(id).exec();
   }
 
+  
   //count for global app search
   async count(filter): Promise<any> {
     return await this.model.find(filter).count().exec();
@@ -266,6 +443,55 @@ sample post data:
       return result[0];
     }
 
-    return {};
+    return {
+      _id: 'sumContracts',
+      plutusContracts: 0,
+      aikenContracts: 0,
+      marloweContracts: 0,
+      isSourceCodeVerified: 0,
+      isFunctionVerified: 0,
+      isApproved: 0,
+      hasTxContracts: 0,
+      totalTxs: 0,
+    };
+  }
+
+  async sumPublishedContractByMonth(): Promise<any> {
+    const toDate = moment().toDate();
+    const fromDate = moment().subtract(1, 'year').toDate();
+
+    const months = [];
+    for (let i = 0; i < 12; i++) {
+      const month = moment().subtract(i, 'month').format('M-YYYY').toString();
+      const shortYear = moment()
+        .subtract(i, 'month')
+        .format('MM-YY')
+        .toString();
+      const date = moment().subtract(i, 'month').toDate();
+      months.push({ _id: month, shortYear, date });
+    }
+    const script = sumPublishedContractByMonth(fromDate, toDate);
+    const _result = await this.model.aggregate(script);
+
+    const emptyRecord = {
+      _id: '',
+      date: '',
+      numberOfPublishedContracts: 0,
+      numberOfCompiledContracts: 0,
+      numberOfSourceCodeVerifiedContracts: 0,
+      numberOfFunctionVerifiedContracts: 0,
+      numberOfApprovedContracts: 0,
+    };
+
+    const result = months.map((item) => {
+      const jobItem = _result.find((jobItem) => jobItem._id == item._id);
+      if (jobItem) {
+        return { ...jobItem, shortYear: item.shortYear };
+      }
+
+      return { ...emptyRecord, ...item };
+    });
+
+    return result.reverse();
   }
 }

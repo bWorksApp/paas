@@ -2,7 +2,6 @@ import { Module, forwardRef } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LocalStrategy } from './local.strategy';
 import { UserModule } from '../user/user.module';
-import { WalletModule } from '../wallet/module';
 import { MailModule } from '../mail/mail.module';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
@@ -20,7 +19,6 @@ import { HomePageStrategy } from './home-page.strategy';
     PassportModule,
     JwtModule.register({}),
     MailModule,
-    WalletModule,
   ],
   providers: [
     AuthService,

@@ -1,20 +1,20 @@
 const cmsSearchConfig = () => [
   {
     subUrl: 'contracts',
-    serviceName: 'postJobService',
-    text: 'Found posted jobs',
+    serviceName: 'contractService',
+    text: 'Found contracts:',
   },
 
   {
     subUrl: 'users',
     serviceName: 'userService',
-    text: 'Found users',
+    text: 'Found users:',
   },
 
   {
     subUrl: 'plutustxs',
     serviceName: 'plutusTxService',
-    text: 'Found plutus payment transactions',
+    text: 'Found transactions:',
   },
 ];
 

@@ -7,5 +7,6 @@ export class UserWalletRegisterDto {
   isdAppDev: boolean;
   authType: authType;
   walletRewardAddress: string;
+  walletAddress: string;
   nonce: string;
 }

@@ -28,19 +28,20 @@ export interface AddressUtxoType {
 }
 
 export interface DashboardCardData {
-  paidByPlutus: {
-    numberOfJobs: number;
+  dAppTxs: {
+    dAppTxs: number;
     totalAmount: number;
   };
+
   activeUsers: {
-    jobSeekers: number;
-    employers: number;
+    contractDevs: number;
+    dAppDevs: number;
   };
-  postedJobs: {
-    postedJobs: number;
-    bids: number;
+  publishedContracts: {
+    publishedContracts: number;
+    approvedContracts: number;
   };
-  plutusTxs: {
+  lockAndUnlockTxs: {
     lockTxs: number;
     unlockTxs: number;
   };

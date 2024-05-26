@@ -2,6 +2,7 @@ import { InjectQueue } from '@nestjs/bull';
 import { Controller, Get, Response, Query } from '@nestjs/common';
 import { Queue } from 'bull';
 import { queryTransform, formatRaList } from '../flatworks/utils/getlist';
+import * as lodash from 'lodash';
 
 @Controller('queues')
 export class QueueController {
@@ -25,7 +26,16 @@ export class QueueController {
         : ['waiting', 'active', 'completed', 'failed', 'delayed'];
     const jobs = await this.QueueQueue.getJobs(jobStatus);
 
-    const _data = jobs.slice(
+    /* filter compile status of a contract Id: 
+    http://localhost:3000/queues?filter={"data": {"name":  "aiken 106"}}
+    */
+    const filter = !lodash.isEmpty(transformQuery.filter)
+      ? JSON.parse(query.filter)
+      : {};
+
+    const _jobs = lodash.filter(jobs, filter);
+
+    const _data = _jobs.slice(
       transformQuery.skip,
       transformQuery.limit + transformQuery.skip,
     );

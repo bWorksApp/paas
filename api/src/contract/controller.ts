@@ -24,21 +24,8 @@ export class ContractController {
 
   @Get()
   async index(@Response() res: any, @Query() query, @Request() req) {
-    //   const userId = req.user.userId;
     const mongooseQuery = queryTransform(query);
-    /*  mongooseQuery.filter.queryType === 'developer'
-      ? (mongooseQuery.filter.author = userId)
-      : null; */
     delete mongooseQuery.filter.queryType;
-    const result = await this.service.findAll(mongooseQuery);
-
-    return formatRaList(res, result);
-  }
-
-  @Get('/getall')
-  async getAll(@Response() res: any, @Query() query, @Request() req) {
-    const mongooseQuery = queryTransform(query);
-
     const result = await this.service.findAll(mongooseQuery);
     return formatRaList(res, result);
   }

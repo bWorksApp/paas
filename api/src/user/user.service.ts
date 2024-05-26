@@ -74,9 +74,20 @@ export class UserService {
     return _user;
   }
 
-  async findOne(username: string): Promise<User> {
-    const [user] = await this.model.find({ username: username }).exec();
+  async findOne(usernameOrEmail: string): Promise<User> {
+    const [user] = await this.model
+      .find({
+        $or: [{ username: usernameOrEmail }, { email: usernameOrEmail }],
+      })
+      .exec();
     return user;
+  }
+
+  async findNonce(walletRewardAddress: string): Promise<string> {
+    const [user] = await this.model
+      .find({ walletRewardAddress: walletRewardAddress })
+      .exec();
+    return user?.nonce;
   }
 
   async findByWallet(filter = {}): Promise<any> {
