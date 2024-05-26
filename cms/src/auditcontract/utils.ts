@@ -3,8 +3,13 @@ import { PlutusScript, resolvePlutusScriptAddress } from "@meshsdk/core";
 /*
 get contract address: networkId = 1 for mainnet, 0 for testnet
 */
-const parseContractAddress = (script, networkId) =>
-  resolvePlutusScriptAddress(script, networkId);
+const parseContractAddress = (script, networkId) => {
+  let scriptAddress = "";
+  try {
+    scriptAddress = resolvePlutusScriptAddress(script, networkId);
+  } catch (error) {}
+  return scriptAddress;
+};
 
 /*
 convert origin compiled contract to PlutusScript format

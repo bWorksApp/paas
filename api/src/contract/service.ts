@@ -55,6 +55,10 @@ export class ContractService {
     return await this.model.findById(id).exec();
   }
 
+  async findByName(name: string): Promise<Contract> {
+    return await this.model.findOne({ name: name }).exec();
+  }
+
   /*
 sample post data: 
  {
@@ -417,6 +421,7 @@ sample post data:
     return await this.model.findByIdAndDelete(id).exec();
   }
 
+  
   //count for global app search
   async count(filter): Promise<any> {
     return await this.model.find(filter).count().exec();
@@ -438,7 +443,17 @@ sample post data:
       return result[0];
     }
 
-    return {};
+    return {
+      _id: 'sumContracts',
+      plutusContracts: 0,
+      aikenContracts: 0,
+      marloweContracts: 0,
+      isSourceCodeVerified: 0,
+      isFunctionVerified: 0,
+      isApproved: 0,
+      hasTxContracts: 0,
+      totalTxs: 0,
+    };
   }
 
   async sumPublishedContractByMonth(): Promise<any> {

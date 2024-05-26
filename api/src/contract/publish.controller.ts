@@ -9,24 +9,23 @@ import {
   Response,
   Query,
   Request,
-  UseGuards,
 } from '@nestjs/common';
 import { CreateContractDto } from './dto/create.dto';
 import { UpdateContractDto } from './dto/update.dto';
 import { ContractService } from './service';
 import { queryTransform, formatRaList } from '../flatworks/utils/getlist';
-import { Roles } from '../flatworks/roles/roles.decorator';
-import { Role } from '../flatworks/types/types';
 
-@Controller('contracts')
-export class ContractController {
+@Controller('publishcontracts')
+export class PublishContractController {
   constructor(private readonly service: ContractService) {}
 
   @Get()
   async index(@Response() res: any, @Query() query, @Request() req) {
+    const userId = req.user.userId;
     const mongooseQuery = queryTransform(query);
-    delete mongooseQuery.filter.queryType;
+    mongooseQuery.filter.author = userId;
     const result = await this.service.findAll(mongooseQuery);
+
     return formatRaList(res, result);
   }
 
@@ -37,6 +36,7 @@ export class ContractController {
 
   @Post()
   async create(@Body() createContractDto: CreateContractDto, @Request() req) {
+    console.log(createContractDto);
     const userId = req.user.userId;
     return await this.service.create({ ...createContractDto, author: userId });
   }
@@ -49,16 +49,6 @@ export class ContractController {
   ) {
     const userId = req.user['userId'];
     return await this.service.update(id, updateContractDto, userId);
-  }
-
-  //cms only
-  @Roles(Role.Admin)
-  @Put('/approve/:id')
-  async approve(
-    @Param('id') id: string,
-    @Body() updateContractDto: UpdateContractDto,
-  ) {
-    return await this.service.approve(id, updateContractDto);
   }
 
   @Delete(':id')

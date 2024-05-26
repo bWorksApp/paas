@@ -72,6 +72,7 @@ const SmartContracts = () => {
     sort: { field: "createdAt", order: "DESC" },
   });
 
+  console.log(contract);
   React.useEffect(() => {
     if (!contracts.isLoading && !contracts.error) {
       const selected = contracts.data[0].id;

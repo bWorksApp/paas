@@ -40,6 +40,14 @@ export class PlutusTxController {
     return formatRaList(res, result);
   }
 
+  @Get('/yourtxs')
+  async getYourTxs(@Response() res: any, @Query() query, @Req() request) {
+    const mongooseQuery = queryTransform(query);
+    const userId = lodash.get(request, 'user.userId', null);
+    const result = await this.service.findYourTxs(mongooseQuery, userId);
+    return formatRaList(res, result);
+  }
+
   @Get(':id')
   async find(@Param('id') id: string) {
     return await this.service.findOne(id);

@@ -180,15 +180,7 @@ const Menu = ({ dense = false }: MenuProps) => {
           leftIcon={<NotesIcon />}
           dense={dense}
         />
-        <MenuItemLink
-          to="/fetchGithub"
-          state={{ _scrollToTop: true }}
-          primaryText={translate(`resources.gits.name`, {
-            smart_count: 2,
-          })}
-          leftIcon={<BlurOnIcon />}
-          dense={dense}
-        />
+
         <MenuItemLink
           to="/parseAddress"
           state={{ _scrollToTop: true }}
@@ -206,6 +198,13 @@ const Menu = ({ dense = false }: MenuProps) => {
         icon={<ConstructionIcon />}
         dense={dense}
       >
+        <MenuItemLink
+          to="/news"
+          state={{ _scrollToTop: true }}
+          primaryText="News"
+          leftIcon={<FormatListNumberedOutlinedIcon />}
+          dense={dense}
+        />
         <MenuItemLink
           to="/adminWallets"
           state={{ _scrollToTop: true }}

@@ -22,6 +22,7 @@ import AuditContract from "./auditcontract/functionAudit";
 import Typography from "@mui/material/Typography";
 import users from "./users";
 import audittxs from "./audittx";
+import news from "./news";
 
 import { ContractReports } from "./contractreports";
 import { ApiCallReports } from "./dapptxreports";
@@ -30,8 +31,14 @@ const loginUrl = process.env.REACT_APP_LOGIN_URL;
 const apiUrl = process.env.REACT_APP_API_URL;
 const renewTokenUrl = process.env.REACT_APP_RENEW_ACCESS_TOKEN_URL;
 const logoutUrl = process.env.REACT_APP_LOGOUT_URL;
+const walletLoginUrl = process.env.REACT_APP_WALLET_LOGIN_URL;
 
-const _authProvider = authProvider(loginUrl, renewTokenUrl, logoutUrl);
+const _authProvider = authProvider(
+  loginUrl,
+  renewTokenUrl,
+  logoutUrl,
+  walletLoginUrl
+);
 const restProvider = dataProvider(apiUrl);
 
 const i18nProvider = polyglotI18nProvider((locale) => {
@@ -46,7 +53,7 @@ const App = () => {
   return (
     <MeshProvider>
       <Admin
-        title="bWorks"
+        title="paas"
         dataProvider={restProvider}
         authProvider={_authProvider}
         dashboard={Dashboard}
@@ -72,6 +79,7 @@ const App = () => {
         <Resource name="audittxs" {...audittxs} />
         <Resource name="queues" {...queues} />
         <Resource name="adminWallets" {...adminWallets} />
+        <Resource name="news" {...news} />
       </Admin>
       <Typography
         variant="subtitle2"

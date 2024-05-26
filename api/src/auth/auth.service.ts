@@ -17,7 +17,6 @@ import {
   trimUsername,
 } from '../flatworks/utils/common';
 import { Role } from '../flatworks/utils/roles';
-import { WalletService } from '../wallet/service';
 import { validateAddress } from '../flatworks/utils/cardano';
 import { ChangePasswordDto } from '../user/dto/change-password.dto';
 import { UserWalletRegisterDto } from '../user/dto/wallet-user-register.dto';
@@ -34,7 +33,6 @@ export class AuthService {
     @Inject(forwardRef(() => UserService)) private userService: UserService,
     private jwtService: JwtService,
     private mailService: MailService,
-    private walletService: WalletService,
   ) {}
 
   /*
@@ -116,8 +114,10 @@ validate only approved users
   }
 
   async adminLogin(user: any) {
+    console.log(user);
     if (!user._doc.roles.includes(Role.Admin)) return;
     const tokens = await this.getTokens(user);
+
     await this.updateRefreshToken(user._doc._id, tokens.refreshToken);
     return {
       ...tokens,
@@ -179,8 +179,6 @@ validate only approved users
 
   //register user with wallet
   async registerWallet(registerUser: UserWalletRegisterDto): Promise<any> {
-    //{username: abc, email: abc@gmail.com, password: ***, fullName: abc, walletAddress: abc}
-    //trim username & fullName
     const nonce = await getNonce();
     registerUser.username = trimUsername(registerUser.username);
     registerUser.fullName = trimFullName(registerUser.fullName);
@@ -219,10 +217,8 @@ validate only approved users
     return this.userService.createWalletUser(registerUser);
   }
 
-  //register user with email
+  //register user with email - {username: abc, email: abc@gmail.com, password: ***, fullName: abc, walletAddress: abc}
   async register(registerUser: any): Promise<any> {
-    //{username: abc, email: abc@gmail.com, password: ***, fullName: abc, walletAddress: abc}
-    //trim username & fullName
     registerUser.username = trimUsername(registerUser.username);
     registerUser.fullName = trimFullName(registerUser.fullName);
 
@@ -235,11 +231,15 @@ validate only approved users
       email: registerUser.email,
     });
 
-    const _wallet = await this.walletService.findAllRaw({
-      address: registerUser.walletAddress,
-    });
+    const _wallet = registerUser.walletAddress
+      ? await this.userService.findAllRaw({
+          walletAddress: registerUser.walletAddress,
+        })
+      : [];
 
-    const _isCardanoAddress = await validateAddress(registerUser.walletAddress);
+    const _isCardanoAddress = registerUser.walletAddress
+      ? await validateAddress(registerUser.walletAddress)
+      : true;
 
     const errorMessage = !validateEmail(registerUser.email)
       ? 'Not a valid email address'
@@ -254,9 +254,9 @@ validate only approved users
       : _wallet.length > 0
       ? 'Wallet is already in use'
       : !validateUsername(registerUser.username)
-      ? 'Username must not contain reserved keywords: cms, admin, bworks'
+      ? 'Username must not contain reserved keywords: cms, admin, paas'
       : !validateUsername(registerUser.fullName)
-      ? 'Full name must not contain reserved keywords: cms, admin, bworks'
+      ? 'Full name must not contain reserved keywords: cms, admin, paas'
       : null;
 
     if (errorMessage) {
@@ -326,21 +326,9 @@ validate only approved users
 
   async verify(user: any): Promise<any> {
     console.log(user);
-    const insertedUser = (await this.userService.create({
+    return this.userService.create({
       ...user,
       roles: [Role.User],
-    })) as any;
-    const { id: userId, username } = insertedUser;
-
-    const { walletAddress } = user;
-    const _wallet = await this.walletService.create(
-      {
-        username,
-        address: walletAddress,
-      },
-      userId,
-    );
-
-    return insertedUser;
+    });
   }
 }

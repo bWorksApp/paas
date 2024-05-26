@@ -46,7 +46,7 @@ import { filterTransform } from "./utils";
     .customMethod("todos", { data: { title: "title" } }, "POST")
     .then((result) => console.log(result))
     .catch((error) => console.error(error));
-
+  * "Access-Control-Allow-Origin": "*" to disable CORS
  */
 
 export default (
@@ -75,9 +75,10 @@ export default (
             headers: new Headers({
               Range: `${resource}=${rangeStart}-${rangeEnd}`,
               Authorization: `Bearer ${token}`,
+              "Access-Control-Allow-Origin": "*",
             }),
           }
-        : {};
+        : { "Access-Control-Allow-Origin": "*" };
 
     return httpClient(url, options).then(({ headers, json }) => {
       if (!headers.has(countHeader)) {
@@ -252,7 +253,10 @@ export default (
   customMethod: (resource, params, method) => {
     const token = localStorage.getItem("accessToken");
     const options = {
-      headers: new Headers({ Authorization: `Bearer ${token}` }),
+      headers: new Headers({
+        Authorization: `Bearer ${token}`,
+        "Access-Control-Allow-Origin": "*",
+      }),
     };
     if (method === "GET") {
       const query = {

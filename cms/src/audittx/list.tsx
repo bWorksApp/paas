@@ -26,7 +26,6 @@ const ListScreen = () => {
     ? process.env.REACT_APP_CARDANO_EXPLORER_MAINNET_URL
     : process.env.REACT_APP_CARDANO_EXPLORER_PREPROD_URL;
   const unlockUri = isMainnet ? "queues/unlockMainnet" : "queues/unlock";
-  console.log(unlockUri);
 
   const filterToQuery = (searchText) => ({ textSearch: searchText });
   const filters = [
@@ -47,6 +46,7 @@ const ListScreen = () => {
       sx={{ width: 300 }}
     />,
   ];
+
   return (
     <List
       empty={<></>}

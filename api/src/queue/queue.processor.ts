@@ -90,7 +90,13 @@ export class QueueProcessor {
   @Process('compileContract')
   compileContract(job: Job) {
     const folder = process.env.SHELL_SCRIPTS_PATH;
+    const isActiveCompiler = process.env.ACTIVE_COMPILER;
     const buildFolder = uuidv4();
+
+    if (isActiveCompiler !== 'true') {
+      console.log('Compiler is inactive');
+      return;
+    }
 
     if (!job.data.gitRepo || !job.data.gitRepo.gitRepo) {
       console.log('Invalid source code repo');

@@ -93,11 +93,11 @@ const DAppTxChart = () => {
         />
       </FormGroup>
       <CardContent sx={{ mt: 0, pt: 0 }}>
-        <div style={{ width: "100%", height: 290 }}>
+        <div style={{ width: "100%", height: 325 }}>
           <ResponsiveContainer>
             <BarChart
               width={700}
-              height={290}
+              height={325}
               data={data}
               margin={{ top: 10, right: 0, left: 0, bottom: 0 }}
             >

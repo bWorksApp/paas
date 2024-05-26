@@ -103,6 +103,25 @@ export class PlutusTxService {
     return { count: count, data: data };
   }
 
+  async findYourTxs(query: MongooseQuery, userId): Promise<RaList> {
+    if (!userId) return { count: 0, data: [] };
+
+    const filter = {
+      ...query.filter,
+      $or: [{ lockUserId: userId }, { unlockUserId: userId }],
+    };
+
+    const count = await this.model.find(filter).count().exec();
+    const data = await this.model
+      .find(filter)
+      .sort(query.sort)
+      .skip(query.skip)
+      .limit(query.limit)
+      .exec();
+
+    return { count: count, data: data };
+  }
+
   async findOne(id: string): Promise<PlutusTx> {
     return await this.model.findById(id).exec();
   }

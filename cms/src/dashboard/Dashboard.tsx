@@ -23,8 +23,8 @@ const VerticalSpacer = () => <span style={{ height: "1em" }} />;
 
 const Dashboard = () => {
   const [dashBoardCardData, setDashBoardCardData] = React.useState({
-    paidByPlutus: {
-      numberOfJobs: 0,
+    dAppTxs: {
+      dAppTxs: 0,
       totalAmount: 0,
     },
     activeUsers: {
@@ -32,7 +32,7 @@ const Dashboard = () => {
       dAppDevs: 0,
     },
     publishedContracts: { publishedContracts: 0, approvedContracts: 0 },
-    plutusTxs: {
+    lockAndUnlockTxs: {
       lockTxs: 0,
       unlockTxs: 0,
     },
@@ -55,13 +55,13 @@ const Dashboard = () => {
     <div>
       <div style={styles.flexColumn as CSSProperties}>
         <PaidByPlutus
-          numberOfJobs={dashBoardCardData.paidByPlutus.numberOfJobs}
-          totalAmount={dashBoardCardData.paidByPlutus.totalAmount}
+          dAppTxs={dashBoardCardData.dAppTxs.dAppTxs}
+          totalAmount={dashBoardCardData.dAppTxs.totalAmount}
         />
         <VerticalSpacer />
         <SmartContractTxs
-          lockTxs={dashBoardCardData.plutusTxs.lockTxs}
-          unlockTxs={dashBoardCardData.plutusTxs.unlockTxs}
+          lockTxs={dashBoardCardData.lockAndUnlockTxs.lockTxs}
+          unlockTxs={dashBoardCardData.lockAndUnlockTxs.unlockTxs}
         />
         <VerticalSpacer />
         <PostedJobsChart />
@@ -77,8 +77,8 @@ const Dashboard = () => {
         />
         <Spacer />
         <SmartContractTxs
-          lockTxs={dashBoardCardData.plutusTxs.lockTxs}
-          unlockTxs={dashBoardCardData.plutusTxs.unlockTxs}
+          lockTxs={dashBoardCardData.lockAndUnlockTxs.lockTxs}
+          unlockTxs={dashBoardCardData.lockAndUnlockTxs.unlockTxs}
         />
       </div>
       <div style={styles.singleCol}>
@@ -97,8 +97,8 @@ const Dashboard = () => {
         <div style={styles.leftCol}>
           <div style={styles.flex}>
             <PaidByPlutus
-              numberOfJobs={dashBoardCardData.paidByPlutus.numberOfJobs}
-              totalAmount={dashBoardCardData.paidByPlutus.totalAmount}
+              dAppTxs={dashBoardCardData.dAppTxs.dAppTxs}
+              totalAmount={dashBoardCardData.dAppTxs.totalAmount}
             />
             <Spacer />
             <ActiveUsers
@@ -113,9 +113,6 @@ const Dashboard = () => {
           <div style={styles.singleCol}>
             <PaymentChart />
           </div>
-          <div style={styles.singleCol}>
-            <UserStatistic></UserStatistic>
-          </div>
         </div>
         <div style={styles.rightCol}>
           <div style={styles.flex}>
@@ -127,8 +124,8 @@ const Dashboard = () => {
             />
             <Spacer />
             <SmartContractTxs
-              lockTxs={dashBoardCardData.plutusTxs.lockTxs}
-              unlockTxs={dashBoardCardData.plutusTxs.unlockTxs}
+              lockTxs={dashBoardCardData.lockAndUnlockTxs.lockTxs}
+              unlockTxs={dashBoardCardData.lockAndUnlockTxs.unlockTxs}
             />
           </div>
         </div>

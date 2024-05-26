@@ -23,5 +23,3 @@ export class BaseContractDto {
   version: string;
   description: string;
 }
-
-

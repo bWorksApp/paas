@@ -82,3 +82,182 @@ export class CustomController {
     return res.json(result);
   }
 }
+/*
+http://localhost:3000/customapis/sumpublishedcontractbymonth
+[
+    {
+        "_id": "6-2023",
+        "date": "2023-06-23T10:43:38.254Z",
+        "numberOfPublishedContracts": 0,
+        "numberOfCompiledContracts": 0,
+        "numberOfSourceCodeVerifiedContracts": 0,
+        "numberOfFunctionVerifiedContracts": 0,
+        "numberOfApprovedContracts": 0,
+        "shortYear": "06-23"
+    }, {
+        "_id": "7-2023",
+        "date": "2023-07-23T10:43:38.254Z",
+        "numberOfPublishedContracts": 0,
+        "numberOfCompiledContracts": 0,
+        "numberOfSourceCodeVerifiedContracts": 0,
+        "numberOfFunctionVerifiedContracts": 0,
+        "numberOfApprovedContracts": 0,
+        "shortYear": "07-23"
+    },
+  ]
+
+  http://localhost:3000/customapis/sumcontracts
+{
+    "_id": "sumContracts",
+    "plutusContracts": 11,
+    "aikenContracts": 14,
+    "marloweContracts": 2,
+    "isSourceCodeVerified": 16,
+    "isFunctionVerified": 11,
+    "isApproved": 5,
+    "hasTxContracts": 1
+}
+
+http://localhost:3000/customapis/sumdapptxs
+{
+    "_id": "plutusReports",
+    "sumLockedAmounts": 766,
+    "numberOfLockTxs": 29,
+    "sumUnlockedAmounts": 437,
+    "numberOfUnlockedTxs": 14
+}
+
+http://localhost:3000/customapis/sumtxsbymonth
+[
+    {
+        "_id": "6-2023",
+        "date": "2023-06-06T19:18:23.631Z",
+        "sumLockedAmounts": 210,
+        "numberOfLockTxs": 9,
+        "sumUnlockedAmounts": 114,
+        "numberOfUnlockedTxs": 6,
+        "shortYear": "06-23"
+    },
+    {
+        "_id": "7-2023",
+        "date": "2023-07-05T06:14:03.002Z",
+        "sumLockedAmounts": 215,
+        "numberOfLockTxs": 4,
+        "sumUnlockedAmounts": 0,
+        "numberOfUnlockedTxs": 0,
+        "shortYear": "07-23"
+    },
+    {
+        "_id": "8-2023",
+        "date": "2023-08-23T10:46:10.936Z",
+        "sumLockedAmounts": 0,
+        "numberOfLockTxs": 0,
+        "sumUnlockedAmounts": 0,
+        "numberOfUnlockedTxs": 0,
+        "shortYear": "08-23"
+    },
+    {
+        "_id": "9-2023",
+        "date": "2023-09-23T10:46:10.936Z",
+        "sumLockedAmounts": 0,
+        "numberOfLockTxs": 0,
+        "sumUnlockedAmounts": 0,
+        "numberOfUnlockedTxs": 0,
+        "shortYear": "09-23"
+    },
+    {
+        "_id": "10-2023",
+        "date": "2023-10-23T10:46:10.936Z",
+        "sumLockedAmounts": 0,
+        "numberOfLockTxs": 0,
+        "sumUnlockedAmounts": 0,
+        "numberOfUnlockedTxs": 0,
+        "shortYear": "10-23"
+    },
+    {
+        "_id": "11-2023",
+        "date": "2023-11-26T15:10:59.976Z",
+        "sumLockedAmounts": 6,
+        "numberOfLockTxs": 2,
+        "sumUnlockedAmounts": 3,
+        "numberOfUnlockedTxs": 1,
+        "shortYear": "11-23"
+    },
+    {
+        "_id": "12-2023",
+        "date": "2023-12-01T08:44:34.862Z",
+        "sumLockedAmounts": 300,
+        "numberOfLockTxs": 1,
+        "sumUnlockedAmounts": 300,
+        "numberOfUnlockedTxs": 1,
+        "shortYear": "12-23"
+    },
+    {
+        "_id": "1-2024",
+        "date": "2024-01-23T10:46:10.936Z",
+        "sumLockedAmounts": 0,
+        "numberOfLockTxs": 0,
+        "sumUnlockedAmounts": 0,
+        "numberOfUnlockedTxs": 0,
+        "shortYear": "01-24"
+    },
+    {
+        "_id": "2-2024",
+        "date": "2024-02-23T10:46:10.936Z",
+        "sumLockedAmounts": 0,
+        "numberOfLockTxs": 0,
+        "sumUnlockedAmounts": 0,
+        "numberOfUnlockedTxs": 0,
+        "shortYear": "02-24"
+    },
+    {
+        "_id": "3-2024",
+        "date": "2024-03-23T10:46:10.936Z",
+        "sumLockedAmounts": 0,
+        "numberOfLockTxs": 0,
+        "sumUnlockedAmounts": 0,
+        "numberOfUnlockedTxs": 0,
+        "shortYear": "03-24"
+    },
+    {
+        "_id": "4-2024",
+        "date": "2024-04-23T10:46:10.936Z",
+        "sumLockedAmounts": 0,
+        "numberOfLockTxs": 0,
+        "sumUnlockedAmounts": 0,
+        "numberOfUnlockedTxs": 0,
+        "shortYear": "04-24"
+    },
+    {
+        "_id": "5-2024",
+        "date": "2024-05-23T10:46:10.936Z",
+        "sumLockedAmounts": 0,
+        "numberOfLockTxs": 0,
+        "sumUnlockedAmounts": 0,
+        "numberOfUnlockedTxs": 0,
+        "shortYear": "05-24"
+    }
+]
+
+http://localhost:3000/customapis/sumcontractandtxbyuser
+{
+    "_id": "sumContracts",
+    "plutusContracts": 11,
+    "aikenContracts": 7,
+    "marloweContracts": 2,
+    "isSourceCodeVerified": 14,
+    "isFunctionVerified": 11,
+    "isApproved": 5,
+    "hasTxContracts": 1,
+    "totalTxs": 2
+}
+
+http://localhost:3000/customapis/sumdAppTxsByUser
+{
+    "_id": "plutusTxsByUser",
+    "sumLockedAmounts": 300,
+    "numberOfLockTxs": 1,
+    "sumUnlockedAmounts": 300,
+    "numberOfUnlockedTxs": 1
+}
+*/

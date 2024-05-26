@@ -25,34 +25,21 @@ export class PublicService {
     private readonly token: Model<TokenReceiverDocument>,
     @InjectModel(Campaign.name)
     private readonly campaign: Model<CampaignDocument>,
+
     private readonly plutusTxService: PlutusTxService,
     private readonly contractService: ContractService,
     private readonly userService: UserService,
   ) {}
 
   async getDashboardData(): Promise<DashboardCardData> {
-    /*
-    {
-      paidByPlutus: {
-        numberOfJobs: 10,
-        totalAmount: 100
-      },
-      activeUsers: {
-        contractDevs: 10,
-        dAppDevs: 10,
-      },
-      postedJobs: 
-     { postedJobs: 100,
-      bids: 1000}
-    },
-    plutusTxs: {
-      lockTxs: 100,
-      unlockTxs: 10
-    }
-  }
-    */
     //limit 0, to get all records
     const query = { filter: {}, sort: {}, skip: 0, limit: 0 };
+    const approvedContractQuery = {
+      filter: { isApproved: true },
+      sort: {},
+      skip: 0,
+      limit: 0,
+    };
 
     const plutusTxs = await this.plutusTxService.findAll(query);
     const paidAmount = plutusTxs?.data.reduce(
@@ -77,12 +64,14 @@ export class PublicService {
     const contractDevs = await this.userService.findAllList(contractDevQuery);
     const dAppDevs = await this.userService.findAllList(dAppDevQuery);
 
-    const postedJobs = await this.contractService.findAll(query);
-    const jobBids = await this.contractService.findAll(query);
+    const publishedContracts = await this.contractService.findAll(query);
+    const approvedContracts = await this.contractService.findAll(
+      approvedContractQuery,
+    );
 
     const data = {
-      paidByPlutus: {
-        numberOfJobs: plutusTxs.data.length || 0,
+      dAppTxs: {
+        dAppTxs: plutusTxs.data.length || 0,
         totalAmount: paidAmount,
       },
       activeUsers: {
@@ -91,11 +80,11 @@ export class PublicService {
       },
 
       publishedContracts: {
-        publishedContracts: postedJobs.count,
-        approvedContracts: jobBids.count,
+        publishedContracts: publishedContracts.count,
+        approvedContracts: approvedContracts.count,
       },
 
-      plutusTxs: {
+      lockAndUnlockTxs: {
         lockTxs: plutusTxs.count,
         unlockTxs: hasUnlockTxs.length,
       },

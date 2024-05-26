@@ -50,7 +50,6 @@ export default function SmartContract(props) {
   if (!contracts || contracts.length === 0) {
     return (
       <Typography variant="subtitle1" gutterBottom>
-        {" "}
         No smart contract
       </Typography>
     );
