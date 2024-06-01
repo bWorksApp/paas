@@ -1554,10 +1554,10 @@
   resolved "https://registry.yarnpkg.com/@emurgo/cardano-message-signing-nodejs/-/cardano-message-signing-nodejs-1.0.1.tgz#b2fa1f7541055a6c4b8e805492b1a9362bea5835"
   integrity sha512-PoKh1tQnJX18f8iEr8Jk1KXxKCn9eqaSslMI1pyOJvYRJhQVDLCh0+9YReufjp0oFJIY1ShcrR+4/WnECVZUKQ==
 
-"@emurgo/cardano-serialization-lib-asmjs@^11.1.0":
-  version "11.1.0"
-  resolved "https://registry.yarnpkg.com/@emurgo/cardano-serialization-lib-asmjs/-/cardano-serialization-lib-asmjs-11.1.0.tgz#cf55bd9de7759f117bfaa85442eff1c8c910ca05"
-  integrity sha512-wxF/Yle0HBCs19bDue+zpG8pRTP0iZk90TTNX3VfsAUmIRbP2GqheEN6Uwsd0kfCdwkRbOZCSEb7+QLJ6MOCPg==
+"@emurgo/cardano-serialization-lib-asmjs@^11.5.0":
+  version "11.5.0"
+  resolved "https://registry.yarnpkg.com/@emurgo/cardano-serialization-lib-asmjs/-/cardano-serialization-lib-asmjs-11.5.0.tgz#0c71fc8fedce8ae8304180d40dfb5ca76f76e8f0"
+  integrity sha512-QQkavjEug/EmBFg02bmSg0eLYiOaRa1lmRG8q6fGRkx3O9BX1iZQDZJmirPDBTkTO3CpNB0q9se8DQFFcjREIw==
 
 "@emurgo/cardano-serialization-lib-browser@11.3.0":
   version "11.3.0"
@@ -2130,10 +2130,11 @@
     semver "^7.3.5"
     tar "^6.1.11"
 
+
 "@meshsdk/core@^1.5.1":
-  version "1.5.1"
-  resolved "https://registry.yarnpkg.com/@meshsdk/core/-/core-1.5.1.tgz#6f120505523365b28757dcff3df93a3434c7c41f"
-  integrity sha512-qD1f39ylCy2jlTccGxppbmykLbQhzPWagc77Lsn7k0eIzrfB/JQBLxYD0e/eTvr55uZ08qV456vLKl2RSQ9u+g==
+  version "1.5.8"
+  resolved "https://registry.yarnpkg.com/@meshsdk/core/-/core-1.5.8.tgz#fa83c4d8aefbccdbb492c37c39150102cf596e59"
+  integrity sha512-NJ1BiQ21zhfXUu/qgCX1IPBfGr2eySjxyId8IbypH97zLsg4ihddK+AJsEfY89ndb+DyT7KkQ/eUJz7tWeurbA==
   dependencies:
     "@emurgo/cardano-message-signing-browser" "1.0.1"
     "@emurgo/cardano-message-signing-nodejs" "1.0.1"
@@ -2146,9 +2147,9 @@
     zod "3.19.1"
 
 "@meshsdk/react@^1.1.6":
-  version "1.1.6"
-  resolved "https://registry.yarnpkg.com/@meshsdk/react/-/react-1.1.6.tgz#be568db31ff300e67b2b36bf95cecea446eba50b"
-  integrity sha512-4qaNsp6b6VrIrS0UsCr7NcCw3qKsxGc0bcM4x1XX5R1eh7abSxFzzbNbMCWOympclQPrS77Y1tmpGeTQiJRMzQ==
+  version "1.1.8"
+  resolved "https://registry.yarnpkg.com/@meshsdk/react/-/react-1.1.8.tgz#b8ed9704f24f34337ae8a9724ce921e39bf07aff"
+  integrity sha512-JVe11mgaOuEXDJKpR9j2PaTOo4q5Pz1ALEGy8IWzPxRfFO2EmfUHLV/EK9ErRFAzChm2UtcUOMwkLeqASLs2bg==
   dependencies:
     styled-components "5.3.6"
 

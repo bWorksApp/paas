@@ -55,7 +55,7 @@ export class AuditTxController {
   }
 
   @Put('/unlock/:lockedTxHash')
-  async approve(
+  async updateTx(
     @Param('lockedTxHash') lockedTxHash: string,
     @Body() updateAuditTxDto: UpdateAuditTxDto,
     @Request() req,

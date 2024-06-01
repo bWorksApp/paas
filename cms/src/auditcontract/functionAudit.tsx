@@ -167,7 +167,7 @@ const SmartContracts = () => {
           data: {
             name: auditName,
             amount: amountToLock,
-            contractId: contract.selected,
+            smartContractId: contract.selected,
             scriptAddress: scriptAddress,
             assetName: "Ada",
             isLockSuccess: false,
@@ -185,7 +185,7 @@ const SmartContracts = () => {
         data: {
           name: auditName,
           amount: amountToLock,
-          contractId: contract.selected,
+          smartContractId: contract.selected,
           scriptAddress: scriptAddress,
           assetName: "Ada",
           isLockSuccess: true,
@@ -216,6 +216,8 @@ const SmartContracts = () => {
 
     const collateralUtxos = await wallet.getCollateral();
 
+    console.log(collateralUtxos, address);
+
     if (!utxo || !receiveAddress || !address) {
       setNotification({
         ...notification,
@@ -239,7 +241,7 @@ const SmartContracts = () => {
           script: plutusScript,
           datum: utxo,
         })
-        .sendValue(address, utxo) // address is recipient address
+        .sendValue(receiveAddress, utxo) // address is recipient address
         .setCollateral(collateralUtxos) //this is option, we either set or not set still works
         .setRequiredSigners([address]);
 
@@ -287,12 +289,12 @@ const SmartContracts = () => {
           handleChangeRedeemer={handleChangeRedeemer}
           handleContractChange={handleContractChange}
           handleChangeLockAda={handleChangeLockAda}
+          receiveAddress={receiveAddress}
           handleReceiveAddressChange={handleReceiveAddressChange}
           contract={contract}
           lockFunction={lockFunction}
           unlockFunction={unlockFunction}
           amountToLock={amountToLock}
-          receiveAddress={receiveAddress}
           notification={notification}
         ></SmartContractAudit>
         <CardanoWallet />

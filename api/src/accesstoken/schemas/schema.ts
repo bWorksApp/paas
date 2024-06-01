@@ -1,19 +1,23 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import * as uniqueValidator from 'mongoose-unique-validator';
+import { DApp } from '../../flatworks/types/types';
 
 export type AccessTokenDocument = AccessToken & Document;
 
 @Schema()
 export class AccessToken {
-  @Prop({ required: true, unique: true })
-  name: string;
+  @Prop()
+  token: string;
+
+  @Prop({ required: true })
+  userId: string;
+
+  @Prop()
+  dApps: DApp[];
 
   @Prop()
   description: string;
-
-  @Prop()
-  token: string;
 
   @Prop()
   expire: Date;
@@ -27,6 +31,5 @@ export class AccessToken {
 
 const AccessTokenSchema = SchemaFactory.createForClass(AccessToken);
 AccessTokenSchema.plugin(uniqueValidator);
-AccessTokenSchema.index({ name: 'text' });
 
 export { AccessTokenSchema };
