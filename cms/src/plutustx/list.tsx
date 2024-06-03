@@ -68,7 +68,7 @@ const ListScreen = () => {
                     href={`${explorerUrl}${record.lockedTxHash}`}
                     target="_blank"
                   >
-                    {record.lockedTxHash}
+                    View Tx
                   </Link>
                 )}
               </>
@@ -76,6 +76,14 @@ const ListScreen = () => {
               <p>Transaction submission failed</p>
             )
           }
+        />
+        <FunctionField
+          label="Datum"
+          render={(record) => (
+            <div
+              dangerouslySetInnerHTML={{ __html: JSON.stringify(record.datum) }}
+            />
+          )}
         />
         <ReferenceField source="smartContractId" reference="contracts">
           <TextField source="name" />
@@ -93,13 +101,26 @@ const ListScreen = () => {
                   href={`${explorerUrl}${record.unlockedTxHash}`}
                   target="_blank"
                 >
-                  {record.unlockedTxHash}
+                  View Tx
                 </Link>
               )}
             </>
           )}
         />
-
+        <FunctionField
+          label="Redeemer"
+          render={(record) => (
+            <>
+              {record.redeemer && (
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: JSON.stringify(record.redeemer),
+                  }}
+                />
+              )}
+            </>
+          )}
+        />
         <DateField source="unlockDate" showTime />
         <ReferenceField source="unlockUserId" reference="users">
           <TextField source="username" />

@@ -205,15 +205,6 @@ const Menu = ({ dense = false }: MenuProps) => {
           leftIcon={<FormatListNumberedOutlinedIcon />}
           dense={dense}
         />
-        <MenuItemLink
-          to="/adminWallets"
-          state={{ _scrollToTop: true }}
-          primaryText={translate(`resources.wallets.name`, {
-            smart_count: 2,
-          })}
-          leftIcon={<FitbitIcon />}
-          dense={dense}
-        />
 
         <MenuItemLink
           to="/changePassword"
