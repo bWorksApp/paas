@@ -13,7 +13,6 @@ const customEnglishMessages: TranslationMessages = {
       dark: "Dark",
     },
     dashboard: {
-      postedJob: "Posted jobs",
       submittedUsers: "Submitted users",
       allUsers: "See all users",
       allSubmittedScripts: "See all submitted scripts",

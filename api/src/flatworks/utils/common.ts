@@ -77,6 +77,7 @@ const plutusSourceCodeValidate = (contract, compiledContract) => {
 const marloweSourceCodeValidate = (contract, compiledContract) => {
   return lodash.isEqual(contract, compiledContract);
 };
+
 export {
   validateEmail,
   validatePassword,
