@@ -79,12 +79,14 @@ const validateAddress = async (address: string) => {
 const fetchUtxo = async (scriptAddress, asset, lockedTxHash) => {
   const isMainnet = process.env.IS_MAINNET === 'true';
   const cardanoNetwork = isMainnet ? 'api' : 'preprod';
+  console.log(scriptAddress, asset, lockedTxHash, cardanoNetwork);
   try {
     const koios = new KoiosProvider(cardanoNetwork);
     const utxos = await koios.fetchAddressUTxOs(scriptAddress, asset);
     const utxo = utxos.find((item) => item.input.txHash === lockedTxHash);
     return utxo;
   } catch (e) {
+    console.log(e);
     return null;
   }
 };

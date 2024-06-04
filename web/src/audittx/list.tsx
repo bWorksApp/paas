@@ -18,8 +18,12 @@ import {
 } from "react-admin";
 import Button from "@mui/material/Button";
 import Link from "@mui/material/Link";
+import { useAuthState, Loading } from "react-admin";
 
 const ListScreen = () => {
+  const { authenticated } = useAuthState();
+  console.log(authenticated);
+
   const isMainnet = process.env.REACT_APP_IS_MAINNET;
 
   const explorerUrl = isMainnet
