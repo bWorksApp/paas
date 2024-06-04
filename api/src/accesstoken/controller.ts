@@ -9,13 +9,13 @@ import {
   Response,
   Query,
   UseGuards,
+  Request,
 } from '@nestjs/common';
 import { CreateAccessTokenDto } from './dto/create.dto';
 import { AccessTokenService } from './service';
 import { queryTransform, formatRaList } from '../flatworks/utils/getlist';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { UpdateAccessTokenDto } from './dto/update.dto';
 
-@UseGuards(JwtAuthGuard)
 @Controller('accesstokens')
 export class AccessTokenController {
   constructor(private readonly service: AccessTokenService) {}
@@ -33,8 +33,22 @@ export class AccessTokenController {
   }
 
   @Post()
-  async create(@Body() createAccessTokenDto: CreateAccessTokenDto) {
-    return await this.service.create(createAccessTokenDto);
+  async create(
+    @Body() createAccessTokenDto: CreateAccessTokenDto,
+    @Request() req,
+  ) {
+    const userId = req.user['userId'];
+    return await this.service.create(createAccessTokenDto, userId);
+  }
+
+  @Put(':id')
+  async update(
+    @Param('id') id: string,
+    @Body() updateAccessTokenDto: UpdateAccessTokenDto,
+    @Request() req,
+  ) {
+    const userId = req.user['userId'];
+    return await this.service.update(id, updateAccessTokenDto, userId);
   }
 
   @Delete(':id')

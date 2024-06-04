@@ -85,6 +85,19 @@ validate only approved users
     };
   }
 
+  async genDAppToken(userId: string) {
+    const token = await this.jwtService.signAsync(
+      {
+        sub: userId,
+      },
+      {
+        secret: process.env.JWT_TOKEN_SECRET,
+        expiresIn: process.env.JWT_DAPP_TOKEN_EXPIRE,
+      },
+    );
+    return token;
+  }
+
   async loginWallet(loginWallet: ValidateUserWalletDto) {
     if (!loginWallet.walletRewardAddress || !loginWallet.signature)
       throw new ForbiddenException('Access Denied');

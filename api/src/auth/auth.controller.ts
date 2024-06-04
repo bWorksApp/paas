@@ -124,4 +124,10 @@ with nonce: "7061617378376a64364f38645945653245365042756466646165797643387a4a697
     const userId = req.user['userId'];
     return await this.authService.resetPassword(changePasswordDto, userId);
   }
+
+  @Get('dapptoken')
+  async getDAppToken(@Response() res: any, @Request() req) {
+    const token = await this.authService.genDAppToken(req.user['userId']);
+    return res.json(token);
+  }
 }

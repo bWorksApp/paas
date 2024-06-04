@@ -169,6 +169,10 @@ export interface MarloweSmartContract {
   [key: string]: any;
 }
 
+export interface DApp {
+  name: string;
+}
+
 //contract types
 export enum ContractType {
   Plutus = 'plutus',

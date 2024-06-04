@@ -1,6 +1,8 @@
+import { DApp } from '../../flatworks/types/types';
 export class BaseAccessTokenDto {
-  name: string;
+  userId: string;
   token: string;
   expire: Date;
   description: string;
+  dApps: DApp[];
 }

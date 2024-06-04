@@ -70,6 +70,21 @@ export class PlutusTxController {
     return await this.service.update(id, updatePlutusTxDto);
   }
 
+  //update with TX
+  @Put('/unlock/:lockedTxHash')
+  async updateTx(
+    @Param('lockedTxHash') lockedTxHash: string,
+    @Body() updatePlutusTxDto: UpdatePlutusTxDto,
+    @Request() req,
+  ) {
+    const userId = req.user.userId;
+    return await this.service.findByScriptTxHashAndUpdate(lockedTxHash, {
+      ...updatePlutusTxDto,
+      unlockUserId: userId,
+      unlockDate: new Date(),
+    });
+  }
+
   @Delete(':id')
   async delete(@Param('id') id: string) {
     return await this.service.delete(id);
