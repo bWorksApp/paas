@@ -22,6 +22,8 @@
   },
   "dependencies": {
     "@emurgo/cardano-serialization-lib-asmjs": "^11.5.0",
+    "@meshsdk/core": "^1.5.11-beta.6",
+    "cardano-addresses": "^3.12.0",
     "@nestjs-modules/mailer": "^1.8.1",
     "@nestjs/axios": "^0.1.0",
     "@nestjs/bull": "^0.6.1",
