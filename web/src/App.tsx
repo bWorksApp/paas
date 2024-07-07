@@ -31,6 +31,7 @@ import ResetPassword from "./components/resetPassword";
 import Register from "./components/register";
 import AuditContract from "./auditcontract/functionAudit";
 import TryContract from "./trycontract/buildContractTx";
+
 import audittxs from "./audittx";
 
 const loginUrl = process.env.REACT_APP_LOGIN_URL;
@@ -56,12 +57,10 @@ const i18nProvider = polyglotI18nProvider((locale) => {
 }, "en");
 
 const App = () => {
- 
-
   return (
     <MeshProvider>
       <Admin
-        title="bWorks"
+        title="PAAS"
         dataProvider={restProvider}
         authProvider={_authProvider}
         dashboard={Dashboard}

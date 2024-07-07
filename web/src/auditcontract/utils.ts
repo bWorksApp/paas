@@ -1,4 +1,24 @@
-import { PlutusScript, resolvePlutusScriptAddress } from "@meshsdk/core";
+import {
+  PlutusScript,
+  resolvePlutusScriptAddress,
+  Transaction,
+  KoiosProvider,
+  resolveDataHash,
+  resolvePaymentKeyHash,
+  Data,
+} from "@meshsdk/core";
+
+const cbor = require("cbor-web");
+
+//format aiken plutus.json to PlutusScript
+const formatAikenContract = (plutusScript): PlutusScript => {
+  return {
+    code: cbor
+      .encode(Buffer.from(plutusScript.validators[0].compiledCode, "hex"))
+      .toString("hex"),
+    version: plutusScript.preamble?.plutusVersion === "v1" ? "V1" : "V2",
+  };
+};
 
 /*
 get contract address: networkId = 1 for mainnet, 0 for testnet
@@ -35,4 +55,4 @@ script: PlutusScript = {
 
 */
 
-export { parseContractAddress, formatContract };
+export { parseContractAddress, formatContract, formatAikenContract };
