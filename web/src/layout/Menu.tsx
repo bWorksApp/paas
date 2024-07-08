@@ -190,11 +190,11 @@ const Menu = ({ dense = false }: MenuProps) => {
           leftIcon={<DriveFileRenameOutlineOutlinedIcon />}
           dense={dense}
         />
-       
+
         <MenuItemLink
           to="/trycontract"
           state={{ _scrollToTop: true }}
-          primaryText="Try contract"
+          primaryText="Try dApp TXs"
           leftIcon={<FormatListNumberedOutlinedIcon />}
           dense={dense}
         />
