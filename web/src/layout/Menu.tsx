@@ -209,9 +209,7 @@ const Menu = ({ dense = false }: MenuProps) => {
         <MenuItemLink
           to="/wallets"
           state={{ _scrollToTop: true }}
-          primaryText={translate(`resources.wallets.name`, {
-            smart_count: 2,
-          })}
+          primaryText="Change wallet"
           leftIcon={<AccountBalanceWalletOutlinedIcon />}
           dense={dense}
         />

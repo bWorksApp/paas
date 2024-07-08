@@ -13,8 +13,10 @@ import {
   trimFullName,
 } from '../flatworks/utils/common';
 import { ChangePasswordDto } from './dto/change-password.dto';
+import { ChangeWalletDto } from './dto/change-wallet.dto';
 import { UserWalletRegisterDto } from '../user/dto/wallet-user-register.dto';
 import { sumUsers } from '../flatworks/dbcripts/aggregate.scripts';
+import { validateAddress } from '../flatworks/utils/cardano';
 
 @Injectable()
 export class UserService {
@@ -151,6 +153,20 @@ export class UserService {
     return await this.model.findByIdAndUpdate(id, { password }).exec();
   }
 
+  async changeWallet(
+    id: string,
+    changeWalletDto: ChangeWalletDto,
+  ): Promise<User> {
+    if (
+      !validateAddress(changeWalletDto.walletRewardAddress) ||
+      !validateAddress(changeWalletDto.walletAddress)
+    ) {
+      throw new BadRequestException('Invalid Cardano wallet address');
+    }
+
+    return await this.model.findByIdAndUpdate(id, changeWalletDto).exec();
+  }
+
   /*
   only user is allow to update itself
   don't update roles & password
@@ -186,6 +202,10 @@ export class UserService {
 
     delete updateUserDto['roles'];
     delete updateUserDto['password'];
+    delete updateUserDto['walletAddress'];
+    delete updateUserDto['walletRewardAddress'];
+    delete updateUserDto['nonce'];
+
     if (updateUserDto.fullName) {
       updateUserDto.fullName = trimFullName(updateUserDto.fullName);
     }
