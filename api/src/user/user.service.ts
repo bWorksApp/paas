@@ -157,14 +157,21 @@ export class UserService {
     id: string,
     changeWalletDto: ChangeWalletDto,
   ): Promise<User> {
-    if (
-      !validateAddress(changeWalletDto.walletRewardAddress) ||
-      !validateAddress(changeWalletDto.walletAddress)
-    ) {
+    const isValidRewardAddress = await validateAddress(
+      changeWalletDto.walletRewardAddress,
+    );
+    const isValidAddress = await validateAddress(changeWalletDto.walletAddress);
+
+    if (!isValidRewardAddress || !isValidAddress) {
       throw new BadRequestException('Invalid Cardano wallet address');
     }
 
-    return await this.model.findByIdAndUpdate(id, changeWalletDto).exec();
+    return await this.model
+      .findByIdAndUpdate(id, {
+        walletAddress: changeWalletDto.walletAddress,
+        walletRewardAddress: changeWalletDto.walletRewardAddress,
+      })
+      .exec();
   }
 
   /*

@@ -42,49 +42,40 @@ export default function FormPropsTextFields() {
 
   return (
     <Box
-      component="form"
       sx={{
-        "& .MuiTextField-root": { m: 1, width: "25ch" },
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "flex-start",
+        width: 460,
       }}
-      noValidate
-      autoComplete="off"
     >
-      <div>
-        <TextField
-          id="password"
-          label="New password"
-          type="password"
-          autoComplete="current-password"
-          value={state.password}
-          onChange={handleChangePassword}
-        />
-        <TextField
-          id="repeatPassword"
-          label="Repeat password"
-          type="password"
-          autoComplete="current-password"
-          value={state.repeatPassword}
-          onChange={handleChangePassword}
-        />
-        <Button
-          sx={{ borderRadius: 0 }}
-          size="small"
-          color="primary"
-          onClick={handleClick}
-        >
-          <Box p={0} m={2} sx={{ color: "primary.main" }}>
-            Update
-          </Box>
-        </Button>
-        <Typography
-          variant="caption"
-          display="block"
-          gutterBottom
-          sx={{ p: 1 }}
-        >
-          {message}
-        </Typography>
-      </div>
+      <Typography variant="caption" display="block" gutterBottom sx={{ p: 1 }}>
+        Min 8 letters, with at least a symbol, upper and lower case letters and
+        a number
+      </Typography>
+
+      <TextField
+        id="password"
+        label="New password"
+        type="password"
+        autoComplete="current-password"
+        value={state.password}
+        onChange={handleChangePassword}
+      />
+      <TextField
+        id="repeatPassword"
+        label="Repeat password"
+        type="password"
+        autoComplete="current-password"
+        value={state.repeatPassword}
+        onChange={handleChangePassword}
+      />
+      <Button onClick={handleClick} variant="outlined">
+        Update
+      </Button>
+      <Typography variant="caption" display="block" gutterBottom sx={{ p: 1 }}>
+        {message}
+      </Typography>
     </Box>
   );
 }
