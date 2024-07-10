@@ -1,3 +1,21 @@
+---
+title: PAAS API Documentation v1.0.0
+language_tabs:
+  - "'shell": Shell'
+  - "'http": HTTP'
+  - "'javascript": JavaScript'
+language_clients:
+  - "'shell": ""
+  - "'http": ""
+  - "'javascript": ""
+toc_footers: []
+includes: []
+search: true
+highlight_theme: darkula
+headingLevel: 2
+
+---
+
 <!-- Generator: Widdershins v4.0.1 -->
 
 <h1 id="paas-api-documentation">PAAS API Documentation v1.0.0</h1>
@@ -21,148 +39,6 @@ Base URLs:
 <a id="opIdgetUsers"></a>
 
 > Code samples
-
-```shell
-# You can also use wget
-curl -X GET https://paas.bworks.app/api/users \
-  -H 'Accept: application/json' \
-  -H 'Authorization: Bearer JWT'
-
-```
-
-```http
-GET https://paas.bworks.app/api/users HTTP/1.1
-Host: paas.bworks.app
-Accept: application/json
-Authorization: Bearer JWT
-
-```
-
-```javascript
-
-const headers = {
-  'Accept':'application/json',
-  'Authorization':'Bearer JWT'
-};
-
-fetch('https://paas.bworks.app/api/users',
-{
-  method: 'GET',
-
-  headers: headers
-})
-.then(function(res) {
-    return res.json();
-}).then(function(body) {
-    console.log(body);
-});
-
-```
-
-```ruby
-require 'rest-client'
-require 'json'
-
-headers = {
-  'Accept' => 'application/json',
-  'Authorization' => 'Bearer JWT'
-}
-
-result = RestClient.get 'https://paas.bworks.app/api/users',
-  params: {
-  }, headers: headers
-
-p JSON.parse(result)
-
-```
-
-```python
-import requests
-headers = {
-  'Accept': 'application/json',
-  'Authorization': 'Bearer JWT'
-}
-
-r = requests.get('https://paas.bworks.app/api/users', headers = headers)
-
-print(r.json())
-
-```
-
-```php
-<?php
-
-require 'vendor/autoload.php';
-
-$headers = array(
-    'Accept' => 'application/json',
-    'Authorization' => 'Bearer JWT',
-);
-
-$client = new \GuzzleHttp\Client();
-
-// Define array of request body.
-$request_body = array();
-
-try {
-    $response = $client->request('GET','https://paas.bworks.app/api/users', array(
-        'headers' => $headers,
-        'json' => $request_body,
-       )
-    );
-    print_r($response->getBody()->getContents());
- }
- catch (\GuzzleHttp\Exception\BadResponseException $e) {
-    // handle exception or api errors.
-    print_r($e->getMessage());
- }
-
- // ...
-
-```
-
-```java
-URL obj = new URL("https://paas.bworks.app/api/users");
-HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-con.setRequestMethod("GET");
-int responseCode = con.getResponseCode();
-BufferedReader in = new BufferedReader(
-    new InputStreamReader(con.getInputStream()));
-String inputLine;
-StringBuffer response = new StringBuffer();
-while ((inputLine = in.readLine()) != null) {
-    response.append(inputLine);
-}
-in.close();
-System.out.println(response.toString());
-
-```
-
-```go
-package main
-
-import (
-       "bytes"
-       "net/http"
-)
-
-func main() {
-
-    headers := map[string][]string{
-        "Accept": []string{"application/json"},
-        "Authorization": []string{"Bearer JWT"},
-    }
-
-    data := bytes.NewBuffer([]byte{jsonReq})
-    req, err := http.NewRequest("GET", "https://paas.bworks.app/api/users", data)
-    req.Header = headers
-
-    client := &http.Client{}
-    resp, err := client.Do(req)
-    // ...
-}
-
-```
 
 `GET /users`
 
