@@ -67,9 +67,7 @@
             }
           },
           "401": {
-                "message": "Unauthorized",
-				"statusCode": 401,
-				"description": "Authentication failed. Please check your API key or bearer token."
+			"description": "Authentication failed. Please check your API key or bearer token."
           },
           "404": {
             "description": "The user with the specified ID was not found."
