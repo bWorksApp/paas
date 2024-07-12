@@ -390,8 +390,17 @@ sample post data:
       updateContractDto.isApproved = false;
     }
 
+    let _contract = updateContractDto.contract as any;
+    if (typeof _contract === 'string') {
+      _contract = JSON.parse(_contract);
+    }
+
     return await this.model
-      .findByIdAndUpdate(id, updateContractDto, { new: true })
+      .findByIdAndUpdate(
+        id,
+        { updateContractDto, contract: _contract },
+        { new: true },
+      )
       .exec();
   }
 
@@ -421,7 +430,6 @@ sample post data:
     return await this.model.findByIdAndDelete(id).exec();
   }
 
-  
   //count for global app search
   async count(filter): Promise<any> {
     return await this.model.find(filter).count().exec();

@@ -20,6 +20,7 @@ export class BaseContractDto {
   isSourceCodeVerified: boolean;
   isFunctionVerified: boolean;
   isApproved: boolean;
+  
   version: string;
   description: string;
 }

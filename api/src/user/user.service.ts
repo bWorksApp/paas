@@ -17,6 +17,7 @@ import { ChangeWalletDto } from './dto/change-wallet.dto';
 import { UserWalletRegisterDto } from '../user/dto/wallet-user-register.dto';
 import { sumUsers } from '../flatworks/dbcripts/aggregate.scripts';
 import { validateAddress } from '../flatworks/utils/cardano';
+import { getNonce } from '../flatworks/utils/validate.wallet';
 
 @Injectable()
 export class UserService {
@@ -165,11 +166,13 @@ export class UserService {
     if (!isValidRewardAddress || !isValidAddress) {
       throw new BadRequestException('Invalid Cardano wallet address');
     }
+    const nonce = await getNonce();
 
     return await this.model
       .findByIdAndUpdate(id, {
         walletAddress: changeWalletDto.walletAddress,
         walletRewardAddress: changeWalletDto.walletRewardAddress,
+        nonce,
       })
       .exec();
   }

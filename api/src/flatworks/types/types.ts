@@ -183,6 +183,8 @@ export enum ContractType {
 export interface ContractRepo {
   gitRepo: string;
   sourceCodeFolder: string;
+  isForkedSourceCode?: boolean;
+  forkedFrom?: string;
   buildCommand: string;
   outputJsonFile: string;
 }

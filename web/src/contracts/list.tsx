@@ -97,6 +97,10 @@ const ListScreen = () => {
         <ReferenceField source="author" reference="users">
           <TextField source="fullName" />
         </ReferenceField>
+        <BooleanField
+          source="gitRepo.isForkedSourceCode"
+          label="Forked source code"
+        />
         <TextField source="contractType" />
         <BooleanField source="isCompiled" />
         <BooleanField source="isSourceCodeVerified" />
