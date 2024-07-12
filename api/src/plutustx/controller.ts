@@ -59,6 +59,7 @@ export class PlutusTxController {
     return await this.service.create({
       ...createPlutusTxDto,
       lockUserId: userId,
+      lockDate: new Date(),
     });
   }
 
