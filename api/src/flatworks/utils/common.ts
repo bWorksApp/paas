@@ -57,14 +57,14 @@ const aikenSourceCodeValidate = (contract, compiledContract) => {
       plutusVersion: contract.preamble.plutusVersion,
       validators: contract.validators.map((i) => ({
         compiledCode: i.compiledCode,
-        hash: i.hash,
+        //  hash: i.hash,
       })),
     },
     {
       plutusVersion: compiledContract.preamble.plutusVersion,
       validators: compiledContract.validators.map((i) => ({
         compiledCode: i.compiledCode,
-        hash: i.hash,
+        //   hash: i.hash,
       })),
     },
   );

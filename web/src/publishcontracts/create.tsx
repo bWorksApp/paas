@@ -96,7 +96,7 @@ const CreateScreen = () => (
           <Box component="section" sx={{ p: 1, border: "1px dashed grey" }}>
             Contract source code
             <TextInput
-              source="gitRepo.gitLink"
+              source="gitRepo.gitRepo"
               fullWidth
               required
               validate={validateGithubUrl}

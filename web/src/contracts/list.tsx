@@ -94,7 +94,7 @@ const ListScreen = () => {
         expand={<ExpandPanel />}
       >
         <TextField source="name" />
-        <ReferenceField source="author" reference="users">
+        <ReferenceField source="author" reference="users" label="Publisher">
           <TextField source="fullName" />
         </ReferenceField>
         <BooleanField

@@ -58,7 +58,10 @@ const ListScreen = () => {
     }
 
     return (
-      <>
+      <Box
+        component="div"
+        sx={{ width: 1500, whiteSpace: "initial", wordWrap: "break-word" }}
+      >
         <strong>Github: </strong>
         <Link href={record.gitLink} target="_blank">
           {record.gitLink}
@@ -81,7 +84,7 @@ const ListScreen = () => {
 
         <strong>Compile status: </strong>
         <div dangerouslySetInnerHTML={{ __html: JSON.stringify(data[0]) }} />
-      </>
+      </Box>
     );
   };
 
@@ -101,15 +104,7 @@ const ListScreen = () => {
       alwaysOn
       sx={{ width: 300 }}
     />,
-    <ReferenceInput source="author" reference="users" alwaysOn>
-      <AutocompleteInput
-        filterToQuery={filterToQuery}
-        fullWidth
-        optionText="username"
-        label="Search by user"
-        sx={{ width: 300 }}
-      />
-    </ReferenceInput>,
+
     <BooleanInput
       label="Audited contracts"
       source="isFunctionVerified"
@@ -132,9 +127,7 @@ const ListScreen = () => {
         expand={<ExpandPanel />}
       >
         <TextField source="name" />
-        <ReferenceField source="author" reference="users">
-          <TextField source="fullName" />
-        </ReferenceField>
+
         <TextField source="contractType" />
         <BooleanField source="isCompiled" />
         <BooleanField source="isSourceCodeVerified" />

@@ -73,9 +73,7 @@ const Menu = ({ dense = false }: MenuProps) => {
         <MenuItemLink
           to="/contracts"
           state={{ _scrollToTop: true }}
-          primaryText={translate(`resources.smartContracts.name`, {
-            smart_count: 2,
-          })}
+          primaryText="Published contracts"
           leftIcon={<GradingOutlinedIcon />}
           dense={dense}
         />

@@ -17,7 +17,6 @@ import {
   BooleanField,
 } from "react-admin";
 import Grid from "@mui/material/Grid";
-import CurrencyNumberField from "../components/currencyNumberField";
 import Typography from "@mui/material/Typography";
 import BackButton from "../components/backButton";
 import { JsonField, JsonInput } from "react-admin-json-view";
@@ -71,7 +70,7 @@ const ShowScreen = (props) => {
             <Typography variant="subtitle2">
               <strong>Contract Type</strong>
             </Typography>
-            <CurrencyNumberField source="contractType" />
+            <TextField source="contractType" />
           </Grid>
 
           <Grid item md={12} />
