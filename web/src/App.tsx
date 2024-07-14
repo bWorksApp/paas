@@ -31,6 +31,7 @@ import ResetPassword from "./components/resetPassword";
 import Register from "./components/register";
 import AuditContract from "./auditcontract/functionAudit";
 import TryContract from "./trycontract/buildContractTx";
+import ChangeWallet from "./components/changeWallet";
 
 import audittxs from "./audittx";
 
@@ -60,7 +61,7 @@ const App = () => {
   return (
     <MeshProvider>
       <Admin
-        title="bWorks"
+        title="PAAS"
         dataProvider={restProvider}
         authProvider={_authProvider}
         dashboard={Dashboard}
@@ -74,7 +75,7 @@ const App = () => {
           <Route path="/configuration" element={<Configuration />} />
           <Route path="/fetchcardano" element={<FetchCardano />} />
           <Route path="/fetchgithub" element={<FetchGithub />} />
-          <Route path="/wallets" element={<Wallet />} />
+
           <Route path="/verifySmartContract" element={<SmartContracts />} />
           <Route path="/parseaddress" element={<ParseAddress />} />
           <Route path="/scontractreports" element={<ContractReports />} />
@@ -82,6 +83,8 @@ const App = () => {
           <Route path="/changepassword" element={<ChangePassword />} />
           <Route path="/auditContract" element={<AuditContract />} />
           <Route path="/trycontract" element={<TryContract />} />
+
+          <Route path="/wallets" element={<ChangeWallet />} />
         </CustomRoutes>
 
         <CustomRoutes noLayout>

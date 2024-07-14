@@ -58,6 +58,8 @@ const ListScreen = () => {
       filters={filters}
     >
       <Datagrid bulkActionButtons={false}>
+        <TextField source="name" label="Audit name" />
+
         <FunctionField
           label="Lock TxHash"
           render={(record) =>
@@ -68,7 +70,7 @@ const ListScreen = () => {
                     href={`${explorerUrl}${record.lockedTxHash}`}
                     target="_blank"
                   >
-                    {record.lockedTxHash}
+                    View Tx
                   </Link>
                 )}
               </>
@@ -81,6 +83,16 @@ const ListScreen = () => {
         <ReferenceField source="smartContractId" reference="contracts">
           <TextField source="name" />
         </ReferenceField>
+
+        <FunctionField
+          label="Datum"
+          render={(record) => (
+            <div
+              dangerouslySetInnerHTML={{ __html: JSON.stringify(record.datum) }}
+            />
+          )}
+        />
+
         <DateField source="lockDate" showTime />
         <ReferenceField source="lockUserId" reference="users">
           <TextField source="username" />
@@ -95,13 +107,27 @@ const ListScreen = () => {
                   href={`${explorerUrl}${record.unlockedTxHash}`}
                   target="_blank"
                 >
-                  {record.unlockedTxHash}
+                  View Tx
                 </Link>
               )}
             </>
           )}
         />
 
+        <FunctionField
+          label="Redeemer"
+          render={(record) => (
+            <>
+              {record.redeemer && (
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: JSON.stringify(record.redeemer),
+                  }}
+                />
+              )}
+            </>
+          )}
+        />
         <DateField source="unlockDate" showTime />
         <ReferenceField source="unlockUserId" reference="users">
           <TextField source="username" />

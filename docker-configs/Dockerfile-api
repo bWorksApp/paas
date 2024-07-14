@@ -33,6 +33,7 @@ RUN cd /root/app && git clone https://github.com/bitcoin-core/secp256k1 && \
 
 # install aiken , marlowe-cli
 COPY api/src/flatworks/shellscripts/aiken /usr/bin
+RUN npm install -g @aiken-lang/aikup && aikup install
 COPY api/src/flatworks/shellscripts/marlowe-cli /usr/bin
 
 # build

@@ -1,0 +1,167 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "PAAS API Documentation",
+    "version": "1.0.0",
+    "description": "API documentation for PAAS platform"
+  },
+  "servers": [
+    {
+      "url": "https://paas.bworks.app/api"
+    }
+  ],
+  "paths": {
+    "/users": {
+      "get": {
+        "summary": "Retrieve a list of all users",
+        "description": "Retrieve a list of all users.",
+        "operationId": "getUsers",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "Bearer JWT",
+            "description": "Bearer token for authentication"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved the user details.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                },
+                "example": [
+                  {
+                    "isShowContact": false,
+                    "isShowEmail": false,
+                    "issContractDev": true,
+                    "isdAppDev": true,
+                    "isApproved": true,
+                    "isNotified": true,
+                    "skills": [],
+                    "_id": "6603d0afe9aceb37b1bb6ced",
+                    "username": "demo",
+                    "fullName": "Demo user",
+                    "createdAt": "2022-11-20T12:52:06.702Z",
+                    "__v": 0,
+                    "completedAt": "2023-02-15T07:34:35.957Z",
+                    "nonce": "7061617378376a64364f38645945653245365042756466646165797643387a4a69713243",
+                    "walletAddress": "addr1qxpel0kkv0ewx5wdxa3kfzsgy8hvjqkyy6amwelc6m69w45uaauv0tfwhmtcmn69rpakh5erdrspzpqxauyf5t0y8d8s32lnda",
+                    "authType": "email",
+                    "roles": [
+                      "admin",
+                      "user"
+                    ]
+                  }
+                ]
+              }
+            }
+          },
+          "401": {
+			"description": "Authentication failed. Please check your API key or bearer token."
+          },
+          "404": {
+            "description": "The user with the specified ID was not found."
+          },
+          "500": {
+            "description": "An error occurred on the server."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "isShowContact": {
+            "type": "boolean"
+          },
+          "isShowEmail": {
+            "type": "boolean"
+          },
+          "issContractDev": {
+            "type": "boolean"
+          },
+          "isdAppDev": {
+            "type": "boolean"
+          },
+          "isApproved": {
+            "type": "boolean"
+          },
+          "isNotified": {
+            "type": "boolean"
+          },
+          "skills": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "_id": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "__v": {
+            "type": "integer"
+          },
+          "completedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "nonce": {
+            "type": "string"
+          },
+          "walletAddress": {
+            "type": "string"
+          },
+          "authType": {
+            "type": "string"
+          },
+          "roles": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ]
+}

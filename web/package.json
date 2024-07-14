@@ -20,6 +20,8 @@
     "@types/recharts": "^1.8.10",
     "buffer": "^6.0.3",
     "cardano-addresses": "^3.12.0",
+    "cbor": "^9.0.2",
+    "cbor-web": "^9.0.2",
     "clsx": "^1.1.1",
     "data-generator-retail": "^4.0.0",
     "date-fns": "^2.19.0",

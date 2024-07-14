@@ -70,12 +70,15 @@ sample post data:
     "cborHex": "49480100002221200101"
 },
     "gitRepo": {
-        "gitRepo": "https://github.com/IntersectMBO/plutus-apps",
+        "gitRepo": "https://github.com/bWorksApp/paas-plutus-contracts",
         "sourceCodeFolder": "plutus-example",
         "buildCommand": "cabal run plutus-example",
-        "outputJsonFile": "generated-plutus-scripts/v1/always-succeeds-spending.plutus"
+        "outputJsonFile": "generated-plutus-scripts/v1/always-succeeds-spending.plutus",
+        "isForkedSourceCode": true,
+        "forkedFrom": "https://github.com/IntersectMBO/plutus-apps"
     }
 }
+
 //aiken
 {
     "name": "aiken",
@@ -149,6 +152,7 @@ sample post data:
         "sourceCodeFolder": "examples/hello_world",
         "buildCommand": "aiken build",
         "outputJsonFile": "plutus.json"
+        ""
     }
 }
 
@@ -335,8 +339,14 @@ sample post data:
 */
 
   async create(createContractDto: CreateContractDto): Promise<Contract> {
+    let _contract = createContractDto.contract as any;
+    if (typeof _contract === 'string') {
+      _contract = JSON.parse(_contract);
+    }
+
     const contract = await new this.model({
       ...createContractDto,
+      contract: _contract,
       isSourceCodeVerified: false,
       isFunctionVerified: false,
       isApproved: false,
@@ -390,8 +400,17 @@ sample post data:
       updateContractDto.isApproved = false;
     }
 
+    let _contract = updateContractDto.contract as any;
+    if (typeof _contract === 'string') {
+      _contract = JSON.parse(_contract);
+    }
+
     return await this.model
-      .findByIdAndUpdate(id, updateContractDto, { new: true })
+      .findByIdAndUpdate(
+        id,
+        { updateContractDto, contract: _contract },
+        { new: true },
+      )
       .exec();
   }
 
@@ -421,7 +440,6 @@ sample post data:
     return await this.model.findByIdAndDelete(id).exec();
   }
 
-  
   //count for global app search
   async count(filter): Promise<any> {
     return await this.model.find(filter).count().exec();

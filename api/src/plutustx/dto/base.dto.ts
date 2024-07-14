@@ -15,6 +15,8 @@ export class BasePlutusTxDto {
   unlockType: string;
   smartContractId: string;
   datumUnlockPublicKeyHash: string;
+  datum: any;
+  redeemer: any;
   scriptAddress: string;
   description: string;
 }

@@ -17,6 +17,7 @@ import { ChangePasswordDto } from './dto/change-password.dto';
 import { Roles } from '../flatworks/roles/roles.decorator';
 import { Role } from '../flatworks/types/types';
 import { queryTransform, formatRaList } from '../flatworks/utils/getlist';
+import { ChangeWalletDto } from './dto/change-wallet.dto';
 
 @Controller('users')
 export class UserController {
@@ -29,6 +30,12 @@ export class UserController {
   ) {
     const id = req.user.userId;
     return await this.service.changePassword(id, changePasswordDto);
+  }
+
+  @Post('changewallet')
+  async changeWallet(@Body() changeWalletDto: ChangeWalletDto, @Request() req) {
+    const id = req.user.userId;
+    return await this.service.changeWallet(id, changeWalletDto);
   }
 
   @Get()

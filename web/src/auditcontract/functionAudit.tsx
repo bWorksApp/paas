@@ -6,12 +6,17 @@ import Box from "@mui/material/Box";
 import { CardanoWallet, useWallet } from "@meshsdk/react";
 import moment from "moment";
 import { Transaction, Data, KoiosProvider } from "@meshsdk/core";
-import { parseContractAddress, formatContract } from "./utils";
+import {
+  parseContractAddress,
+  formatContract,
+  formatAikenContract,
+} from "../utils/contractUtils";
 import { useCreate, useDataProvider, useUpdate } from "react-admin";
 
 const SmartContracts = () => {
   const isMainnet = process.env.REACT_APP_IS_MAINNET;
   const cardanoNetwork = isMainnet ? "api" : "preprod";
+  const dataProvider = useDataProvider();
 
   const [create, { isLoading, error }] = useCreate();
   const [update, { isLoading: _isLoading, error: _error }] = useUpdate();
@@ -25,7 +30,7 @@ const SmartContracts = () => {
     );
   };
 
-  const [redeemer, setRedeemer] = React.useState("");
+  const [redeemer, setRedeemer] = React.useState([]);
   const handleChangeRedeemer = (data) => {
     setRedeemer(
       data.items.map((item) =>
@@ -113,6 +118,15 @@ const SmartContracts = () => {
       setScriptAddress(scriptAddress);
       setPlutusScript(formatContract(selectedContract.contract));
     }
+    if (selectedContract?.contractType === "aiken") {
+      const _selectedContract = formatAikenContract(selectedContract.contract);
+      const scriptAddress = parseContractAddress(
+        _selectedContract,
+        isMainnet ? 1 : 0
+      );
+      setScriptAddress(scriptAddress);
+      setPlutusScript(formatAikenContract(selectedContract.contract));
+    }
   }, [contract]);
 
   const handleChangeLockAda = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -137,6 +151,7 @@ const SmartContracts = () => {
       alternative: 0,
       fields: datum,
     };
+
     const amountToLockLoveLace = (amountToLock * 1000000).toString();
 
     if (wallet && connected && amountToLock) {
@@ -197,8 +212,27 @@ const SmartContracts = () => {
     }
   };
 
+  const [utxo, setUtxo] = React.useState(null);
+
+  React.useEffect(() => {
+    async function getUtxo() {
+      dataProvider
+        .customMethod(
+          "public/findutxo",
+          { filter: { scriptAddress, asset: "lovelace", lockedTxHash } },
+          "GET"
+        )
+        .then((result) => setUtxo(result.data))
+        .catch((error) => console.error(error));
+    }
+
+    if (scriptAddress && lockedTxHash) getUtxo();
+  }, [scriptAddress, lockedTxHash]);
+
+  console.log(utxo);
+
   const unlockFunction = async () => {
-    async function _getAssetUtxo({ scriptAddress, asset, lockedTxHash }) {
+    /*   async function _getAssetUtxo({ scriptAddress, asset, lockedTxHash }) {
       const koios = new KoiosProvider(cardanoNetwork);
       const utxos = await koios.fetchAddressUTxOs(scriptAddress, asset);
 
@@ -211,9 +245,13 @@ const SmartContracts = () => {
       asset: "lovelace",
       lockedTxHash: lockedTxHash,
     });
+ */
+    const r = { data: { alternative: 0, fields: redeemer } };
 
+    //const redeemer = { data: { alternative: 0, fields: ["Hello, World!"] } };
+
+    console.log(r);
     const address = await wallet.getChangeAddress();
-
     const collateralUtxos = await wallet.getCollateral();
 
     if (!utxo || !receiveAddress || !address) {
@@ -230,6 +268,22 @@ const SmartContracts = () => {
       return;
     }
 
+    /*
+    const tx = new Transaction({ initiator: wallet })
+      .redeemValue({
+        value: assetUtxo,
+        script: script,
+        datum: assetUtxo,
+        redeemer: redeemer,
+      })
+      .sendValue(address, assetUtxo)
+      .setRequiredSigners([address]);
+
+    const unsignedTx = await tx.build();
+    const signedTx = await wallet.signTx(unsignedTx, true);
+    const txHash = await wallet.submitTx(signedTx);
+    */
+
     // create the unlock asset transaction
     let txHash;
     try {
@@ -238,6 +292,7 @@ const SmartContracts = () => {
           value: utxo,
           script: plutusScript,
           datum: utxo,
+          redeemer: r,
         })
         .sendValue(address, utxo) // address is recipient address
         .setCollateral(collateralUtxos) //this is option, we either set or not set still works

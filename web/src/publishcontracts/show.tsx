@@ -6,24 +6,30 @@ import {
   DateField,
   RichTextField,
   ReferenceField,
+  NumberField,
+  ReferenceArrayField,
+  ArrayField,
+  SingleFieldList,
+  ChipField,
   TopToolbar,
   useRecordContext,
   FunctionField,
   BooleanField,
 } from "react-admin";
 import Grid from "@mui/material/Grid";
-import CurrencyNumberField from "../components/currencyNumberField";
 import Typography from "@mui/material/Typography";
 import BackButton from "../components/backButton";
 import { JsonField, JsonInput } from "react-admin-json-view";
 
 const ShowActions = () => (
   <TopToolbar>
+    {/* Add your custom action components */}
     <BackButton />
   </TopToolbar>
 );
 
 const ShowTitle = () => {
+  // the record can be empty while loading
   const record = useRecordContext();
   if (!record) return null;
   return <span>{record.name}</span>;
@@ -64,9 +70,32 @@ const ShowScreen = (props) => {
             <Typography variant="subtitle2">
               <strong>Contract Type</strong>
             </Typography>
-            <CurrencyNumberField source="contractType" />
+            <TextField source="contractType" />
           </Grid>
+
           <Grid item md={12} />
+          <Grid item xs={12} md={4} lg={6} xl={3}>
+            <Typography variant="subtitle2">
+              <strong> Git repo</strong>
+            </Typography>
+            <TextField source="gitRepo.gitRepo" fullWidth />
+          </Grid>
+          <FunctionField
+            render={(record) => {
+              if (!record.gitRepo?.isForkedSourceCode) return null;
+              return (
+                <Grid item xs={12} md={4} lg={6} xl={4}>
+                  <Typography variant="subtitle2">
+                    <strong>Forked from </strong>
+                  </Typography>
+                  <TextField source="gitRepo.forkedFrom" fullWidth />
+                </Grid>
+              );
+            }}
+          />
+
+          <Grid item md={12} />
+
           <Grid item xs={12} md={4} lg={3} xl={1.5}>
             <Typography variant="subtitle2">
               <strong> Is Compiled</strong>

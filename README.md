@@ -53,3 +53,9 @@ modify .env file variables reflect the login and API urls.
 ## smart contract repo
 [Smart Contracts repo](https://github.com/bWorksApp/paas-smart-contracts)
 
+## dev notes
+
+```
+fix aiken stdlib version error:
+aikup install
+```

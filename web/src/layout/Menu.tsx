@@ -73,9 +73,7 @@ const Menu = ({ dense = false }: MenuProps) => {
         <MenuItemLink
           to="/contracts"
           state={{ _scrollToTop: true }}
-          primaryText={translate(`resources.smartContracts.name`, {
-            smart_count: 2,
-          })}
+          primaryText="Published contracts"
           leftIcon={<GradingOutlinedIcon />}
           dense={dense}
         />
@@ -190,11 +188,11 @@ const Menu = ({ dense = false }: MenuProps) => {
           leftIcon={<DriveFileRenameOutlineOutlinedIcon />}
           dense={dense}
         />
-       
+
         <MenuItemLink
           to="/trycontract"
           state={{ _scrollToTop: true }}
-          primaryText="Try contract"
+          primaryText="Try dApp TXs"
           leftIcon={<FormatListNumberedOutlinedIcon />}
           dense={dense}
         />
@@ -209,9 +207,7 @@ const Menu = ({ dense = false }: MenuProps) => {
         <MenuItemLink
           to="/wallets"
           state={{ _scrollToTop: true }}
-          primaryText={translate(`resources.wallets.name`, {
-            smart_count: 2,
-          })}
+          primaryText="Change wallet"
           leftIcon={<AccountBalanceWalletOutlinedIcon />}
           dense={dense}
         />
