@@ -39,6 +39,7 @@ fi
 rm -rf /tmp/${build_dir}/repo/${source_code_dir}/plutus.json 2>&1 || true
 
 # Chạy lệnh 'aiken build' để tạo plutus.json
+#aikup install
 echo ${build_command} | zsh 2>&1 || true
 
 # Kiểm tra xem lệnh đã thực hiện thành công hay không
