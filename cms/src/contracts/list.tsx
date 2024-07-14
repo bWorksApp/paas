@@ -75,6 +75,33 @@ const ListScreen = () => {
     );
   };
 
+  const VerifyButton = (props) => {
+    const record = useRecordContext();
+    const diff = { isFunctionVerified: !record.isFunctionVerified };
+    const refresh = useRefresh();
+    const [update, { isLoading, error }] = useUpdate("contracts/approve", {
+      id: record.id,
+      data: diff,
+      previousData: record,
+    });
+
+    const handleClick = () => {
+      update();
+    };
+
+    React.useEffect(() => {
+      refresh();
+    }, [isLoading, error]);
+
+    return (
+      <Labeled>
+        <Button variant="text" onClick={handleClick}>
+          {record.isFunctionVerified ? "Reject" : "Verify"}
+        </Button>
+      </Labeled>
+    );
+  };
+
   return (
     <List
       perPage={25}
@@ -97,6 +124,7 @@ const ListScreen = () => {
 
         <RichTextField source="description" />
         <DateField source="createdAt" label="Published at" showTime />
+        <VerifyButton label="Verify functions"></VerifyButton>
         <SelectButton label="Approve"></SelectButton>
         <ShowJob customLabel="Detail" label="View detail" />
       </Datagrid>
