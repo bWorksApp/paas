@@ -11,7 +11,6 @@ import {
   formatContract,
   formatAikenContract,
 } from "../utils/contractUtils";
-
 import { useCreate, useDataProvider, useUpdate } from "react-admin";
 
 const SmartContracts = () => {
@@ -120,13 +119,19 @@ const SmartContracts = () => {
       setPlutusScript(formatContract(selectedContract.contract));
     }
     if (selectedContract?.contractType === "aiken") {
-      const _selectedContract = formatAikenContract(selectedContract.contract);
+      /*   const _selectedContract = formatAikenContract(selectedContract.contract);
       const scriptAddress = parseContractAddress(
         _selectedContract,
         isMainnet ? 1 : 0
       );
       setScriptAddress(scriptAddress);
-      setPlutusScript(formatAikenContract(selectedContract.contract));
+      setPlutusScript(formatAikenContract(selectedContract.contract)); */
+      const scriptAddress = parseContractAddress(
+        selectedContract.contract.plutusScript,
+        isMainnet ? 1 : 0
+      );
+      setScriptAddress(scriptAddress);
+      setPlutusScript(selectedContract.contract.plutusScript);
     }
   }, [contract]);
 
@@ -179,7 +184,7 @@ const SmartContracts = () => {
           ...notification,
           message: "Transaction is failed",
         });
-        create("plutustxs", {
+        create("audittxs", {
           data: {
             name: auditName,
             amount: amountToLock,
@@ -197,7 +202,7 @@ const SmartContracts = () => {
         ...notification,
         message: txHash ? `Transaction is submmited: ${txHash}` : null,
       });
-      create("plutustxs", {
+      create("audittxs", {
         data: {
           name: auditName,
           amount: amountToLock,
@@ -306,7 +311,7 @@ const SmartContracts = () => {
     } catch (err) {
       console.log(err);
       setNotification({ ...notification, message: "Submit error" });
-      update("plutustxs/unlock", {
+      update("audittxs/unlock", {
         id: lockedTxHash,
         data: { isUnlockSuccess: false, redeemer: redeemer },
       });
@@ -317,7 +322,7 @@ const SmartContracts = () => {
       ...notification,
       message: `Transaction is submitted, TxHash: ${txHash}`,
     });
-    update("plutustxs/unlock", {
+    update("audittxs/unlock", {
       id: lockedTxHash,
       data: {
         isUnlockSuccess: true,

@@ -119,13 +119,19 @@ const SmartContracts = () => {
       setPlutusScript(formatContract(selectedContract.contract));
     }
     if (selectedContract?.contractType === "aiken") {
-      const _selectedContract = formatAikenContract(selectedContract.contract);
+      /*   const _selectedContract = formatAikenContract(selectedContract.contract);
       const scriptAddress = parseContractAddress(
         _selectedContract,
         isMainnet ? 1 : 0
       );
       setScriptAddress(scriptAddress);
-      setPlutusScript(formatAikenContract(selectedContract.contract));
+      setPlutusScript(formatAikenContract(selectedContract.contract)); */
+      const scriptAddress = parseContractAddress(
+        selectedContract.contract.plutusScript,
+        isMainnet ? 1 : 0
+      );
+      setScriptAddress(scriptAddress);
+      setPlutusScript(selectedContract.contract.plutusScript);
     }
   }, [contract]);
 
