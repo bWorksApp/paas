@@ -1,18 +1,23 @@
 import React from "react";
 import SmartContractAudit from "../components/contractLockUnlock";
 import { SelectChangeEvent } from "@mui/material/Select";
-import { useGetList, useDataProvider } from "react-admin";
+import { useGetList } from "react-admin";
 import Box from "@mui/material/Box";
 import { CardanoWallet, useWallet } from "@meshsdk/react";
 import moment from "moment";
 import { Transaction, Data, KoiosProvider } from "@meshsdk/core";
-import { parseContractAddress, formatContract } from "./utils";
-import { useCreate, useUpdate } from "react-admin";
+import {
+  parseContractAddress,
+  formatContract,
+  formatAikenContract,
+} from "../utils/contractUtils";
+import { useCreate, useDataProvider, useUpdate } from "react-admin";
 
 const SmartContracts = () => {
   const isMainnet = process.env.REACT_APP_IS_MAINNET;
   const cardanoNetwork = isMainnet ? "api" : "preprod";
   const dataProvider = useDataProvider();
+
   const [create, { isLoading, error }] = useCreate();
   const [update, { isLoading: _isLoading, error: _error }] = useUpdate();
 
@@ -25,7 +30,7 @@ const SmartContracts = () => {
     );
   };
 
-  const [redeemer, setRedeemer] = React.useState("");
+  const [redeemer, setRedeemer] = React.useState([]);
   const handleChangeRedeemer = (data) => {
     setRedeemer(
       data.items.map((item) =>
@@ -113,6 +118,21 @@ const SmartContracts = () => {
       setScriptAddress(scriptAddress);
       setPlutusScript(formatContract(selectedContract.contract));
     }
+    if (selectedContract?.contractType === "aiken") {
+      /*   const _selectedContract = formatAikenContract(selectedContract.contract);
+      const scriptAddress = parseContractAddress(
+        _selectedContract,
+        isMainnet ? 1 : 0
+      );
+      setScriptAddress(scriptAddress);
+      setPlutusScript(formatAikenContract(selectedContract.contract)); */
+      const scriptAddress = parseContractAddress(
+        selectedContract.contract.plutusScript,
+        isMainnet ? 1 : 0
+      );
+      setScriptAddress(scriptAddress);
+      setPlutusScript(selectedContract.contract.plutusScript);
+    }
   }, [contract]);
 
   const handleChangeLockAda = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -137,6 +157,7 @@ const SmartContracts = () => {
       alternative: 0,
       fields: datum,
     };
+
     const amountToLockLoveLace = (amountToLock * 1000000).toString();
 
     if (wallet && connected && amountToLock) {
@@ -196,6 +217,7 @@ const SmartContracts = () => {
       console.log("txHash", txHash, new Date());
     }
   };
+
   const [utxo, setUtxo] = React.useState(null);
 
   React.useEffect(() => {
@@ -216,11 +238,12 @@ const SmartContracts = () => {
   console.log(utxo);
 
   const unlockFunction = async () => {
-   /*  async function _getAssetUtxo({ scriptAddress, asset, lockedTxHash }) {
+    /*   async function _getAssetUtxo({ scriptAddress, asset, lockedTxHash }) {
       const koios = new KoiosProvider(cardanoNetwork);
       const utxos = await koios.fetchAddressUTxOs(scriptAddress, asset);
 
-      return utxos.find((item) => item.input.txHash === lockedTxHash);
+      let utxo = utxos.find((item) => item.input.txHash === lockedTxHash);
+      return utxo;
     }
 
     const utxo = await _getAssetUtxo({
@@ -229,11 +252,13 @@ const SmartContracts = () => {
       lockedTxHash: lockedTxHash,
     });
  */
+    const r = { data: { alternative: 0, fields: redeemer } };
+
+    //const redeemer = { data: { alternative: 0, fields: ["Hello, World!"] } };
+
+    console.log(r);
     const address = await wallet.getChangeAddress();
-
     const collateralUtxos = await wallet.getCollateral();
-
-    console.log(collateralUtxos, address);
 
     if (!utxo || !receiveAddress || !address) {
       setNotification({
@@ -249,6 +274,22 @@ const SmartContracts = () => {
       return;
     }
 
+    /*
+    const tx = new Transaction({ initiator: wallet })
+      .redeemValue({
+        value: assetUtxo,
+        script: script,
+        datum: assetUtxo,
+        redeemer: redeemer,
+      })
+      .sendValue(address, assetUtxo)
+      .setRequiredSigners([address]);
+
+    const unsignedTx = await tx.build();
+    const signedTx = await wallet.signTx(unsignedTx, true);
+    const txHash = await wallet.submitTx(signedTx);
+    */
+
     // create the unlock asset transaction
     let txHash;
     try {
@@ -257,8 +298,9 @@ const SmartContracts = () => {
           value: utxo,
           script: plutusScript,
           datum: utxo,
+          redeemer: r,
         })
-        .sendValue(receiveAddress, utxo) // address is recipient address
+        .sendValue(address, utxo) // address is recipient address
         .setCollateral(collateralUtxos) //this is option, we either set or not set still works
         .setRequiredSigners([address]);
 
@@ -306,12 +348,12 @@ const SmartContracts = () => {
           handleChangeRedeemer={handleChangeRedeemer}
           handleContractChange={handleContractChange}
           handleChangeLockAda={handleChangeLockAda}
-          receiveAddress={receiveAddress}
           handleReceiveAddressChange={handleReceiveAddressChange}
           contract={contract}
           lockFunction={lockFunction}
           unlockFunction={unlockFunction}
           amountToLock={amountToLock}
+          receiveAddress={receiveAddress}
           notification={notification}
         ></SmartContractAudit>
         <CardanoWallet />

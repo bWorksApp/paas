@@ -151,6 +151,7 @@ export interface AikenValidator {
 //aiken smart contract body
 export interface AikenSmartContract {
   address?: string;
+  plutusScript?: any;
   preamble: {
     version: string;
     plutusVersion: 'v1' | 'v2' | 'v3';

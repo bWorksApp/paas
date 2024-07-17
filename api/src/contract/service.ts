@@ -15,6 +15,9 @@ import {
 } from '../flatworks/dbcripts/aggregate.scripts';
 import * as moment from 'moment';
 
+import * as cbor from 'cbor';
+import { resolvePlutusScriptAddress } from '@meshsdk/core';
+
 /*
 - Publish flow
   - user post compiled contract with github repo
@@ -342,6 +345,22 @@ sample post data:
     let _contract = createContractDto.contract as any;
     if (typeof _contract === 'string') {
       _contract = JSON.parse(_contract);
+    }
+
+    if (createContractDto.contractType === 'aiken') {
+      const compiledCode = (_contract as any).validators[0]?.compiledCode;
+      const plutusVersion = (_contract as any).preamble?.plutusVersion;
+      let script;
+      try {
+        script = {
+          code: cbor.encode(Buffer.from(compiledCode, 'hex')).toString('hex'),
+          version: plutusVersion === 'v1' ? 'V1' : 'V2',
+        };
+      } catch (e) {
+        console.log('Invalid Aiken contract type');
+      }
+
+      _contract.plutusScript = script;
     }
 
     const contract = await new this.model({
