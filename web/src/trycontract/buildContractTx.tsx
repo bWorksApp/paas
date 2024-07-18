@@ -184,7 +184,7 @@ const SmartContracts = () => {
           ...notification,
           message: "Transaction is failed",
         });
-        create("audittxs", {
+        create("plutustxs", {
           data: {
             name: auditName,
             amount: amountToLock,
@@ -202,7 +202,7 @@ const SmartContracts = () => {
         ...notification,
         message: txHash ? `Transaction is submmited: ${txHash}` : null,
       });
-      create("audittxs", {
+      create("plutustxs", {
         data: {
           name: auditName,
           amount: amountToLock,
@@ -311,7 +311,7 @@ const SmartContracts = () => {
     } catch (err) {
       console.log(err);
       setNotification({ ...notification, message: "Submit error" });
-      update("audittxs/unlock", {
+      update("plutustxs/unlock", {
         id: lockedTxHash,
         data: { isUnlockSuccess: false, redeemer: redeemer },
       });
@@ -322,7 +322,7 @@ const SmartContracts = () => {
       ...notification,
       message: `Transaction is submitted, TxHash: ${txHash}`,
     });
-    update("audittxs/unlock", {
+    update("plutustxs/unlock", {
       id: lockedTxHash,
       data: {
         isUnlockSuccess: true,
