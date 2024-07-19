@@ -14,9 +14,13 @@ import {
   sumPublishedContractByMonth,
 } from '../flatworks/dbcripts/aggregate.scripts';
 import * as moment from 'moment';
-
 import * as cbor from 'cbor';
 import { resolvePlutusScriptAddress } from '@meshsdk/core';
+import {
+  aikenSourceCodeValidate,
+  plutusSourceCodeValidate,
+  marloweSourceCodeValidate,
+} from '../flatworks/utils/common';
 
 /*
 - Publish flow
@@ -408,10 +412,15 @@ sample post data:
     delete updateContractDto.isFunctionVerified;
 
     //if contract body is changed, require re-compile, validate source code & functions
-    if (
-      updateContractDto.contract &&
-      contract.contract !== updateContractDto.contract
-    ) {
+    const isNotChangeContract =
+      updateContractDto.contractType == 'aiken'
+        ? aikenSourceCodeValidate(updateContractDto.contract, contract.contract)
+        : plutusSourceCodeValidate(
+            updateContractDto.contract,
+            contract.contract,
+          );
+    if (updateContractDto.contract && !isNotChangeContract) {
+      console.log('change', updateContractDto, contract.contract);
       this.QueueQueue.add('compileContract', contract);
       updateContractDto.isFunctionVerified = false;
       updateContractDto.isSourceCodeVerified = false;
@@ -423,11 +432,10 @@ sample post data:
     if (typeof _contract === 'string') {
       _contract = JSON.parse(_contract);
     }
-
     return await this.model
       .findByIdAndUpdate(
         id,
-        { updateContractDto, contract: _contract },
+        { ...updateContractDto, contract: _contract },
         { new: true },
       )
       .exec();
