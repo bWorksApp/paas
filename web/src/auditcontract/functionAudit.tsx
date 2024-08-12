@@ -300,7 +300,7 @@ const SmartContracts = () => {
           datum: utxo,
           redeemer: r,
         })
-        .sendValue(address, utxo) // address is recipient address
+        .sendValue(receiveAddress, utxo) // address is recipient address
         .setCollateral(collateralUtxos) //this is option, we either set or not set still works
         .setRequiredSigners([address]);
 
