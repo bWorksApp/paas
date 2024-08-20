@@ -25,7 +25,7 @@ const SmartContracts = () => {
   const handleChangeDatum = (data) => {
     setDatum(
       data.items.map((item) =>
-        item.dataType === "date" ? moment(item.value).unix() : item.value
+        item.dataType === "date" ? moment(item.value).unix() * 1000 : item.value
       )
     );
   };
@@ -34,7 +34,7 @@ const SmartContracts = () => {
   const handleChangeRedeemer = (data) => {
     setRedeemer(
       data.items.map((item) =>
-        item.dataType === "date" ? moment(item.value).unix() : item.value
+        item.dataType === "date" ? moment(item.value).unix() * 1000 : item.value
       )
     );
   };
@@ -300,7 +300,7 @@ const SmartContracts = () => {
           datum: utxo,
           redeemer: r,
         })
-        .sendValue(address, utxo) // address is recipient address
+        .sendValue(receiveAddress, utxo) // address is recipient address
         .setCollateral(collateralUtxos) //this is option, we either set or not set still works
         .setRequiredSigners([address]);
 
