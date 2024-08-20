@@ -25,7 +25,7 @@ const SmartContracts = () => {
   const handleChangeDatum = (data) => {
     setDatum(
       data.items.map((item) =>
-        item.dataType === "date" ? moment(item.value).unix() : item.value
+        item.dataType === "date" ? moment(item.value).unix() * 1000 : item.value
       )
     );
   };
@@ -34,7 +34,7 @@ const SmartContracts = () => {
   const handleChangeRedeemer = (data) => {
     setRedeemer(
       data.items.map((item) =>
-        item.dataType === "date" ? moment(item.value).unix() : item.value
+        item.dataType === "date" ? moment(item.value).unix() * 1000 : item.value
       )
     );
   };
