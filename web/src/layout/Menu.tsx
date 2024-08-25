@@ -111,6 +111,15 @@ const Menu = ({ dense = false }: MenuProps) => {
           leftIcon={<QrCodeOutlinedIcon />}
           dense={dense}
         />
+   
+        <MenuItemLink
+          to="/mintassets"
+          state={{ _scrollToTop: true }}
+          primaryText="Minted assets"
+          leftIcon={<QrCodeOutlinedIcon />}
+          dense={dense}
+        />
+
         <MenuItemLink
           to="/audittxs"
           state={{ _scrollToTop: true }}
@@ -193,6 +202,13 @@ const Menu = ({ dense = false }: MenuProps) => {
           to="/trycontract"
           state={{ _scrollToTop: true }}
           primaryText="Try dApp TXs"
+          leftIcon={<FormatListNumberedOutlinedIcon />}
+          dense={dense}
+        />
+         <MenuItemLink
+          to="/mintasset"
+          state={{ _scrollToTop: true }}
+          primaryText="Mint asset"
           leftIcon={<FormatListNumberedOutlinedIcon />}
           dense={dense}
         />

@@ -22,6 +22,8 @@ import { BullModule } from '@nestjs/bull';
 import { AuditTxModule } from './audittx/module';
 import { NewsModule } from './news/module';
 import { WalletModule } from './wallet/module';
+import { MintModule } from './minttx/module';
+
 @Module({
   imports: [
     ServeStaticModule.forRoot({
@@ -52,6 +54,7 @@ import { WalletModule } from './wallet/module';
     TestModule,
     NewsModule,
     WalletModule,
+    MintModule,
   ],
   providers: [
     {
