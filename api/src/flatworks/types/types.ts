@@ -189,3 +189,20 @@ export interface ContractRepo {
   buildCommand: string;
   outputJsonFile: string;
 }
+
+//mint asset metadata
+export interface AssetMetadata {
+  name: string;
+  image: string;
+  mediaType: string;
+  description: string;
+}
+
+//mint asset type
+export interface Asset {
+  assetName: string;
+  assetQuantity: number;
+  metadata: string;
+  label: string;
+  recipient: string;
+}

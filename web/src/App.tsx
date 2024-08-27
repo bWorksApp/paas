@@ -32,8 +32,9 @@ import Register from "./components/register";
 import AuditContract from "./auditcontract/functionAudit";
 import TryContract from "./trycontract/buildContractTx";
 import ChangeWallet from "./components/changeWallet";
-
+import MintAsset from './mintasset/mint';
 import audittxs from "./audittx";
+import mintassets from "./mintedassets";
 
 const loginUrl = process.env.REACT_APP_LOGIN_URL;
 const apiUrl = process.env.REACT_APP_API_URL;
@@ -83,7 +84,7 @@ const App = () => {
           <Route path="/changepassword" element={<ChangePassword />} />
           <Route path="/auditContract" element={<AuditContract />} />
           <Route path="/trycontract" element={<TryContract />} />
-
+          <Route path="/mintasset" element={<MintAsset />} />
           <Route path="/wallets" element={<ChangeWallet />} />
         </CustomRoutes>
 
@@ -101,6 +102,7 @@ const App = () => {
         <Resource name="plutustxs" {...plutustxs} />
         <Resource name="yourtxs" {...yourtxs} />
         <Resource name="audittxs" {...audittxs} />
+        <Resource name="mintassets" {...mintassets} />
       </Admin>
 
       <Typography
