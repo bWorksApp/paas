@@ -35,8 +35,8 @@ RUN cd /root/app && git clone https://github.com/bitcoin-core/secp256k1 && \
 # install aiken , marlowe-cli
 #COPY api/src/flatworks/shellscripts/aiken /usr/bin
 RUN npm install -g @aiken-lang/aikup && \
-        wget http://nz2.archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.22_amd64.deb && \
-        dpkg -i libssl1.1_1.1.1f-1ubuntu2.22_amd64.deb && \
+        wget http://nz2.archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.23_amd64.deb && \
+        dpkg -i libssl1.1_1.1.1f-1ubuntu2.23_amd64.deb && \
         aikup install && \
         cp /root/.aiken/bin/aiken /usr/bin
 COPY api/src/flatworks/shellscripts/marlowe-cli /usr/bin
