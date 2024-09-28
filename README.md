@@ -1,3 +1,9 @@
+## Notes
+Node version >= 16.20.2
+Yarn version >= 1.22.19
+Npm version  >= 8.19.4
+Mongo version >= 6.0
+
 ## Deployed staging urls
 
 [Paas App](https://paas.bworks.app/)\
