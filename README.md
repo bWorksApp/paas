@@ -1,3 +1,12 @@
+## Notes
+Node version    18.18.0
+Yarn version    1.22.19
+Npm version     10.8.2
+Mongo version   6.0
+NextJs          14.2.13
+Ra              5.2.1
+Mesh            1.7.6
+
 ## Deployed staging urls
 
 [Paas App](https://paas.bworks.app/)\
