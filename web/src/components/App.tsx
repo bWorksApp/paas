@@ -36,8 +36,8 @@ import MintAsset from "./mintasset/mint";
 import audittxs from "./audittx";
 import mintassets from "./mintedassets";
 
-const loginUrl = process.env.NEXT_PUBLIC_LOGIN_URL || "";
-const apiUrl = process.env.NEXT_PUBLIC_API_URL || "";
+const loginUrl = process.env.NEXT_PUBLIC_LOGIN_URL;
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 const renewTokenUrl = process.env.NEXT_PUBLIC_RENEW_ACCESS_TOKEN_URL;
 const logoutUrl = process.env.NEXT_PUBLIC_LOGOUT_URL;
 const walletLoginUrl = process.env.NEXT_PUBLIC_WALLET_LOGIN_URL;

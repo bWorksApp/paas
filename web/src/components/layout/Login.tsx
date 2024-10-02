@@ -78,7 +78,10 @@ const Login = () => {
     setLoading(true);
     if (checked && (!wallet || !connected || !nonce)) return;
 
-    const signature = await wallet.signData(nonce, walletRewardAddress);
+    let signature;
+    if (checked) {
+      signature = await wallet.signData(nonce, walletRewardAddress);
+    }
 
     const _auth = checked
       ? {
