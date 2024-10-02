@@ -7,6 +7,7 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   reactStrictMode: true,
+  output: 'export',
   webpack: function (config, { isServer }) {
     config.experiments = {
       asyncWebAssembly: true,
