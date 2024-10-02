@@ -28,15 +28,10 @@ import { ContractReports } from "./contractreports";
 import { ApiCallReports } from "./dapptxreports";
 
 const loginUrl = process.env.NEXT_PUBLIC_LOGIN_URL;
-const apiUrl = process.env.NEXT_PUBLIC_API_URL || "";
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 const renewTokenUrl = process.env.NEXT_PUBLIC_RENEW_ACCESS_TOKEN_URL;
 const logoutUrl = process.env.NEXT_PUBLIC_LOGOUT_URL;
 const walletLoginUrl = process.env.NEXT_PUBLIC_WALLET_LOGIN_URL;
-
-
-
-const abc = process.env.NEXT_PUBLIC_IS_MAINNET;
-console.log(abc);
 
 const _authProvider = authProvider(
   loginUrl,
