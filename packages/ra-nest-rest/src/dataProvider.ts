@@ -207,6 +207,22 @@ export default (
     ).then((responses) => ({ data: responses.map(({ json }) => json.id) }));
   },
 
+
+  create: (resource, params) => {
+    const token = localStorage.getItem("accessToken");
+    const options = {
+      headers: new Headers({
+        Authorization: `Bearer ${token}`,
+      }),
+    };
+    return httpClient(`${apiUrl}/${resource}`, {
+      method: "POST",
+      body: JSON.stringify(params.data),
+      ...options,
+    }).then(({ json }) => ({ data: { ...json, id: json._id } }));
+  },
+
+  /* 
   create: (resource, params) => {
     const token = localStorage.getItem("accessToken");
     const options = {
@@ -220,7 +236,7 @@ export default (
       ...options,
     }).then(({ json }) => ({ data: { ...params.data, id: json._id } }));
   },
-
+ */
   delete: (resource, params) => {
     const token = localStorage.getItem("accessToken");
     return httpClient(`${apiUrl}/${resource}/${params.id}`, {
