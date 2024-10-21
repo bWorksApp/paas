@@ -283,12 +283,8 @@ const SmartContracts = () => {
         .sendValue(receiveAddress, utxo) // address is recipient address
         //   .setCollateral(collateralUtxos) //this is option, we either set or not set still works
         .setRequiredSigners([address]);
-      console.log(1);
       const unsignedTx = await tx.build();
-
-      console.log(2);
       const signedTx = await wallet.signTx(unsignedTx, true);
-      console.log(3);
       txHash = await wallet.submitTx(signedTx);
     } catch (err) {
       console.log(err);
