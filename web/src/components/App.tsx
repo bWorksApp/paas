@@ -35,6 +35,7 @@ import ChangeWallet from "./components/changeWallet";
 import MintAsset from "./mintasset/mint";
 import audittxs from "./audittx";
 import mintassets from "./mintedassets";
+import "@meshsdk/react/styles.css";
 
 const loginUrl = process.env.NEXT_PUBLIC_LOGIN_URL;
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
