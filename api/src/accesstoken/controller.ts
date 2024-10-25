@@ -10,20 +10,23 @@ import {
   Query,
   UseGuards,
   Request,
+  Req,
 } from '@nestjs/common';
 import { CreateAccessTokenDto } from './dto/create.dto';
 import { AccessTokenService } from './service';
 import { queryTransform, formatRaList } from '../flatworks/utils/getlist';
 import { UpdateAccessTokenDto } from './dto/update.dto';
+import * as lodash from 'lodash';
 
 @Controller('accesstokens')
 export class AccessTokenController {
   constructor(private readonly service: AccessTokenService) {}
 
   @Get()
-  async index(@Response() res: any, @Query() query) {
+  async index(@Response() res: any, @Query() query, @Req() request) {
     const mongooseQuery = queryTransform(query);
-    const result = await this.service.findAll(mongooseQuery);
+    const userId = lodash.get(request, 'user.userId', null);
+    const result = await this.service.findAll(mongooseQuery, userId);
     return formatRaList(res, result);
   }
 

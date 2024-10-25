@@ -16,10 +16,11 @@ export class AccessTokenService {
     private readonly authService: AuthService,
   ) {}
 
-  async findAll(query: MongooseQuery): Promise<RaList> {
-    const count = await this.model.find(query.filter).count().exec();
+  async findAll(query: MongooseQuery, userId: string): Promise<RaList> {
+    const filter = { ...query.filter, userId };
+    const count = await this.model.find(filter).count().exec();
     const data = await this.model
-      .find(query.filter)
+      .find(filter)
       .sort(query.sort)
       .skip(query.skip)
       .limit(query.limit)

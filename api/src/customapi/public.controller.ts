@@ -16,6 +16,7 @@ import { queryTransform, formatRaList } from '../flatworks/utils/getlist';
 import { PublicService } from './public.service';
 import { NewsService } from '../news/service';
 import { fetchUtxo } from '../flatworks/utils/cardano';
+
 @Public()
 @Controller('public')
 export class PublicController {

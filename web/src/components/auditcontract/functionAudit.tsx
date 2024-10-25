@@ -270,7 +270,6 @@ const SmartContracts = () => {
     }
 
     // create the unlock asset transaction
-    console.log(123, plutusScript);
 
     let txHash;
     try {
