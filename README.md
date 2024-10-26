@@ -60,7 +60,8 @@ modify .env file variables reflect the login and API urls.
 ```
 
 ## smart contract repo
-[Smart Contracts repo](https://github.com/bWorksApp/paas-smart-contracts)
+[Plutus smart contracts repo](https://github.com/bWorksApp/paas-plutus-contracts)
+[Aiken smart contracts repo](https://github.com/bWorksApp/paas-aiken-contracts)
 
 ## dev notes
 
